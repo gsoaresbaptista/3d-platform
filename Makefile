@@ -29,6 +29,7 @@ objFolder:
 	@ mkdir -p objects/views
 	@ mkdir -p objects/utils
 	@ mkdir -p objects/utils/style
+	@ mkdir -p objects/utils/libs
 	@ mkdir -p objects/utils/linear
 	@ mkdir -p objects/utils/shapes
 	@ mkdir -p objects/utils/shapes/2d
@@ -39,6 +40,7 @@ clean:
 	@ rm -rf ./objects/views
 	@ rm -rf ./objects/utils/linear
 	@ rm -rf ./objects/utils/style
+	@ rm -rf ./objects/utils/libs
 	@ rm -rf ./objects/utils/shapes/2d
 	@ rm -rf ./objects/utils/shapes/3d
 	@ rm -rf ./objects/utils/shapes

@@ -1,20 +1,19 @@
 #include "iostream"
 #include "views/canvas.h"
-#include "utils/shapes/2d/rectangle.h"
-#include "utils/shapes/2d/circle.h"
-#include "utils/linear/vec2.h"
+#include "utils/shapes/3d/box.h"
+#include "utils/linear/vec3.h"
+#include "utils/style/texture.h"
 #include <memory>
 
 int main() {
     Canvas canvas(800, 800, "Trabalho 3D");
-
-    Shape* rect = new Rectangle(vec2(0, 0), 50, 40);
-    Shape* circ = new Circle(vec2(0, 0), 20);
-
-    canvas.subscription(rect);
-    canvas.subscription(circ);
-
     canvas.init();
+
+    auto texture = Texture::load("resources/textures/painted_brick.png", true);
+    auto box = std::make_shared<Box>(vec3(0, 0, -5), 1, 1.3, 1);
+    box->draw(texture);
+
+    canvas.subscription(box);
     canvas.run();
 
     return 0;

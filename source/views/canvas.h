@@ -2,7 +2,6 @@
 #define SOURCE_VIEWS_CANVAS_H_
 
 #include <GL/gl.h>
-#include <string>
 #include <vector>
 #include <memory>
 
@@ -11,15 +10,9 @@
 #include "../utils/shapes/shape.h"
 
 class Canvas {
-    private:
-        GLuint width;
-        GLuint height;
-        std::string name;
-        GLuint id_;
-
     public:
         //
-        Canvas(GLuint width, GLuint height, std::string name);
+        Canvas(GLuint width, GLuint height, const char* name, GLuint fps = 60);
 
         //
         void init();
@@ -28,11 +21,11 @@ class Canvas {
         void run();
 
         //
-        static void update();
+        static void update(int value);
 
         //
-        void subscription(Shape* shape);
-        void unsubscription(Shape* shape);
+        void subscription(std::shared_ptr<Shape> shape);
+        void unsubscription(std::shared_ptr<Shape> shape);
 };
 
 #endif  // SOURCE_VIEWS_CANVAS_H_

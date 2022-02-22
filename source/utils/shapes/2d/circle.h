@@ -8,8 +8,8 @@ class Circle: public Shape {
         GLfloat radius;
 
     public:
-        Circle(vec2 center, GLfloat radius);
-        void draw(Color color = RED);
+        Circle(vec3 center, GLfloat radius);
+        void draw(Texture* texture);
 };
 
 #endif  // SOURCE_UTILS_SHAPES_2D_CIRCLE_H_

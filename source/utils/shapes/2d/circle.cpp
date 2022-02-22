@@ -1,10 +1,10 @@
 #include "circle.h"
 #include <iostream>
 
-Circle::Circle(vec2 center, GLfloat radius) : Shape(center) {
+Circle::Circle(vec3 center, GLfloat radius) : Shape(center) {
     this->radius = radius;
 }
 
-void Circle::draw(Color color) {
+void Circle::draw(Texture* texture) {
     printf("Desenhando um círculo!\n");
 }
