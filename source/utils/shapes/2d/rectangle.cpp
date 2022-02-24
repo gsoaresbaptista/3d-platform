@@ -1,6 +1,7 @@
 #include "rectangle.h"
 #include "../../linear/vec3.h"
 #include <vector>
+#include <iostream>
 
 void Rectangle::draw(
         vec3 p0, vec3 p1, vec3 p2, vec3 p3,
@@ -51,19 +52,21 @@ void Rectangle::draw(
     float delta_x = 1.0/n_segs;
     float delta_y = 1.0/n_stacks;
 
-    for (float i = 0; i <= 1; i += delta_y) {
-        vec3 q1 = p0 * (1 - i) + p1 * i;
-        vec3 qn = p3 * (1 - i) + p2 * i;
+    for (int i = 0; i <= n_stacks; i++) {
+        float step_y = delta_y * i;
+        vec3 q1 = p0 * (1 - step_y) + p1 * step_y;
+        vec3 qn = p3 * (1 - step_y) + p2 * step_y;
 
-        vec2 pt1 = tex1 * (1 - i) + tex2 * i;
-        vec2 ptn = tex4 * (1 - i) + tex3 * i;
+        vec2 pt1 = tex1 * (1 - step_y) + tex2 * step_y;
+        vec2 ptn = tex4 * (1 - step_y) + tex3 * step_y;
 
         std::vector<vec3> lines;
         std::vector<vec2> tex_lines;
 
-        for (float j = 0; j <= 1; j += delta_x) {
-            vec3 qj = q1 * (1 - j) + qn * j;
-            vec2 ptj = pt1 * (1 - j) + ptn * j;
+        for (int j = 0; j <= n_segs; j++) {
+            float step_x = delta_x * j;
+            vec3 qj = q1 * (1 - step_x) + qn * step_x;
+            vec2 ptj = pt1 * (1 - step_x) + ptn * step_x;
             lines.push_back(qj);
             tex_lines.push_back(ptj);
         }
