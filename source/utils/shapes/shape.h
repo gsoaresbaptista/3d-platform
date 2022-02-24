@@ -7,6 +7,8 @@
 #include "../style/color.h"
 #include "../style/texture.h"
 
+enum class Outline { SPLITTED = 0, ENTIRE = 1};
+
 class Shape {
     protected:
         vec3 center;
@@ -30,7 +32,10 @@ class Shape {
             glDeleteLists(this->id_, 1);
         }
 
-        virtual void draw(std::shared_ptr<Texture> texture = nullptr) = 0;
+        virtual void draw(
+                std::shared_ptr<Texture> texture = nullptr,
+                GLenum mode = GL_FILL,
+                Outline outline = Outline::SPLITTED) = 0;
 };
 
 #endif  // SOURCE_UTILS_SHAPES_SHAPE_H_

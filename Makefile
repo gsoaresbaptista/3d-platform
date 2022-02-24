@@ -6,6 +6,7 @@ OBJECT := $(addprefix objects/,$(subst .cpp,.o,$(subst source/,,$(SOURCE))))
 CXX := g++
 STD_FLAGS := -std=c++11
 GLUT_FLAGS := -lGL -lGLU -lglut
+MAKEFLAGS += "-j -l $(shell grep -c ^processor /proc/cpuinfo) "
 
 all: objFolder $(PROJ_NAME)
 

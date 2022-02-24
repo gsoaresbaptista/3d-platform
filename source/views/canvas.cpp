@@ -13,6 +13,9 @@ static GLdouble dt = 0;
 static GLdouble currentTime = 0;
 static GLdouble previousTime = 0;
 
+// TODO(all): Remove
+float angle = 0;
+
 //
 static std::vector<std::shared_ptr<Shape>> canvas_shapes;
 
@@ -29,7 +32,7 @@ static void window_resize(float width, float height) {
     glMatrixMode(GL_MODELVIEW);
 }
 
-Canvas::Canvas(GLuint width, GLuint height, const char* name, GLuint fps) {
+Canvas::Canvas(GLuint width, GLuint height, const GLchar* name, GLuint fps) {
     canvas_width = width;
     canvas_height = height;
     canvas_name = name;
@@ -51,7 +54,7 @@ void Canvas::init() {
     glFrontFace(GL_CCW);
     glCullFace(GL_CW);
 
-    // TODO(Gabriel): Trocar replace quando colocar iluminação
+    // TODO(all): remember to replace when add lighting
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
@@ -63,7 +66,7 @@ void Canvas::run() {
 void Canvas::update(int value) {
     //
     currentTime = glutGet(GLUT_ELAPSED_TIME);
-    dt = currentTime - previousTime;
+    dt = (currentTime - previousTime)/1000;
     previousTime = currentTime;
 
     //
@@ -75,9 +78,13 @@ void Canvas::update(int value) {
     for (auto& shape : canvas_shapes) {
         glPushMatrix();
             shape->translate();
+            glRotatef(angle, 0, 1, 0);
             glCallList(shape->getID());
         glPopMatrix();
     }
+
+    angle += 60*dt;
+    angle = (angle > 360) ? 0:angle;
 
     //
     glutTimerFunc(1000.0/canvas_fps, Canvas::update, 0);

@@ -4,15 +4,15 @@
 #include <GL/gl.h>
 #include <vector>
 #include <memory>
-
-//
-#include "../utils/style/color.h"
 #include "../utils/shapes/shape.h"
+#include "../utils/style/color.h"
 
 class Canvas {
     public:
         //
-        Canvas(GLuint width, GLuint height, const char* name, GLuint fps = 60);
+        Canvas(
+            GLuint width, GLuint height,
+            const GLchar* name, GLuint fps = 60);
 
         //
         void init();

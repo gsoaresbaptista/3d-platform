@@ -9,6 +9,14 @@ struct vec2 {
 
     vec2() : x(0), y(0) {}
     vec2(GLfloat x_, GLfloat y_) : x(x_), y(y_) {}
+
+    vec2 operator+(const vec2& k) const {
+        return vec2(x + k.x, y + k.y);
+    }
+
+    vec2 operator*(const float k) const {
+        return vec2(x*k, y*k);
+    }
 };
 
 #endif  // SOURCE_UTILS_LINEAR_VEC2_H_
