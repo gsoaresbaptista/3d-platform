@@ -28,7 +28,9 @@ objects/%.o: source/utils/%.cpp source/utils/%.hpp
 objFolder:
 	@ mkdir -p objects
 	@ mkdir -p objects/views
+	@ mkdir -p objects/models
 	@ mkdir -p objects/utils
+	@ mkdir -p objects/utils/others
 	@ mkdir -p objects/utils/style
 	@ mkdir -p objects/utils/libs
 	@ mkdir -p objects/utils/linear
@@ -39,7 +41,9 @@ objFolder:
 clean:
 	@ rm -rf ./objects/*.o $(PROJ_NAME)
 	@ rm -rf ./objects/views
+	@ rm -rf ./objects/models
 	@ rm -rf ./objects/utils/linear
+	@ rm -rf ./objects/utils/others
 	@ rm -rf ./objects/utils/style
 	@ rm -rf ./objects/utils/libs
 	@ rm -rf ./objects/utils/shapes/2d

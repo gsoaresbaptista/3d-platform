@@ -1,5 +1,6 @@
 #include "canvas.h"
 #include <GL/glut.h>
+#include <iostream>
 
 //
 static GLuint canvas_width;
@@ -13,9 +14,6 @@ static GLdouble dt = 0;
 static GLdouble currentTime = 0;
 static GLdouble previousTime = 0;
 
-// TODO(all): Remove
-float angle = 0;
-
 //
 static std::vector<std::shared_ptr<Shape>> canvas_shapes;
 
@@ -28,7 +26,7 @@ static void window_resize(float width, float height) {
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, aspect, 0.1, 500);
+    gluPerspective(45.0, aspect, 0.1, 1000);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -77,14 +75,9 @@ void Canvas::update(int value) {
     //
     for (auto& shape : canvas_shapes) {
         glPushMatrix();
-            shape->translate();
-            glRotatef(angle, 0, 1, 0);
-            glCallList(shape->getID());
+            shape->display();
         glPopMatrix();
     }
-
-    angle += 60*dt;
-    angle = (angle > 360) ? 0:angle;
 
     //
     glutTimerFunc(1000.0/canvas_fps, Canvas::update, 0);

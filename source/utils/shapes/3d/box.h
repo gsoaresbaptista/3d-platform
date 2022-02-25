@@ -6,7 +6,7 @@
 #include "../../style/texture.h"
 
 class Box: public Shape {
-    private:
+    public:
         GLfloat width;
         GLfloat height;
         GLfloat depth;

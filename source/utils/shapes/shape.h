@@ -32,6 +32,9 @@ class Shape {
             glDeleteLists(this->id_, 1);
         }
 
+        // TODO(all): Trocar pra abstrato(colocar = 0 no fim)
+        virtual void display() {};
+
         virtual void draw(
                 std::shared_ptr<Texture> texture = nullptr,
                 GLenum mode = GL_FILL,
