@@ -24,16 +24,16 @@ float angle = 0;
 
 static void draw_coords_system() {
     glTranslatef(0, 0, -100);
-    glRotatef(angle, 1, 0, 0);
+    // glRotatef(angle, 1, 0, 0);
     glRotatef(angle, 0, 1, 0);
-    glRotatef(angle, 0, 0, 1);
+    // glRotatef(angle, 0, 0, 1);
     auto cylinder = std::make_shared<Cylinder>(vec3(0, 0, 0), 10000, 0.5);
 
     cylinder->draw(nullptr, GL_FILL, Outline::ENTIRE);
-    // glPushMatrix();
+    glPushMatrix();
         cylinder->translate();
         cylinder->display();
-    // glPopMatrix();
+    glPopMatrix();
 
     glPushMatrix();
         glRotatef(-90, 1, 0, 0);

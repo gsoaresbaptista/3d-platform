@@ -21,7 +21,8 @@ void Arena::draw(
 }
 
 void Arena::display() {
-    glTranslatef(0, -4*center.y, -20*abs(center.z));
+    // glTranslatef(0, -4*center.y, -20*abs(center.z));
+    glTranslatef(0, 0, -2*center.z);
 
     for (auto& obstacle : obstacles) {
         glPushMatrix();

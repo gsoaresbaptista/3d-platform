@@ -27,6 +27,8 @@ struct SVGReader {
     float arena_width;
     float arena_height;
     float arena_depth;
+    float arena_x;
+    float arena_y;
 };
 
 std::shared_ptr<SVGReader> readSVG(const char* file_path);

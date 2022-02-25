@@ -8,13 +8,20 @@ typedef struct {
     float height;
     float x;
     float y;
-} Rect;
+} Object;
 
-static void normalize_centers() {
+static void normalize_centers(
+        std::vector<Object>* tmp,
+        std::shared_ptr<SVGReader> data) {
+    for (auto& shape : *tmp) {
+        shape.x = shape.x - data->arena_x + shape.width/2.f;
+        shape.y = data->arena_height - shape.y +
+                  data->arena_y - shape.height/2.f;
+    }
 }
 
 static void create_boxes(
-        std::vector<Rect>* tmp,
+        std::vector<Object>* tmp,
         std::vector<std::shared_ptr<Box>>* rects,
         std::shared_ptr<SVGReader> data) {
     for (auto& rect : *tmp) {
@@ -24,31 +31,11 @@ static void create_boxes(
     }
 }
 
-// static vector<Circle> get_circles(XMLDocument svg) {
-//     vector<Circle> circles;
-//     XMLElement* file = svg.FirstChildElement();
-
-//     for (XMLElement* circle = file->FirstChildElement("circle"); circle != NULL; circle = circle->NextSiblingElement("circle")) {
-//         float cx, cy, r;
-
-//         circle->QueryFloatAttribute("cx", &cx);
-//         circle->QueryFloatAttribute("cy", &cy);
-//         circle->QueryFloatAttribute("r", &r);
-
-//         bool isPlayer = !strcmp(circle->Attribute("fill"), "green");
-
-//         Circle circ(cx, cy, r, isPlayer);
-
-//         circles.push_back(circ);
-//     }
-
-//     return circles;
-// }
-
 static void get_rects(std::shared_ptr<SVGReader> data, XMLDocument* svg) {
-    vector<Rect> tmp;
+    vector<Object> tmp;
     XMLElement* file = svg->FirstChildElement();
     XMLElement* rect = file->FirstChildElement("rect");
+    std::vector<std::shared_ptr<Box>> rects;
 
     for (; rect != NULL; rect = rect->NextSiblingElement("rect")) {
         float width, height, x, y;
@@ -62,6 +49,8 @@ static void get_rects(std::shared_ptr<SVGReader> data, XMLDocument* svg) {
             data->arena_depth = height/2.f;
             data->arena_height = height;
             data->arena_width = width;
+            data->arena_x = x;
+            data->arena_y = y;
         } else {
             tmp.push_back({
                 .width = width,
@@ -70,9 +59,7 @@ static void get_rects(std::shared_ptr<SVGReader> data, XMLDocument* svg) {
         }
     }
 
-    std::vector<std::shared_ptr<Box>> rects;
-
-    normalize_centers();
+    normalize_centers(&tmp, data);
     create_boxes(&tmp, &rects, data);
 
     data->rects = rects;
