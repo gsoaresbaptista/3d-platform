@@ -14,11 +14,13 @@ int main() {
     canvas.init();
 
     auto texture0 = Texture::load("resources/stone.png", true);
-    auto box = std::make_shared<Box>(vec3(0, 0, -150), 100, 20, 10);
-    box->draw(10, 2, nullptr, GL_LINE, Outline::ENTIRE);
-    // box->draw(2, 2, texture0, GL_FILL, Outline::ENTIRE);
+    auto box0 = std::make_shared<Box>(vec3(-26, 0, -150), 50, 20, 10);
+    auto box1 = std::make_shared<Box>(vec3(+26, 0, -150), 50, 20, 10);
+    box0->draw(10, 2, texture0, GL_FILL, Outline::ENTIRE, true);
+    box1->draw(10, 2, texture0, GL_FILL, Outline::ENTIRE, false);
 
-    canvas.subscription(box);
+    canvas.subscription(box0);
+    canvas.subscription(box1);
 
     canvas.run();
 

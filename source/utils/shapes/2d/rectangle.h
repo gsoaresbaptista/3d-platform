@@ -12,7 +12,8 @@ class Rectangle: public Shape {
             vec3 p0, vec3 p1, vec3 p2, vec3 p3,
             GLuint n_segs = 4, GLuint n_stacks = 2,
             Color color = RED,
-            Outline outline = Outline::SPLITTED);
+            Outline outline = Outline::SPLITTED,
+            bool repeat_texture = false);
 
         // Draw rectangle from contour points and texture boundaries
         static void draw(
@@ -27,7 +28,8 @@ class Rectangle: public Shape {
             vec2 t0, vec2 t1, vec2 t2, vec2 t3,
             GLuint n_segs = 4, GLuint n_stacks = 2,
             Color color = RED,
-            Outline outline = Outline::ENTIRE);
+            Outline outline = Outline::ENTIRE,
+            bool repeat_texture = false);
 };
 
 #endif  // SOURCE_UTILS_SHAPES_2D_RECTANGLE_H_

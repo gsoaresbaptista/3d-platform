@@ -26,7 +26,7 @@ class Box: public Shape {
             GLuint n_stacks = 2,
             std::shared_ptr<Texture> texture = nullptr,
             GLenum mode = GL_FILL,
-            Outline outline = Outline::SPLITTED);
+            Outline outline = Outline::SPLITTED, bool repeat_texture = false);
 };
 
 #endif  // SOURCE_UTILS_SHAPES_3D_BOX_H_
