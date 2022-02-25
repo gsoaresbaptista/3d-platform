@@ -11,7 +11,10 @@ Cylinder::Cylinder(vec3 center, GLfloat height, GLfloat radius)
     this->radius = radius;
 }
 
-void Cylinder::draw(std::shared_ptr<Texture> texture, GLenum mode, Outline outline) {
+void Cylinder::draw(
+        std::shared_ptr<Texture> texture,
+        GLenum mode,
+        Outline outline) {
     Cylinder::draw(10, 10, texture, mode, outline);
 }
 

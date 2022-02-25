@@ -29,6 +29,6 @@ struct SVGReader {
     float arena_depth;
 };
 
-SVGReader* readSVG(const char* file_path);
+std::shared_ptr<SVGReader> readSVG(const char* file_path);
 
 #endif  // SOURCE_UTILS_OTHERS_SVGREADER_H_

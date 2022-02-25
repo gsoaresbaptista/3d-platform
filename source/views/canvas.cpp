@@ -2,6 +2,9 @@
 #include <GL/glut.h>
 #include <iostream>
 
+// TODO(all): Remove
+#include "../utils/shapes/3d/cylinder.h"
+
 //
 static GLuint canvas_width;
 static GLuint canvas_height;
@@ -16,6 +19,34 @@ static GLdouble previousTime = 0;
 
 //
 static std::vector<std::shared_ptr<Shape>> canvas_shapes;
+
+float angle = 0;
+
+static void draw_coords_system() {
+    glTranslatef(0, 0, -100);
+    glRotatef(angle, 1, 0, 0);
+    glRotatef(angle, 0, 1, 0);
+    glRotatef(angle, 0, 0, 1);
+    auto cylinder = std::make_shared<Cylinder>(vec3(0, 0, 0), 10000, 0.5);
+
+    cylinder->draw(nullptr, GL_FILL, Outline::ENTIRE);
+    // glPushMatrix();
+        cylinder->translate();
+        cylinder->display();
+    // glPopMatrix();
+
+    glPushMatrix();
+        glRotatef(-90, 1, 0, 0);
+        cylinder->display();
+    glPopMatrix();
+
+    glPushMatrix();
+        glRotatef(90, 0, 1, 0);
+        cylinder->display();
+    glPopMatrix();
+
+    angle = (angle >= 360) ? 0: angle+0.6;
+}
 
 static void window_resize(float width, float height) {
     canvas_width = width;
@@ -72,11 +103,12 @@ void Canvas::update(int value) {
     window_resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
     glLoadIdentity();
 
+    // TODO(all): Remove
+    draw_coords_system();
+
     //
     for (auto& shape : canvas_shapes) {
-        glPushMatrix();
-            shape->display();
-        glPopMatrix();
+        shape->display();
     }
 
     //

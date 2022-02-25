@@ -1,7 +1,6 @@
 #ifndef SOURCE_UTILS_SHAPES_SHAPE_H_
 #define SOURCE_UTILS_SHAPES_SHAPE_H_
 
-#include <cstdio>
 #include <memory>
 #include "../linear/vec3.h"
 #include "../style/color.h"
@@ -32,8 +31,9 @@ class Shape {
             glDeleteLists(this->id_, 1);
         }
 
-        // TODO(all): Trocar pra abstrato(colocar = 0 no fim)
-        virtual void display() {};
+        virtual void display() {
+            glCallList(this->id_);
+        }
 
         virtual void draw(
                 std::shared_ptr<Texture> texture = nullptr,

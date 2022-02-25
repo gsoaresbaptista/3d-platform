@@ -15,7 +15,7 @@ class Arena: public Shape {
         // std::vector<Enemy> enemies;
 
     public:
-        explicit Arena(SVGReader* data);
+        explicit Arena(std::shared_ptr<SVGReader> data);
 
         void draw(
                 std::shared_ptr<Texture> texture = nullptr,

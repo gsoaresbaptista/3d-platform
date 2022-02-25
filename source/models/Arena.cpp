@@ -1,7 +1,7 @@
 #include "Arena.h"
 #include <iostream>
 
-Arena::Arena(SVGReader* data) :
+Arena::Arena(std::shared_ptr<SVGReader> data) :
         Shape(vec3(
             data->arena_width/2.0,
             data->arena_height/2.0,
@@ -20,26 +20,13 @@ void Arena::draw(
     }
 }
 
-float angle = 0;
-
 void Arena::display() {
-    glTranslatef(0, -center.y, 0);
-    glTranslatef(0, 0, -500 - center.z);
-    glRotatef(angle, 0, 1, 0);
-    // glRotatef(angle, 0, 0, 1);
-
-    // glCallList(obstacles[0]->getID());
-    // glCallList(obstacles[1]->getID());
-    // glCallList(obstacles[02]->getID());
+    glTranslatef(0, -4*center.y, -20*abs(center.z));
 
     for (auto& obstacle : obstacles) {
-        // std::cout << "QUADRADO!" << std::endl;
         glPushMatrix();
             obstacle->translate();
             glCallList(obstacle->getID());
         glPopMatrix();
     }
-
-    angle += 0.6;
-    angle = (angle >= 360) ? 0:angle;
 }
