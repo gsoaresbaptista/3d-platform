@@ -2,6 +2,7 @@
 #define SOURCE_UTILS_LINEAR_VEC3_H_
 
 #include <GL/gl.h>
+#include <cmath>
 
 struct vec3 {
     GLfloat x;
@@ -17,6 +18,17 @@ struct vec3 {
 
     vec3 operator*(const float k) const {
         return vec3(x*k, y*k, z*k);
+    }
+
+    vec3 operator/(const float k) const {
+        return vec3(x/k, y/k, z/k);
+    }
+
+    GLfloat distance(const vec3& v) {
+        return sqrt(
+            pow(x - v.x, 2) +
+            pow(y - v.y, 2) +
+            pow(z - v.z, 2));
     }
 };
 

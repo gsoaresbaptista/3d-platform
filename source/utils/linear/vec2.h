@@ -17,6 +17,12 @@ struct vec2 {
     vec2 operator*(const float k) const {
         return vec2(x*k, y*k);
     }
+
+    GLfloat distance(const vec2& v) {
+        return sqrt(
+            pow(x - v.x, 2) +
+            pow(y - v.y, 2));
+    }
 };
 
 #endif  // SOURCE_UTILS_LINEAR_VEC2_H_

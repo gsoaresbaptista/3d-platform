@@ -7,12 +7,15 @@
 #include "../utils/shapes/3d/box.h"
 #include "../utils/others/SVGReader.h"
 #include "../utils/linear/vec3.h"
+#include "../utils/style/texture.h"
 
 class Arena: public Shape {
     private:
         GLuint obstacles_id;
+        GLfloat block_size;
         std::vector<std::shared_ptr<Box>> obstacles;
         // std::vector<Enemy> enemies;
+        std::shared_ptr<Texture> stone = nullptr;
 
     public:
         explicit Arena(std::shared_ptr<SVGReader> data);

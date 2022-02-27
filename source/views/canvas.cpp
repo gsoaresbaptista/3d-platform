@@ -21,31 +21,39 @@ static GLdouble previousTime = 0;
 static std::vector<std::shared_ptr<Shape>> canvas_shapes;
 
 float angle = 0;
+float lado = 1;
+
 
 static void draw_coords_system() {
     glTranslatef(0, 0, -100);
     // glRotatef(angle, 1, 0, 0);
     glRotatef(angle, 0, 1, 0);
     // glRotatef(angle, 0, 0, 1);
+    glRotatef(-270, 0, 1, 0);
+
     auto cylinder = std::make_shared<Cylinder>(vec3(0, 0, 0), 10000, 0.5);
 
     cylinder->draw(nullptr, GL_FILL, Outline::ENTIRE);
     glPushMatrix();
         cylinder->translate();
+        glTranslatef(0, 0, -10000/2);
         cylinder->display();
     glPopMatrix();
 
     glPushMatrix();
         glRotatef(-90, 1, 0, 0);
+        glTranslatef(0, 0, 10000/2.0002);
         cylinder->display();
     glPopMatrix();
 
     glPushMatrix();
         glRotatef(90, 0, 1, 0);
+        glTranslatef(0, 0, 10000/2);
         cylinder->display();
     glPopMatrix();
 
-    angle = (angle >= 360) ? 0: angle+0.6;
+    if (abs(angle) >= 45 || abs(angle) >= 90) lado *= -1;
+    angle += 0.6 * lado;
 }
 
 static void window_resize(float width, float height) {

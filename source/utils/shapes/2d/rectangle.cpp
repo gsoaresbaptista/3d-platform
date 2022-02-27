@@ -2,6 +2,7 @@
 #include "../../linear/vec3.h"
 #include <vector>
 #include <iostream>
+#include <cmath>
 
 void Rectangle::draw(
         vec3 p0, vec3 p1, vec3 p2, vec3 p3,
@@ -108,6 +109,127 @@ void Rectangle::draw(
                     glTexCoord2f(1, 1);
                 else
                     glTexCoord2fv(&texture[i][j + 1].x);
+                glVertex3fv(&square[i][j + 1].x);
+            }
+        }
+    glEnd();
+}
+
+void Rectangle::draw_block(
+        vec3 p0, vec3 p1, vec3 p2, vec3 p3,
+        GLfloat block_size, Color color, Outline outline) {
+    // Calculate box dimensions
+    float width = p3.distance(p0);
+    float height = p1.distance(p0);
+
+    int n_stacks = height/block_size;
+    int n_segs = width/block_size;
+    int step_increment_x = 0;
+    int step_increment_y = 0;
+
+    n_segs = (n_segs == 0) ? 1:n_segs;
+    n_stacks = (n_stacks == 0) ? 1:n_stacks;
+
+    // Correction number of splits to complete difference with block size
+    if (block_size*n_stacks < height) {
+        n_stacks++;
+        step_increment_y++;
+    }
+
+    if (block_size*n_segs < width) {
+        n_segs++;
+        step_increment_x++;
+    }
+
+    // Calcule delta for block size
+    float ph = (width/block_size) * block_size/width;
+    float pv = (height/block_size) * block_size/height;
+    float delta_y = pv/(n_stacks - step_increment_y);
+    float delta_x = ph/(n_segs - step_increment_x);
+
+    // Use the entire figure as a texture
+    vec2 tex1(0, 1);
+    vec2 tex2(0, 0);
+    vec2 tex3(1, 0);
+    vec2 tex4(1, 1);
+
+    // Calculates texture and shape points
+    std::vector< std::vector<vec3>> square;
+    std::vector< std::vector<vec2>> texture;
+
+    for (int i = 0; i <= n_stacks; i++) {
+        float step_y = delta_y * i;
+        if (i == n_stacks) step_y = 1;
+
+        // Calcule new points
+        vec3 q1 = p0 * (1 - step_y) + p1 * step_y;
+        vec3 qn = p3 * (1 - step_y) + p2 * step_y;
+
+        // Calcule correction value for size difference with block_size
+        float correction;
+
+        if (i != 0)
+            correction = q1.distance(square[i-1][0]);
+        else
+            correction = p0.distance(q1);
+
+        // Create texture points
+        float step_tex = i * correction/block_size;
+        vec2 pt1 = tex1 * (1 - step_tex) + tex2 * step_tex;
+        vec2 ptn = tex4 * (1 - step_tex) + tex3 * step_tex;
+
+        std::vector<vec3> lines;
+        std::vector<vec2> tex_lines;
+
+        for (int j = 0; j <= n_segs; j++) {
+            float step_x = delta_x * j;
+            if (j == n_segs) step_x = 1;
+
+            float step_tex = j;
+            float correcao;
+
+            // Calcule new horrizontal point
+            vec3 qj = q1 * (1 - step_x) + qn * step_x;
+
+            // Calcule correction value for size difference with block_size
+            if (j != 0)
+                correction = qj.distance(lines[j-1]);
+            else
+                correction = p0.distance(qj);
+
+            step_tex = j * correction/block_size;
+
+            // Create new texture point
+            vec2 ptj = pt1 * (1 - step_tex) + ptn * step_tex;
+
+            lines.push_back(qj);
+            tex_lines.push_back(ptj);
+        }
+
+        square.push_back(lines);
+        texture.push_back(tex_lines);
+    }
+
+    // Draw points
+     if (outline == Outline::SPLITTED) {
+        // Create two triangles
+        glBegin(GL_TRIANGLE_FAN);
+    } else {
+        // Create square outline
+        glBegin(GL_QUADS);
+    }
+        for (int i = 0; i < n_stacks; i++) {
+            for (int j = 0; j < n_segs; j++) {
+                glTexCoord2fv(&texture[i][j].x);
+                glVertex3fv(&square[i][j].x);
+
+                glTexCoord2fv(&texture[i + 1][j].x);
+                glVertex3fv(&square[i + 1][j].x);
+
+                glTexCoord2fv(&texture[i + 1][j + 1].x);
+                glVertex3fv(&square[i + 1][j + 1].x);
+
+                glTexCoord2fv(&texture[i][j + 1].x);
                 glVertex3fv(&square[i][j + 1].x);
             }
         }

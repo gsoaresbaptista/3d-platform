@@ -8,6 +8,8 @@ Arena::Arena(std::shared_ptr<SVGReader> data) :
             data->arena_depth/2.0)
         ) {
     this->obstacles = data->rects;
+    this->block_size = data->block_size;
+    this->stone = Texture::load("resources/oak_planks.png", true);
 }
 
 void Arena::draw(
@@ -16,12 +18,11 @@ void Arena::draw(
         Outline outline) {
     //
     for (auto& obstacle : obstacles) {
-        obstacle->draw(nullptr, GL_FILL, Outline::ENTIRE);
+        obstacle->draw_block(block_size, stone, GL_FILL);
     }
 }
 
 void Arena::display() {
-    // glTranslatef(0, -4*center.y, -20*abs(center.z));
     glTranslatef(0, 0, -2*center.z);
 
     for (auto& obstacle : obstacles) {

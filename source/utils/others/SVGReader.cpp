@@ -65,6 +65,26 @@ static void get_rects(std::shared_ptr<SVGReader> data, XMLDocument* svg) {
     data->rects = rects;
 }
 
+static void get_circles(std::shared_ptr<SVGReader> data, XMLDocument* svg) {
+    vector<Object> tmp;
+    XMLElement* file = svg->FirstChildElement();
+    XMLElement* circ = file->FirstChildElement("circle");
+    // std::vector<std::shared_ptr<Box>> rects;
+
+    for (; circ != NULL; circ = circ->NextSiblingElement("circle")) {
+        float radius, cx, cy;
+
+        circ->QueryFloatAttribute("cx", &cx);
+        circ->QueryFloatAttribute("cy", &cy);
+        circ->QueryFloatAttribute("r", &radius);
+
+        if (!strcmp(circ->Attribute("fill"), "green")) {
+            data->block_size = radius;
+        } else {
+        }
+    }
+}
+
 std::shared_ptr<SVGReader> readSVG(const char* file_path) {
     std::shared_ptr<SVGReader> data = std::make_shared<SVGReader>();
     XMLDocument svg;
@@ -73,6 +93,7 @@ std::shared_ptr<SVGReader> readSVG(const char* file_path) {
     if (err != XML_SUCCESS) std::cout << "Insira um arquivo existente";
 
     get_rects(data, &svg);
+    get_circles(data, &svg);
 
     return data;
 }

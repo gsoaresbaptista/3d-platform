@@ -30,6 +30,12 @@ class Rectangle: public Shape {
             Color color = RED,
             Outline outline = Outline::ENTIRE,
             bool repeat_texture = false);
+
+        //
+        static void draw_block(
+            vec3 p0, vec3 p1, vec3 p2, vec3 p3,
+            GLfloat block_size, Color color = RED,
+            Outline outline = Outline::ENTIRE);
 };
 
 #endif  // SOURCE_UTILS_SHAPES_2D_RECTANGLE_H_
