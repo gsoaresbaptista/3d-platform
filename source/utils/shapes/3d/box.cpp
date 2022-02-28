@@ -1,13 +1,16 @@
 #include "./box.h"
 #include "../../linear/vec3.h"
 #include "../../style/color.h"
+#include "../../style/gameTexture.h"
 #include "../2d/rectangle.h"
 
-Box::Box(vec3 center, GLfloat width, GLfloat height, GLfloat depth)
-    : Shape(center) {
+Box::Box(
+    vec3 center, GLfloat width, GLfloat height,
+    GLfloat depth, BoxType type) : Shape(center) {
     this->width = width;
     this->height = height;
     this->depth = depth;
+    this->type = type;
 }
 
 void Box::draw(
@@ -53,10 +56,7 @@ void Box::draw(
     glEndList();
 }
 
-void Box::draw_block(
-        GLfloat block_size,
-        std::shared_ptr<Texture> texture,
-        GLenum mode) {
+void Box::draw_block(GLfloat block_size, GLenum mode) {
     // Front
     vec3 p0(-width/2.0, height/2.0, depth/2.0);
     vec3 p1(-width/2.0, -height/2.0, depth/2.0);
@@ -69,10 +69,18 @@ void Box::draw_block(
     vec3 p6(-width/2.0, -height/2.0, -depth/2.0);
     vec3 p7(-width/2.0, height/2.0, -depth/2.0);
 
+    std::shared_ptr<Texture> block_tex;
+
+    if (this->type == BoxType::STONE)
+        // block_tex = STONE_TEX;
+        block_tex = BRICKS_TEX;
+    else
+        block_tex = SPRUCE_PLANKS_TEX;
+
     // Draw
     glNewList(this->id_, GL_COMPILE);
         glPolygonMode(GL_FRONT, mode);
-        if (texture != nullptr) texture->bind();
+        block_tex->bind();
         Rectangle::draw_block(  // Frente
             p0, p1, p2, p3, block_size, RED);
         Rectangle::draw_block(  // Direita
@@ -85,6 +93,18 @@ void Box::draw_block(
             p7, p0, p3, p4, block_size, ORANGE);
         Rectangle::draw_block(  // Baixo
             p1, p6, p5, p2, block_size, VIOLET);
-        if (texture != nullptr) texture->unbind();
+        block_tex->unbind();
     glEndList();
+}
+
+GLfloat Box::get_width() {
+    return this->width;
+}
+
+GLfloat Box::get_height() {
+    return this->height;
+}
+
+GLfloat Box::get_depth() {
+    return this->depth;
 }

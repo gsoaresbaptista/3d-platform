@@ -25,9 +25,15 @@ static void create_boxes(
         std::vector<std::shared_ptr<Box>>* rects,
         std::shared_ptr<SVGReader> data) {
     for (auto& rect : *tmp) {
+        BoxType type = BoxType::WOOD;
         vec3 center = vec3(rect.x, rect.y, data->arena_depth/2.f);
+
+        if (center.y - rect.height <= 0) {
+            type = BoxType::STONE;
+        }
+
         rects->push_back(std::make_shared<Box>(
-            center, rect.width, rect.height, data->arena_depth));
+            center, rect.width, rect.height, data->arena_depth, type));
     }
 }
 

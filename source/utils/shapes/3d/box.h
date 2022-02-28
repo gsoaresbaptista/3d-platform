@@ -5,14 +5,25 @@
 #include "../shape.h"
 #include "../../style/texture.h"
 
+enum class BoxType { STONE = 0, WOOD = 1};
+
 class Box: public Shape {
     public:
         GLfloat width;
         GLfloat height;
         GLfloat depth;
+        BoxType type;
 
     public:
-        Box(vec3 center, GLfloat width, GLfloat height, GLfloat depth);
+        Box(
+            vec3 center,
+            GLfloat width, GLfloat height, GLfloat depth,
+            BoxType type = BoxType::STONE);
+
+        //
+        GLfloat get_width();
+        GLfloat get_height();
+        GLfloat get_depth();
 
         //
         void draw(
@@ -29,10 +40,7 @@ class Box: public Shape {
             Outline outline = Outline::SPLITTED);
 
         //
-        void draw_block(
-            GLfloat block_size,
-            std::shared_ptr<Texture> texture = nullptr,
-            GLenum mode = GL_FILL);
+        void draw_block(GLfloat block_size, GLenum mode = GL_FILL);
 };
 
 #endif  // SOURCE_UTILS_SHAPES_3D_BOX_H_

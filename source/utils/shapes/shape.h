@@ -35,6 +35,10 @@ class Shape {
             glCallList(this->id_);
         }
 
+        vec3 get_center() {
+            return this->center;
+        }
+
         virtual void draw(
                 std::shared_ptr<Texture> texture = nullptr,
                 GLenum mode = GL_FILL,

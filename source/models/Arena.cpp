@@ -1,4 +1,5 @@
 #include "Arena.h"
+#include "../utils/style/gameTexture.h"
 #include <iostream>
 
 Arena::Arena(std::shared_ptr<SVGReader> data) :
@@ -9,7 +10,6 @@ Arena::Arena(std::shared_ptr<SVGReader> data) :
         ) {
     this->obstacles = data->rects;
     this->block_size = data->block_size;
-    this->stone = Texture::load("resources/oak_planks.png", true);
 }
 
 void Arena::draw(
@@ -18,7 +18,7 @@ void Arena::draw(
         Outline outline) {
     //
     for (auto& obstacle : obstacles) {
-        obstacle->draw_block(block_size, stone, GL_FILL);
+        obstacle->draw_block(block_size, GL_FILL);
     }
 }
 

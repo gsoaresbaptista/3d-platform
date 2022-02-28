@@ -15,7 +15,6 @@ class Arena: public Shape {
         GLfloat block_size;
         std::vector<std::shared_ptr<Box>> obstacles;
         // std::vector<Enemy> enemies;
-        std::shared_ptr<Texture> stone = nullptr;
 
     public:
         explicit Arena(std::shared_ptr<SVGReader> data);
