@@ -12,6 +12,7 @@ extern std::shared_ptr<Texture> COBBLESTONE_TEX;
 extern std::shared_ptr<Texture> OAK_PLANKS_TEX;
 extern std::shared_ptr<Texture> SPRUCE_PLANKS_TEX;
 extern std::shared_ptr<Texture> DEEPSLATE_BRICKS_TEX;
+extern std::shared_ptr<Texture> CRACKED_DEEPSLATE_BRICKS_TEX;
 extern std::shared_ptr<Texture> MOSSY_DEEPSLATE_BRICKS_TEX;
 
 namespace GameConstants {

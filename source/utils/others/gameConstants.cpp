@@ -8,6 +8,7 @@ std::shared_ptr<Texture> COBBLESTONE_TEX = nullptr;
 std::shared_ptr<Texture> OAK_PLANKS_TEX = nullptr;
 std::shared_ptr<Texture> SPRUCE_PLANKS_TEX = nullptr;
 std::shared_ptr<Texture> DEEPSLATE_BRICKS_TEX = nullptr;
+std::shared_ptr<Texture> CRACKED_DEEPSLATE_BRICKS_TEX = nullptr;
 std::shared_ptr<Texture> MOSSY_DEEPSLATE_BRICKS_TEX = nullptr;
 
 
@@ -21,6 +22,8 @@ void GameConstants::load_textures() {
     SPRUCE_PLANKS_TEX = Texture::load("resources/spruce_planks.png", true);
     DEEPSLATE_BRICKS_TEX = Texture::load(
         "resources/deepslate_bricks.png", true);
+    CRACKED_DEEPSLATE_BRICKS_TEX = Texture::load(
+        "resources/cracked_deepslate_bricks.png", true);
     MOSSY_DEEPSLATE_BRICKS_TEX = Texture::load(
         "resources/mossy_deepslate_bricks.png", true);
 }

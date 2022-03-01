@@ -1,25 +1,27 @@
-#ifndef SOURCE_MODELS_ARENA_H_
-#define SOURCE_MODELS_ARENA_H_
+#ifndef SOURCE_MODELS_GAME_H_
+#define SOURCE_MODELS_GAME_H_
 
 #include <vector>
 #include <memory>
 #include "../utils/shapes/shape.h"
 #include "../utils/shapes/3d/box.h"
 #include "../utils/others/SVGReader.h"
-#include "../utils/linear/vec3.h"
+#include "../utils/math/math.h"
 #include "../controllers/controller.h"
 #include "../utils/style/texture.h"
 
-class Arena: public Shape {
+class Game: public Shape {
     private:
         GLuint obstacles_id;
         GLfloat block_size;
         std::vector<std::shared_ptr<Box>> obstacles;
-        std::shared_ptr<ControllerData> cData;
+        std::shared_ptr<ControllerData> controller;
         // std::vector<Enemy> enemies;
 
     public:
-        explicit Arena(std::shared_ptr<SVGData> data, std::shared_ptr<ControllerData> cData);
+        Game(
+            std::shared_ptr<SVGData> data,
+            std::shared_ptr<ControllerData> cData);
 
         void draw(
                 std::shared_ptr<Texture> texture = nullptr,
@@ -29,4 +31,4 @@ class Arena: public Shape {
         void display();
 };
 
-#endif  // SOURCE_MODELS_ARENA_H_
+#endif  // SOURCE_MODELS_GAME_H_

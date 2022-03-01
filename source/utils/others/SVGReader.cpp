@@ -1,5 +1,5 @@
 #include "SVGReader.h"
-#include "../linear/vec3.h"
+#include "../math/math.h"
 #include <iostream>
 #include <string.h>
 
@@ -57,7 +57,7 @@ static void create_boxes(
         }
 
         if ((center.y - rect.height <= 0) || collided) {
-            type = BoxType::STONE;
+            type = BoxType::DEEPSLATE_BRICKS;
         }
 
         float depth = (type == BoxType::WOOD) ? 0.75*data->arena_depth:data->arena_depth;

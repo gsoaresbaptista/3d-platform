@@ -5,7 +5,7 @@
 #include "../shape.h"
 #include "../../style/texture.h"
 
-enum class BoxType { STONE = 0, WOOD = 1};
+enum class BoxType { DEEPSLATE_BRICKS = 0, WOOD = 1};
 
 class Box: public Shape {
     public:
@@ -18,7 +18,7 @@ class Box: public Shape {
         Box(
             vec3 center,
             GLfloat width, GLfloat height, GLfloat depth,
-            BoxType type = BoxType::STONE);
+            BoxType type = BoxType::DEEPSLATE_BRICKS);
 
         //
         GLfloat get_width();

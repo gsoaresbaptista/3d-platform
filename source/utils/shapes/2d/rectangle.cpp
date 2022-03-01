@@ -1,6 +1,5 @@
 #include "rectangle.h"
-#include "../../linear/vec3.h"
-#include "../../others/math.h"
+#include "../../math/math.h"
 #include "../../others/gameConstants.h"
 #include <vector>
 #include <iostream>
@@ -219,13 +218,16 @@ void Rectangle::draw_block(
         for (int j = 0; j < n_segs; j++) {
             float val = random_float(0, 1);
 
+            // Choosing the texture
             if (type == BoxType::WOOD) {
                 tex = SPRUCE_PLANKS_TEX;
-            } else {
-                if (val <= 0.8) {
+            } else if (type == BoxType::DEEPSLATE_BRICKS) {
+                if (val <= 0.75) {
                     tex = DEEPSLATE_BRICKS_TEX;
-                } else {
+                } else if (val <= 0.875) {
                     tex = MOSSY_DEEPSLATE_BRICKS_TEX;
+                } else if (val <= 1.0) {
+                    tex = CRACKED_DEEPSLATE_BRICKS_TEX;
                 }
             }
 

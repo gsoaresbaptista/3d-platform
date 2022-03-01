@@ -1,7 +1,7 @@
 #ifndef SOURCE_CONTROLLERS_CAMERA_CAMERA_H_
 #define SOURCE_CONTROLLERS_CAMERA_CAMERA_H_
 
-#include "../../utils/linear/vec3.h"
+#include "../../utils/math/math.h"
 
 class Camera {
     private:

@@ -7,7 +7,7 @@
 //
 static GLuint ANGLE_ID = -1;
 static vec3* TRANSLATE_VECTOR;
-static vec3*ANGLE_VECTOR;
+static vec3* ANGLE_VECTOR;
 
 static void keyboard_function(unsigned char key, int x, int y) {
 }

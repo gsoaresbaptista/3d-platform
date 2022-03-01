@@ -35,7 +35,7 @@ objFolder:
 	@ mkdir -p objects/utils/others
 	@ mkdir -p objects/utils/style
 	@ mkdir -p objects/utils/libs
-	@ mkdir -p objects/utils/linear
+	@ mkdir -p objects/utils/math
 	@ mkdir -p objects/utils/shapes
 	@ mkdir -p objects/utils/shapes/2d
 	@ mkdir -p objects/utils/shapes/3d
@@ -46,7 +46,7 @@ clean:
 	@ rm -rf ./objects/models
 	@ rm -rf ./objects/controllers
 	@ rm -rf ./objects/controllers/camera
-	@ rm -rf ./objects/utils/linear
+	@ rm -rf ./objects/utils/math
 	@ rm -rf ./objects/utils/others
 	@ rm -rf ./objects/utils/style
 	@ rm -rf ./objects/utils/libs

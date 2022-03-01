@@ -1,6 +1,6 @@
-#include "./camera.h"
 #include <GL/glu.h>
 #include <iostream>
+#include "camera.h"
 
 Camera::Camera(vec3 pos) {
     this->position = vec3(pos);

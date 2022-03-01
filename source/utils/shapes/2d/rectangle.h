@@ -3,8 +3,7 @@
 
 #include "../shape.h"
 #include "../3d/box.h"
-#include "../../linear/vec2.h"
-#include "../../linear/vec3.h"
+#include "../../math/math.h"
 
 class Rectangle: public Shape {
     public:
@@ -37,7 +36,7 @@ class Rectangle: public Shape {
             vec3 p0, vec3 p1, vec3 p2, vec3 p3,
             GLfloat block_size, Color color = RED,
             Outline outline = Outline::ENTIRE,
-            BoxType type = BoxType::STONE);
+            BoxType type = BoxType::DEEPSLATE_BRICKS);
 };
 
 #endif  // SOURCE_UTILS_SHAPES_2D_RECTANGLE_H_

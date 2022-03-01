@@ -1,6 +1,7 @@
-#ifndef SOURCE_UTILS_LINEAR_VEC2_H_
-#define SOURCE_UTILS_LINEAR_VEC2_H_
+#ifndef SOURCE_UTILS_MATH_VEC2_H_
+#define SOURCE_UTILS_MATH_VEC2_H_
 
+#include <cmath>
 #include <GL/gl.h>
 
 struct vec2 {
@@ -25,4 +26,4 @@ struct vec2 {
     }
 };
 
-#endif  // SOURCE_UTILS_LINEAR_VEC2_H_
+#endif  // SOURCE_UTILS_MATH_VEC2_H_

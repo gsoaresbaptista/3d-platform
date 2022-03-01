@@ -3,7 +3,7 @@
 
 #include <memory>
 #include "keyboardListener.h"
-#include "../utils/linear/vec3.h"
+#include "../utils/math/math.h"
 #include "controllerData.h"
 
 class Controller {
@@ -12,6 +12,7 @@ class Controller {
             std::shared_ptr<ControllerData> data =
                 std::make_shared<ControllerData>();
 
+            // Listeners
             KeyboardListener::registerCallbacks(data);
 
             return data;

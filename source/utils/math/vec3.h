@@ -1,5 +1,5 @@
-#ifndef SOURCE_UTILS_LINEAR_VEC3_H_
-#define SOURCE_UTILS_LINEAR_VEC3_H_
+#ifndef SOURCE_UTILS_MATH_VEC3_H_
+#define SOURCE_UTILS_MATH_VEC3_H_
 
 #include <GL/gl.h>
 #include <cmath>
@@ -45,4 +45,4 @@ struct vec3 {
     }
 };
 
-#endif  // SOURCE_UTILS_LINEAR_VEC3_H_
+#endif  // SOURCE_UTILS_MATH_VEC3_H_

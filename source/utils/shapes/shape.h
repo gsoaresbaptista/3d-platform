@@ -2,7 +2,7 @@
 #define SOURCE_UTILS_SHAPES_SHAPE_H_
 
 #include <memory>
-#include "../linear/vec3.h"
+#include "../math/math.h"
 #include "../style/color.h"
 #include "../style/texture.h"
 

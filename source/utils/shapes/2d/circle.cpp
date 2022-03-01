@@ -1,5 +1,5 @@
 #include "circle.h"
-#include "../../linear/vec2.h"
+#include "../../math/math.h"
 
 #include <cmath>
 
