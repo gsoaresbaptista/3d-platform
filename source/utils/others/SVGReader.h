@@ -21,7 +21,7 @@ using std::vector;
 //         vector<Rectangle> getRects();
 // };
 
-struct SVGReader {
+struct SVGData {
     // std::vector<Circle> circles;
     std::vector<std::shared_ptr<Box>> rects;
     float arena_width;
@@ -32,6 +32,6 @@ struct SVGReader {
     float block_size;
 };
 
-std::shared_ptr<SVGReader> readSVG(const char* file_path);
+std::shared_ptr<SVGData> readSVG(const char* file_path);
 
 #endif  // SOURCE_UTILS_OTHERS_SVGREADER_H_

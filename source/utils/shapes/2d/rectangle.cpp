@@ -1,5 +1,7 @@
 #include "rectangle.h"
 #include "../../linear/vec3.h"
+#include "../../others/math.h"
+#include "../../others/gameConstants.h"
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -116,8 +118,8 @@ void Rectangle::draw(
 }
 
 void Rectangle::draw_block(
-        vec3 p0, vec3 p1, vec3 p2, vec3 p3,
-        GLfloat block_size, Color color, Outline outline) {
+        vec3 p0, vec3 p1, vec3 p2, vec3 p3, GLfloat block_size,
+        Color color, Outline outline, BoxType type) {
     // Calculate box dimensions
     float width = p3.distance(p0);
     float height = p1.distance(p0);
@@ -210,16 +212,31 @@ void Rectangle::draw_block(
         texture.push_back(tex_lines);
     }
 
+    std::shared_ptr<Texture> tex;
+
     // Draw points
-     if (outline == Outline::SPLITTED) {
-        // Create two triangles
-        glBegin(GL_TRIANGLE_FAN);
-    } else {
-        // Create square outline
-        glBegin(GL_QUADS);
-    }
-        for (int i = 0; i < n_stacks; i++) {
-            for (int j = 0; j < n_segs; j++) {
+    for (int i = 0; i < n_stacks; i++) {
+        for (int j = 0; j < n_segs; j++) {
+            float val = random_float(0, 1);
+
+            if (type == BoxType::WOOD) {
+                tex = SPRUCE_PLANKS_TEX;
+            } else {
+                if (val <= 0.8) {
+                    tex = DEEPSLATE_BRICKS_TEX;
+                } else {
+                    tex = MOSSY_DEEPSLATE_BRICKS_TEX;
+                }
+            }
+
+            tex->bind();
+            if (outline == Outline::SPLITTED) {
+                // Create two triangles
+                glBegin(GL_TRIANGLE_FAN);
+            } else {
+                // Create square outline
+                glBegin(GL_QUADS);
+            }
                 glTexCoord2fv(&texture[i][j].x);
                 glVertex3fv(&square[i][j].x);
 
@@ -231,7 +248,8 @@ void Rectangle::draw_block(
 
                 glTexCoord2fv(&texture[i][j + 1].x);
                 glVertex3fv(&square[i][j + 1].x);
-            }
+            glEnd();
+            tex->unbind();
         }
-    glEnd();
+    }
 }

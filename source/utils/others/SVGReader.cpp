@@ -3,16 +3,34 @@
 #include <iostream>
 #include <string.h>
 
-typedef struct {
+float distance(float num1, float num2) {
+    return sqrt(pow(num1 - num2, 2));
+}
+
+struct Object {
     float width;
     float height;
     float x;
     float y;
-} Object;
+
+    bool operator==(const Object& obj) {
+        return (width == obj.width) && (height == obj.height) &&
+               (x == obj.x) && (y == obj.y);
+    }
+
+    bool operator!=(const Object& obj) {
+        return !(*this == obj);
+    }
+
+    bool collision(const Object& obj) {
+        return distance(x, obj.x) <= width/2 + obj.width/2 &&
+               distance(y, obj.y) <= height/2 + obj.height/2;
+    }
+};
 
 static void normalize_centers(
         std::vector<Object>* tmp,
-        std::shared_ptr<SVGReader> data) {
+        std::shared_ptr<SVGData> data) {
     for (auto& shape : *tmp) {
         shape.x = shape.x - data->arena_x + shape.width/2.f;
         shape.y = data->arena_height - shape.y +
@@ -23,21 +41,33 @@ static void normalize_centers(
 static void create_boxes(
         std::vector<Object>* tmp,
         std::vector<std::shared_ptr<Box>>* rects,
-        std::shared_ptr<SVGReader> data) {
+        std::shared_ptr<SVGData> data) {
+    //
+    bool collided = false;
+
     for (auto& rect : *tmp) {
+        collided = false;
         BoxType type = BoxType::WOOD;
         vec3 center = vec3(rect.x, rect.y, data->arena_depth/2.f);
 
-        if (center.y - rect.height <= 0) {
+        for (auto& rect0 : *tmp) {
+            if ((rect != rect0) && rect.collision(rect0)) {
+                collided = true;
+            }
+        }
+
+        if ((center.y - rect.height <= 0) || collided) {
             type = BoxType::STONE;
         }
 
+        float depth = (type == BoxType::WOOD) ? 0.75*data->arena_depth:data->arena_depth;
+
         rects->push_back(std::make_shared<Box>(
-            center, rect.width, rect.height, data->arena_depth, type));
+            center, rect.width, rect.height, depth, type));
     }
 }
 
-static void get_rects(std::shared_ptr<SVGReader> data, XMLDocument* svg) {
+static void get_rects(std::shared_ptr<SVGData> data, XMLDocument* svg) {
     vector<Object> tmp;
     XMLElement* file = svg->FirstChildElement();
     XMLElement* rect = file->FirstChildElement("rect");
@@ -71,7 +101,7 @@ static void get_rects(std::shared_ptr<SVGReader> data, XMLDocument* svg) {
     data->rects = rects;
 }
 
-static void get_circles(std::shared_ptr<SVGReader> data, XMLDocument* svg) {
+static void get_circles(std::shared_ptr<SVGData> data, XMLDocument* svg) {
     vector<Object> tmp;
     XMLElement* file = svg->FirstChildElement();
     XMLElement* circ = file->FirstChildElement("circle");
@@ -91,8 +121,8 @@ static void get_circles(std::shared_ptr<SVGReader> data, XMLDocument* svg) {
     }
 }
 
-std::shared_ptr<SVGReader> readSVG(const char* file_path) {
-    std::shared_ptr<SVGReader> data = std::make_shared<SVGReader>();
+std::shared_ptr<SVGData> readSVG(const char* file_path) {
+    std::shared_ptr<SVGData> data = std::make_shared<SVGData>();
     XMLDocument svg;
 
     XMLError err = svg.LoadFile(file_path);

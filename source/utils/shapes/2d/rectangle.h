@@ -2,6 +2,7 @@
 #define SOURCE_UTILS_SHAPES_2D_RECTANGLE_H_
 
 #include "../shape.h"
+#include "../3d/box.h"
 #include "../../linear/vec2.h"
 #include "../../linear/vec3.h"
 
@@ -35,7 +36,8 @@ class Rectangle: public Shape {
         static void draw_block(
             vec3 p0, vec3 p1, vec3 p2, vec3 p3,
             GLfloat block_size, Color color = RED,
-            Outline outline = Outline::ENTIRE);
+            Outline outline = Outline::ENTIRE,
+            BoxType type = BoxType::STONE);
 };
 
 #endif  // SOURCE_UTILS_SHAPES_2D_RECTANGLE_H_

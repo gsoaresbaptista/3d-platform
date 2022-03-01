@@ -20,6 +20,10 @@ struct vec3 {
         return vec3(x*k, y*k, z*k);
     }
 
+    vec3 operator*(const vec3& v) const {
+        return vec3(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x);
+    }
+
     vec3 operator/(const float k) const {
         return vec3(x/k, y/k, z/k);
     }
@@ -29,6 +33,15 @@ struct vec3 {
             pow(x - v.x, 2) +
             pow(y - v.y, 2) +
             pow(z - v.z, 2));
+    }
+
+    float magnitude() {
+        return sqrt(x*x + y*y + z*z);
+    }
+
+    vec3 normalize() {
+        float norm = this->magnitude();
+        return vec3(x/norm, y/norm, z/norm);
     }
 };
 

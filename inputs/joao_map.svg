@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+   <rect
+      fill="blue"
+      id="rect1005"
+      width="210"
+      height="70.478645"
+      x="-35.414776"
+      y="86.918304" />
+   <rect
+      fill="black"
+      id="rect1095"
+      width="30.026821"
+      height="3.0452454"
+      x="-10.030231"
+      y="137.99963" />
+   <rect
+      fill="black"
+      id="rect1097"
+      width="27.853985"
+      height="3.2447336"
+      x="28.548754"
+      y="117.36168" />
+   <rect
+      fill="black"
+      id="rect1099"
+      width="4.835515"
+      height="25.545341"
+      x="72.264267"
+      y="131.85159" />
+   <rect
+      fill="black"
+      id="rect1101"
+      width="3.4930427"
+      height="7.8487067"
+      x="115.25179"
+      y="149.54823" />
+   <circle
+      fill="green"
+      id="path1227"
+      cx="-22.414532"
+      cy="149.8978"
+      r="7.4991469" />
+   <circle
+      fill="red"
+      id="path1227-3"
+      cx="42.001812"
+      cy="109.86254"
+      r="7.4991469" />
+   <circle
+      fill="red"
+      id="path1227-3-6"
+      cx="96.056061"
+      cy="149.8978"
+      r="7.4991469" />
+   <circle
+      fill="red"
+      id="path1227-3-7"
+      cx="150.52138"
+      cy="149.8978"
+      r="7.4991469" />
+</svg>

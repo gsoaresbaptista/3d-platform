@@ -7,6 +7,7 @@
 #include "../utils/shapes/3d/box.h"
 #include "../utils/others/SVGReader.h"
 #include "../utils/linear/vec3.h"
+#include "../controllers/controller.h"
 #include "../utils/style/texture.h"
 
 class Arena: public Shape {
@@ -14,10 +15,11 @@ class Arena: public Shape {
         GLuint obstacles_id;
         GLfloat block_size;
         std::vector<std::shared_ptr<Box>> obstacles;
+        std::shared_ptr<ControllerData> cData;
         // std::vector<Enemy> enemies;
 
     public:
-        explicit Arena(std::shared_ptr<SVGReader> data);
+        explicit Arena(std::shared_ptr<SVGData> data, std::shared_ptr<ControllerData> cData);
 
         void draw(
                 std::shared_ptr<Texture> texture = nullptr,
