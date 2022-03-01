@@ -18,8 +18,10 @@ std::shared_ptr<Texture> DEEPSLATE_REDSTONE_TEX = nullptr;
 std::shared_ptr<Texture> DEEPSLATE_GOLD_TEX = nullptr;
 std::shared_ptr<Texture> DEEPSLATE_IRON_TEX = nullptr;
 std::shared_ptr<Texture> DEEPSLATE_TEX = nullptr;
+std::shared_ptr<Texture> PORTAL_TEX = nullptr;
 
 void GameConstants::load_textures() {
+    PORTAL_TEX = Texture::load("resources/portal.png", true);
     CHAIN_TEX = Texture::load("resources/chain.png", true);
     STONE_TEX = Texture::load("resources/stone.png", true);
     BRICKS_TEX = Texture::load("resources/bricks.png", true);

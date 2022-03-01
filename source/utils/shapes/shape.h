@@ -31,7 +31,7 @@ class Shape {
             glDeleteLists(this->id_, 1);
         }
 
-        virtual void display() {
+        virtual void display(float dt) {
             glCallList(this->id_);
         }
 

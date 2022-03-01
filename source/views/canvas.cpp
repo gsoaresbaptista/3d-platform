@@ -121,7 +121,7 @@ void Canvas::update(int value) {
 
     //
     for (auto& shape : canvas_shapes) {
-        shape->display();
+        shape->display(dt);
     }
 
     //

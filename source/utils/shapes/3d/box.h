@@ -25,6 +25,9 @@ class Box: public Shape {
         GLfloat get_depth();
 
         //
+        void display(float dt);
+
+        //
         virtual void draw(
             std::shared_ptr<Texture> texture = nullptr,
             GLenum mode = GL_FILL,

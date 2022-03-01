@@ -28,7 +28,7 @@ class Game: public Shape {
                 GLenum mode = GL_FILL,
                 Outline outline = Outline::SPLITTED);
 
-        void display();
+        void display(float dt);
 };
 
 #endif  // SOURCE_MODELS_GAME_H_

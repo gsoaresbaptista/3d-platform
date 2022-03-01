@@ -34,6 +34,13 @@ class Rectangle: public Shape {
 
         //
         static void draw_block(
+            vec3 p0, vec3 p1, vec3 p2, vec3 p3, vec2 t0, vec2 t2,
+            GLfloat block_size, Color color = RED,
+            Outline outline = Outline::ENTIRE,
+            BoxType type = BoxType::DEEPSLATE_BRICKS);
+
+        //
+        static void draw_block(
             vec3 p0, vec3 p1, vec3 p2, vec3 p3,
             GLfloat block_size, Color color = RED,
             Outline outline = Outline::ENTIRE,

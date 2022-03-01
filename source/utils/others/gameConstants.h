@@ -4,7 +4,7 @@
 #include "../style/texture.h"
 #include <memory>
 
-enum class BoxType { DEEPSLATE_BRICKS = 0, WOOD = 1, CHAIN = 2, DARK_OAK = 3};
+enum class BoxType { DEEPSLATE_BRICKS = 0, WOOD = 1, CHAIN = 2, DARK_OAK = 3, PORTAL = 4};
 
 extern std::shared_ptr<Texture> CHAIN_TEX;
 extern std::shared_ptr<Texture> STONE_TEX;
@@ -24,6 +24,7 @@ extern std::shared_ptr<Texture> DEEPSLATE_DIAMOND_TEX;
 extern std::shared_ptr<Texture> DEEPSLATE_REDSTONE_TEX;
 extern std::shared_ptr<Texture> DEEPSLATE_GOLD_TEX;
 extern std::shared_ptr<Texture> DEEPSLATE_IRON_TEX;
+extern std::shared_ptr<Texture> PORTAL_TEX;
 
 namespace GameConstants {
     void load_textures();

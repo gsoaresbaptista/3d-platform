@@ -117,3 +117,10 @@ GLfloat Box::get_height() {
 GLfloat Box::get_depth() {
     return this->depth;
 }
+
+void Box::display(float dt) {
+    glPushMatrix();
+        this->translate();
+        glCallList(this->id_);
+    glPopMatrix();
+}

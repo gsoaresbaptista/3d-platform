@@ -2,6 +2,7 @@
 #include "../math/math.h"
 #include "../gameShapes/chain.h"
 #include "../gameShapes/plane.h"
+#include "../gameShapes/animatedPlane.h"
 #include <iostream>
 #include <string.h>
 
@@ -197,9 +198,9 @@ static void add_bounds(std::shared_ptr<SVGData> data) {
         data->arena_width/2.0,
         data->arena_height/2.f,
         data->arena_depth/2.f);
-    data->rects.push_back(std::make_shared<Plane>(
+    data->rects.push_back(std::make_shared<AnimatedPlane>(
         center, data->arena_depth, data->arena_height,
-        BoxType::DEEPSLATE_BRICKS, 5));
+        PORTAL_TEX, 32, 5));
 }
 
 std::shared_ptr<SVGData> readSVG(const char* file_path) {

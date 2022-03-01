@@ -117,8 +117,8 @@ void Rectangle::draw(
 }
 
 void Rectangle::draw_block(
-        vec3 p0, vec3 p1, vec3 p2, vec3 p3, GLfloat block_size,
-        Color color, Outline outline, BoxType type) {
+        vec3 p0, vec3 p1, vec3 p2, vec3 p3, vec2 t0, vec2 t2,
+        GLfloat block_size, Color color, Outline outline, BoxType type) {
     // Calculate box dimensions
     float width = p3.distance(p0);
     float height = p1.distance(p0);
@@ -148,11 +148,11 @@ void Rectangle::draw_block(
     float delta_y = pv/(n_stacks - step_increment_y);
     float delta_x = ph/(n_segs - step_increment_x);
 
-    // Use the entire figure as a texture
-    vec2 tex1(0, 1);
-    vec2 tex2(0, 0);
-    vec2 tex3(1, 0);
-    vec2 tex4(1, 1);
+    // Calculete texture points
+    vec2 tex1(t0.x, t0.y);
+    vec2 tex2(t0.x, t2.y);
+    vec2 tex3(t2.x, t2.y);
+    vec2 tex4(t2.x, t0.y);
 
     // Calculates texture and shape points
     std::vector< std::vector<vec3>> square;
@@ -221,6 +221,8 @@ void Rectangle::draw_block(
             // Choosing the texture
             if (type == BoxType::WOOD) {
                 tex = SPRUCE_PLANKS_TEX;
+            } else if (type == BoxType::PORTAL) {
+                tex = PORTAL_TEX;
             } else if (type == BoxType::DARK_OAK) {
                 tex = DARK_OAK_PLANKS_TEX;
             } else if (type == BoxType::DEEPSLATE_BRICKS) {
@@ -256,4 +258,16 @@ void Rectangle::draw_block(
             tex->unbind();
         }
     }
+}
+
+void Rectangle::draw_block(
+        vec3 p0, vec3 p1, vec3 p2, vec3 p3, GLfloat block_size,
+        Color color, Outline outline, BoxType type) {
+    // Use the entire figure as a texture
+    vec2 t0(0, 1);
+    vec2 t2(1, 0);
+
+    Rectangle::draw_block(
+        p0, p1, p2, p3, t0, t2,
+        block_size, color, outline, type);
 }

@@ -23,7 +23,7 @@ void Game::draw(
     }
 }
 
-void Game::display() {
+void Game::display(float dt) {
     // Move arena to origin
     glTranslatef(0, 0, -2*center.z);
 
@@ -39,9 +39,6 @@ void Game::display() {
 
     // Draw arena obstacles
     for (auto& obstacle : obstacles) {
-        glPushMatrix();
-            obstacle->translate();
-            glCallList(obstacle->getID());
-        glPopMatrix();
+        obstacle->display(dt);
     }
 }
