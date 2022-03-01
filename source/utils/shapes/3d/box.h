@@ -5,7 +5,7 @@
 #include "../shape.h"
 #include "../../style/texture.h"
 
-enum class BoxType { DEEPSLATE_BRICKS = 0, WOOD = 1};
+enum class BoxType { DEEPSLATE_BRICKS = 0, WOOD = 1, CHAIN = 2};
 
 class Box: public Shape {
     public:
@@ -26,13 +26,13 @@ class Box: public Shape {
         GLfloat get_depth();
 
         //
-        void draw(
+        virtual void draw(
             std::shared_ptr<Texture> texture = nullptr,
             GLenum mode = GL_FILL,
             Outline outline = Outline::SPLITTED);
 
         //
-        void draw(
+        virtual void draw(
             GLuint n_segs = 4,
             GLuint n_stacks = 2,
             std::shared_ptr<Texture> texture = nullptr,
@@ -40,7 +40,7 @@ class Box: public Shape {
             Outline outline = Outline::SPLITTED);
 
         //
-        void draw_block(GLfloat block_size, GLenum mode = GL_FILL);
+        virtual void draw_block(GLfloat block_size, GLenum mode = GL_FILL);
 };
 
 #endif  // SOURCE_UTILS_SHAPES_3D_BOX_H_

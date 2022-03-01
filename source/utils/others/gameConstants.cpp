@@ -1,5 +1,6 @@
 #include "gameConstants.h"
 
+std::shared_ptr<Texture> CHAIN_TEX = nullptr;
 std::shared_ptr<Texture> STONE_TEX = nullptr;
 std::shared_ptr<Texture> BRICKS_TEX = nullptr;
 std::shared_ptr<Texture> ANDESITE_TEX = nullptr;
@@ -13,6 +14,7 @@ std::shared_ptr<Texture> MOSSY_DEEPSLATE_BRICKS_TEX = nullptr;
 
 
 void GameConstants::load_textures() {
+    CHAIN_TEX = Texture::load("resources/chain.png", true);
     STONE_TEX = Texture::load("resources/stone.png", true);
     BRICKS_TEX = Texture::load("resources/bricks.png", true);
     ANDESITE_TEX = Texture::load("resources/andesite.png", true);

@@ -9,14 +9,14 @@ void Rectangle::draw(
         vec3 p0, vec3 p1, vec3 p2, vec3 p3,
         vec2 t0, vec2 t2, GLuint n_segs,
         GLuint n_stacks, Color color,
-        Outline outline) {
+        Outline outline, bool repeat_texture) {
     // Calculate others contour pointers
     vec2 t1(t0.x, t2.y);  // bottom left
     vec2 t3(t2.x, t0.y);  // upper right
 
     Rectangle::draw(
         p0, p1, p2, p3, t0, t1, t2, t3,
-        n_segs, n_stacks, color, outline);
+        n_segs, n_stacks, color, outline, repeat_texture);
 }
 
 void Rectangle::draw(

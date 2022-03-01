@@ -20,7 +20,8 @@ class Rectangle: public Shape {
             vec3 p0, vec3 p1, vec3 p2, vec3 p3, vec2 t0, vec2 t2,
             GLuint n_segs = 4, GLuint n_stacks = 2,
             Color color = RED,
-            Outline outline = Outline::SPLITTED);
+            Outline outline = Outline::SPLITTED,
+            bool repeat_texture = false);
 
         // Draw rectangle from contour points and texture contour
         static void draw(

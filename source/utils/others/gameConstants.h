@@ -4,6 +4,7 @@
 #include "../style/texture.h"
 #include <memory>
 
+extern std::shared_ptr<Texture> CHAIN_TEX;
 extern std::shared_ptr<Texture> STONE_TEX;
 extern std::shared_ptr<Texture> BRICKS_TEX;
 extern std::shared_ptr<Texture> ANDESITE_TEX;

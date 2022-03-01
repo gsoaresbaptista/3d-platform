@@ -1,5 +1,6 @@
 #include "SVGReader.h"
 #include "../math/math.h"
+#include "../shapes/3d/chain.h"
 #include <iostream>
 #include <string.h>
 
@@ -60,7 +61,41 @@ static void create_boxes(
             type = BoxType::DEEPSLATE_BRICKS;
         }
 
-        float depth = (type == BoxType::WOOD) ? 0.75*data->arena_depth:data->arena_depth;
+        float depth = data->arena_depth;
+
+        if (type == BoxType::WOOD) {
+            depth *= 0.75;
+
+            for (int i = 0; i < 4; i++) {
+                // Create chains
+                float cheight = data->arena_height - rect.y;
+                float cwidth = data->arena_depth * 0.025;
+
+                int fconst = (i <= 1) ? -1:1;
+
+                float center_x = rect.x + fconst*(rect.width/2 - 1.25*cwidth);
+                float center_z = data->arena_depth - 1.25*cwidth;
+
+                if (i % 2 == 0)
+                    center_z *= 0.85;
+                else
+                    center_z *= 0.15;
+
+                Object chain = {
+                    .width = cwidth, .height = cheight,
+                    .x = center_x, .y = rect.y + cheight/2};
+
+                for (auto& rect0 : *tmp) {
+                    if ((rect0 != rect) && chain.collision(rect0)) {
+                        cheight -= data->arena_height - rect0.y;
+                    }
+                }
+
+                vec3 ccenter(center_x, rect.y + cheight/2, center_z);
+                rects->push_back(std::make_shared<Chain>(
+                    ccenter, cwidth, cheight, cwidth));
+            }
+        }
 
         rects->push_back(std::make_shared<Box>(
             center, rect.width, rect.height, depth, type));
