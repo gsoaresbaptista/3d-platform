@@ -1,6 +1,6 @@
 #include "chain.h"
-#include "../2d/rectangle.h"
-#include "../../others/gameConstants.h"
+#include "../shapes/2d/rectangle.h"
+#include "../others/gameConstants.h"
 
 Chain::Chain(vec3 center, GLfloat width, GLfloat height, GLfloat depth)
     : Box(center, width, height, depth, BoxType::CHAIN) {

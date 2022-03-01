@@ -8,10 +8,16 @@ std::shared_ptr<Texture> COAL_TEX = nullptr;
 std::shared_ptr<Texture> COBBLESTONE_TEX = nullptr;
 std::shared_ptr<Texture> OAK_PLANKS_TEX = nullptr;
 std::shared_ptr<Texture> SPRUCE_PLANKS_TEX = nullptr;
+std::shared_ptr<Texture> DARK_OAK_PLANKS_TEX = nullptr;
 std::shared_ptr<Texture> DEEPSLATE_BRICKS_TEX = nullptr;
 std::shared_ptr<Texture> CRACKED_DEEPSLATE_BRICKS_TEX = nullptr;
 std::shared_ptr<Texture> MOSSY_DEEPSLATE_BRICKS_TEX = nullptr;
-
+std::shared_ptr<Texture> DEEPSLATE_COAL_TEX = nullptr;
+std::shared_ptr<Texture> DEEPSLATE_DIAMOND_TEX = nullptr;
+std::shared_ptr<Texture> DEEPSLATE_REDSTONE_TEX = nullptr;
+std::shared_ptr<Texture> DEEPSLATE_GOLD_TEX = nullptr;
+std::shared_ptr<Texture> DEEPSLATE_IRON_TEX = nullptr;
+std::shared_ptr<Texture> DEEPSLATE_TEX = nullptr;
 
 void GameConstants::load_textures() {
     CHAIN_TEX = Texture::load("resources/chain.png", true);
@@ -22,6 +28,18 @@ void GameConstants::load_textures() {
     COBBLESTONE_TEX = Texture::load("resources/cobblestone.png", true);
     OAK_PLANKS_TEX = Texture::load("resources/oak_planks.png", true);
     SPRUCE_PLANKS_TEX = Texture::load("resources/spruce_planks.png", true);
+    DARK_OAK_PLANKS_TEX = Texture::load("resources/dark_oak_planks.png", true);
+    DEEPSLATE_TEX = Texture::load("resources/deepslate_tiles.png", true);
+    DEEPSLATE_COAL_TEX = Texture::load(
+        "resources/deepslate_coal_ore.png", true);
+    DEEPSLATE_IRON_TEX = Texture::load(
+        "resources/deepslate_iron_ore.png", true);
+    DEEPSLATE_GOLD_TEX = Texture::load(
+        "resources/deepslate_gold_ore.png", true);
+    DEEPSLATE_DIAMOND_TEX = Texture::load(
+        "resources/deepslate_diamond_ore.png", true);
+    DEEPSLATE_REDSTONE_TEX = Texture::load(
+        "resources/deepslate_redstone_ore.png", true);
     DEEPSLATE_BRICKS_TEX = Texture::load(
         "resources/deepslate_bricks.png", true);
     CRACKED_DEEPSLATE_BRICKS_TEX = Texture::load(

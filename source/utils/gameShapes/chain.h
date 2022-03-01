@@ -1,8 +1,8 @@
-#ifndef SOURCE_UTILS_SHAPES_3D_CHAIN_H_
-#define SOURCE_UTILS_SHAPES_3D_CHAIN_H_
+#ifndef SOURCE_UTILS_GAMESHAPES_CHAIN_H_
+#define SOURCE_UTILS_GAMESHAPES_CHAIN_H_
 
-#include "box.h"
-#include "../../style/texture.h"
+#include "../shapes/3d/box.h"
+#include "../style/texture.h"
 
 class Chain: public Box {
     public:
@@ -16,4 +16,4 @@ class Chain: public Box {
         void draw_block(GLfloat block_size, GLenum mode = GL_FILL);
 };
 
-#endif  // SOURCE_UTILS_SHAPES_3D_CHAIN_H_
+#endif  // SOURCE_UTILS_GAMESHAPES_CHAIN_H_

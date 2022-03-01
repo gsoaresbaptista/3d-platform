@@ -4,8 +4,7 @@
 #include <GL/gl.h>
 #include "../shape.h"
 #include "../../style/texture.h"
-
-enum class BoxType { DEEPSLATE_BRICKS = 0, WOOD = 1, CHAIN = 2};
+#include "../../others/gameConstants.h"
 
 class Box: public Shape {
     public:

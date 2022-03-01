@@ -1,6 +1,7 @@
 #include "SVGReader.h"
 #include "../math/math.h"
-#include "../shapes/3d/chain.h"
+#include "../gameShapes/chain.h"
+#include "../gameShapes/plane.h"
 #include <iostream>
 #include <string.h>
 
@@ -64,7 +65,7 @@ static void create_boxes(
         float depth = data->arena_depth;
 
         if (type == BoxType::WOOD) {
-            depth *= 0.75;
+            depth *= 0.60;
 
             for (int i = 0; i < 4; i++) {
                 // Create chains
@@ -73,13 +74,13 @@ static void create_boxes(
 
                 int fconst = (i <= 1) ? -1:1;
 
-                float center_x = rect.x + fconst*(rect.width/2 - 1.25*cwidth);
+                float center_x = rect.x + fconst*(rect.width/2 - 1.5*cwidth);
                 float center_z = data->arena_depth - 1.25*cwidth;
 
                 if (i % 2 == 0)
-                    center_z *= 0.85;
+                    center_z *= 0.75;
                 else
-                    center_z *= 0.15;
+                    center_z *= 0.25;
 
                 Object chain = {
                     .width = cwidth, .height = cheight,
@@ -156,6 +157,51 @@ static void get_circles(std::shared_ptr<SVGData> data, XMLDocument* svg) {
     }
 }
 
+static void add_bounds(std::shared_ptr<SVGData> data) {
+    vec3 center(data->arena_width/2.f, 0, data->arena_depth/2.f);
+    data->rects.push_back(std::make_shared<Plane>(
+        center, data->arena_width, data->arena_depth, BoxType::DARK_OAK, 0));
+
+    center = vec3(
+        data->arena_width/2.f,
+        data->arena_height/2.f,
+        data->arena_depth/2.f);
+    data->rects.push_back(std::make_shared<Plane>(
+        center, data->arena_width, data->arena_depth, BoxType::DARK_OAK, 1));
+
+    center = vec3(
+        data->arena_width/2.f,
+        data->arena_height/2.f,
+        data->arena_depth/2.f);
+    data->rects.push_back(std::make_shared<Plane>(
+        center, data->arena_width, data->arena_height,
+        BoxType::DEEPSLATE_BRICKS, 2));
+
+    center = vec3(
+        data->arena_width/2.f,
+        data->arena_height/2.f,
+        0);
+    data->rects.push_back(std::make_shared<Plane>(
+        center, data->arena_width, data->arena_height,
+        BoxType::DEEPSLATE_BRICKS, 3));
+
+    center = vec3(
+        0,
+        data->arena_height/2.f,
+        data->arena_depth/2.f);
+    data->rects.push_back(std::make_shared<Plane>(
+        center, data->arena_depth, data->arena_height,
+        BoxType::DEEPSLATE_BRICKS, 4));
+
+    center = vec3(
+        data->arena_width/2.0,
+        data->arena_height/2.f,
+        data->arena_depth/2.f);
+    data->rects.push_back(std::make_shared<Plane>(
+        center, data->arena_depth, data->arena_height,
+        BoxType::DEEPSLATE_BRICKS, 5));
+}
+
 std::shared_ptr<SVGData> readSVG(const char* file_path) {
     std::shared_ptr<SVGData> data = std::make_shared<SVGData>();
     XMLDocument svg;
@@ -165,6 +211,7 @@ std::shared_ptr<SVGData> readSVG(const char* file_path) {
 
     get_rects(data, &svg);
     get_circles(data, &svg);
+    add_bounds(data);
 
     return data;
 }

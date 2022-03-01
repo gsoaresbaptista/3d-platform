@@ -221,6 +221,8 @@ void Rectangle::draw_block(
             // Choosing the texture
             if (type == BoxType::WOOD) {
                 tex = SPRUCE_PLANKS_TEX;
+            } else if (type == BoxType::DARK_OAK) {
+                tex = DARK_OAK_PLANKS_TEX;
             } else if (type == BoxType::DEEPSLATE_BRICKS) {
                 if (val <= 0.75) {
                     tex = DEEPSLATE_BRICKS_TEX;
