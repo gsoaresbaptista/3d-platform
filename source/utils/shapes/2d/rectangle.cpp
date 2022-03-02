@@ -219,7 +219,7 @@ void Rectangle::draw_block(
             float val = random_float(0, 1);
 
             // Choosing the texture
-            if (type == BoxType::WOOD) {
+            if (type == BoxType::SPRUCE) {
                 tex = SPRUCE_PLANKS_TEX;
             } else if (type == BoxType::PORTAL) {
                 tex = PORTAL_TEX;

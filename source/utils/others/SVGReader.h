@@ -5,6 +5,7 @@
 #include <memory>
 // #include "../shapes/2d/rectangle.h"
 #include "../shapes/3d/box.h"
+#include "../shapes/shape.h"
 #include "../shapes/2d/circle.h"
 #include "../libs/tinyxml2.h"
 
@@ -23,7 +24,7 @@ using std::vector;
 
 struct SVGData {
     // std::vector<Circle> circles;
-    std::vector<std::shared_ptr<Box>> rects;
+    std::vector<std::shared_ptr<Shape>> rects;
     float arena_width;
     float arena_height;
     float arena_depth;

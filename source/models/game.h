@@ -14,7 +14,7 @@ class Game: public Shape {
     private:
         GLuint obstacles_id;
         GLfloat block_size;
-        std::vector<std::shared_ptr<Box>> obstacles;
+        std::vector<std::shared_ptr<Shape>> obstacles;
         std::shared_ptr<ControllerData> controller;
         // std::vector<Enemy> enemies;
 

@@ -6,21 +6,20 @@
 #include "../style/texture.h"
 
 class AnimatedPlane: public Plane {
-    public:
-        GLfloat width;
-        GLfloat depth;
-        GLuint coord;
+    private:
         GLuint n_frames;
         std::shared_ptr<Texture> sprite;
         GLuint current_sprite;
         GLfloat block_size;
         GLfloat accumulated_time;
 
+        void update_frame(float dt);
+
     public:
         AnimatedPlane(
-            vec3 center, GLfloat width, GLfloat depth,
+            vec3 p0, vec3 p1, vec3 p2, vec3 p3,
             std::shared_ptr<Texture> sprite = nullptr,
-            GLuint n_frames = 0, GLuint coord = 0);
+            GLuint n_frames = 0);
 
         void display(float dt);
 

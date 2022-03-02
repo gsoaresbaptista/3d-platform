@@ -43,14 +43,14 @@ static void normalize_centers(
 
 static void create_boxes(
         std::vector<Object>* tmp,
-        std::vector<std::shared_ptr<Box>>* rects,
+        std::vector<std::shared_ptr<Shape>>* rects,
         std::shared_ptr<SVGData> data) {
     //
     bool collided = false;
 
     for (auto& rect : *tmp) {
         collided = false;
-        BoxType type = BoxType::WOOD;
+        BoxType type = BoxType::SPRUCE;
         vec3 center = vec3(rect.x, rect.y, data->arena_depth/2.f);
 
         for (auto& rect0 : *tmp) {
@@ -65,7 +65,7 @@ static void create_boxes(
 
         float depth = data->arena_depth;
 
-        if (type == BoxType::WOOD) {
+        if (type == BoxType::SPRUCE) {
             depth *= 0.60;
 
             for (int i = 0; i < 4; i++) {
@@ -108,7 +108,7 @@ static void get_rects(std::shared_ptr<SVGData> data, XMLDocument* svg) {
     vector<Object> tmp;
     XMLElement* file = svg->FirstChildElement();
     XMLElement* rect = file->FirstChildElement("rect");
-    std::vector<std::shared_ptr<Box>> rects;
+    std::vector<std::shared_ptr<Shape>> rects;
 
     for (; rect != NULL; rect = rect->NextSiblingElement("rect")) {
         float width, height, x, y;
@@ -159,48 +159,36 @@ static void get_circles(std::shared_ptr<SVGData> data, XMLDocument* svg) {
 }
 
 static void add_bounds(std::shared_ptr<SVGData> data) {
-    vec3 center(data->arena_width/2.f, 0, data->arena_depth/2.f);
-    data->rects.push_back(std::make_shared<Plane>(
-        center, data->arena_width, data->arena_depth, BoxType::DARK_OAK, 0));
+    // Left
+    vec3 b0(0, data->arena_height, 0);
+    vec3 b1(0, 0, 0);
+    vec3 b2(0, 0, data->arena_depth);
+    vec3 b3(0, data->arena_height, data->arena_depth);
 
-    center = vec3(
-        data->arena_width/2.f,
-        data->arena_height/2.f,
-        data->arena_depth/2.f);
-    data->rects.push_back(std::make_shared<Plane>(
-        center, data->arena_width, data->arena_depth, BoxType::DARK_OAK, 1));
+    // Right
+    vec3 b4(data->arena_width, data->arena_height, 0);
+    vec3 b5(data->arena_width, 0, 0);
+    vec3 b6(data->arena_width, 0, data->arena_depth);
+    vec3 b7(data->arena_width, data->arena_height, data->arena_depth);
 
-    center = vec3(
-        data->arena_width/2.f,
-        data->arena_height/2.f,
-        data->arena_depth/2.f);
     data->rects.push_back(std::make_shared<Plane>(
-        center, data->arena_width, data->arena_height,
-        BoxType::DEEPSLATE_BRICKS, 2));
+        b6, b5, b1, b2, BoxType::DARK_OAK));  // Floor
 
-    center = vec3(
-        data->arena_width/2.f,
-        data->arena_height/2.f,
-        0);
     data->rects.push_back(std::make_shared<Plane>(
-        center, data->arena_width, data->arena_height,
-        BoxType::DEEPSLATE_BRICKS, 3));
+        b3, b0, b4, b7, BoxType::DARK_OAK));  // Roof
 
-    center = vec3(
-        0,
-        data->arena_height/2.f,
-        data->arena_depth/2.f);
     data->rects.push_back(std::make_shared<Plane>(
-        center, data->arena_depth, data->arena_height,
-        BoxType::DEEPSLATE_BRICKS, 4));
+        b3, b2, b1, b0, BoxType::DEEPSLATE_BRICKS));  // Wall left
 
-    center = vec3(
-        data->arena_width/2.0,
-        data->arena_height/2.f,
-        data->arena_depth/2.f);
     data->rects.push_back(std::make_shared<AnimatedPlane>(
-        center, data->arena_depth, data->arena_height,
-        PORTAL_TEX, 32, 5));
+        b4, b5, b6, b7, PORTAL_TEX, 32));  // Portal / Wall Right
+
+    data->rects.push_back(std::make_shared<Plane>(
+        b7, b6, b2, b3, BoxType::DEEPSLATE_BRICKS));  // Wall Back
+
+    data->rects.push_back(std::make_shared<Plane>(
+        b0, b1, b5, b4, BoxType::DEEPSLATE_BRICKS));  // Wall Front
+
 }
 
 std::shared_ptr<SVGData> readSVG(const char* file_path) {
