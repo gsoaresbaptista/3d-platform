@@ -14,6 +14,8 @@ class Box: public Shape {
         BoxType type;
 
     public:
+        Box() {}
+
         Box(
             vec3 center,
             GLfloat width, GLfloat height, GLfloat depth,

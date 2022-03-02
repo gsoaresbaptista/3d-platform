@@ -2,6 +2,7 @@
 #include "../math/math.h"
 #include "../gameShapes/chain.h"
 #include "../gameShapes/plane.h"
+#include "../gameShapes/torch.h"
 #include "../gameShapes/animatedPlane.h"
 #include <iostream>
 #include <string.h>
@@ -104,6 +105,20 @@ static void create_boxes(
     }
 }
 
+static void add_torchs(std::shared_ptr<SVGData> data) {
+    float space = data->arena_width/3.f;
+    float height = data->arena_height;
+    vec3 center(1*space - height/2.f,
+        data->arena_height/2.f, 1.1*data->block_size);
+    data->rects.push_back(std::make_shared<Torch>(center));
+    center = vec3(2*space - height/2.f, data->arena_height/2.f,
+        1.1*data->block_size);
+    data->rects.push_back(std::make_shared<Torch>(center));
+    center = vec3(3*space - height/2.f, data->arena_height/2.f,
+        1.1*data->block_size);
+    data->rects.push_back(std::make_shared<Torch>(center));
+}
+
 static void get_rects(std::shared_ptr<SVGData> data, XMLDocument* svg) {
     vector<Object> tmp;
     XMLElement* file = svg->FirstChildElement();
@@ -188,7 +203,6 @@ static void add_bounds(std::shared_ptr<SVGData> data) {
 
     data->rects.push_back(std::make_shared<Plane>(
         b0, b1, b5, b4, BoxType::DEEPSLATE_BRICKS));  // Wall Front
-
 }
 
 std::shared_ptr<SVGData> readSVG(const char* file_path) {
@@ -201,6 +215,7 @@ std::shared_ptr<SVGData> readSVG(const char* file_path) {
     get_rects(data, &svg);
     get_circles(data, &svg);
     add_bounds(data);
+    add_torchs(data);
 
     return data;
 }

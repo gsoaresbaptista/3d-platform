@@ -223,6 +223,10 @@ void Rectangle::draw_block(
                 tex = SPRUCE_PLANKS_TEX;
             } else if (type == BoxType::PORTAL) {
                 tex = PORTAL_TEX;
+            } else if (type == BoxType::TORCH) {
+                tex = TORCH_TEX;
+            } else if (type == BoxType::FLAME) {
+                tex = FLAME_TEX;
             } else if (type == BoxType::DARK_OAK) {
                 tex = DARK_OAK_PLANKS_TEX;
             } else if (type == BoxType::DEEPSLATE_BRICKS) {

@@ -3,24 +3,25 @@
 
 #include <GL/gl.h>
 #include "../shapes/shape.h"
+#include "./plane.h"
 #include "../shapes/3d/box.h"
 #include "../style/texture.h"
 #include "../others/gameConstants.h"
 #include "../math/math.h"
 
 class Torch: public Box {
-    public:
-        GLfloat width;
-        GLfloat height;
-        GLfloat depth;
+    private:
+        GLfloat flame_size;
+        GLfloat block_size;
+        std::shared_ptr<Plane> flame = nullptr;
+        GLfloat accumulated_time;
+
+        void update_frame(float dt);
 
     public:
-        Torch(
-            vec3 center,
-            GLfloat width, GLfloat height, GLfloat depth,
-            BoxType type = BoxType::DEEPSLATE_BRICKS);
+        explicit Torch(vec3 center);
 
-        // void display(float dt);
+        void display(float dt, std::shared_ptr<ControllerData> controller = nullptr);
 
         //
         void draw_block(GLfloat block_size, GLenum mode = GL_FILL);

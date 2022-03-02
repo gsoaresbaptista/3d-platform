@@ -7,12 +7,16 @@ std::shared_ptr<Texture> DEEPSLATE_BRICKS_TEX = nullptr;
 std::shared_ptr<Texture> CRACKED_DEEPSLATE_BRICKS_TEX = nullptr;
 std::shared_ptr<Texture> MOSSY_DEEPSLATE_BRICKS_TEX = nullptr;
 std::shared_ptr<Texture> PORTAL_TEX = nullptr;
+std::shared_ptr<Texture> TORCH_TEX = nullptr;
+std::shared_ptr<Texture> FLAME_TEX = nullptr;
 
 void GameConstants::load_textures() {
     PORTAL_TEX = Texture::load("resources/portal.png", true);
     CHAIN_TEX = Texture::load("resources/chain.png", true);
     SPRUCE_PLANKS_TEX = Texture::load("resources/spruce_planks.png", true);
     DARK_OAK_PLANKS_TEX = Texture::load("resources/dark_oak_planks.png", true);
+    TORCH_TEX = Texture::load("resources/torch.png", true);
+    FLAME_TEX = Texture::load("resources/flame.png", true);
     DEEPSLATE_BRICKS_TEX = Texture::load(
         "resources/deepslate_bricks.png", true);
     CRACKED_DEEPSLATE_BRICKS_TEX = Texture::load(

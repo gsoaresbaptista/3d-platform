@@ -2,6 +2,7 @@
 #define SOURCE_UTILS_SHAPES_SHAPE_H_
 
 #include <memory>
+#include "../../controllers/controllerData.h"
 #include "../math/math.h"
 #include "../style/color.h"
 #include "../style/texture.h"
@@ -14,6 +15,8 @@ class Shape {
         GLuint id_;
 
     public:
+        Shape() { }
+
         explicit Shape(vec3 center) {
             this->center = center;
             this->id_ = glGenLists(1);
@@ -29,6 +32,11 @@ class Shape {
 
         ~Shape() {
             glDeleteLists(this->id_, 1);
+        }
+
+        virtual void display(
+            float dt, std::shared_ptr<ControllerData> controller) {
+            this->display(dt);
         }
 
         virtual void display(float dt) {

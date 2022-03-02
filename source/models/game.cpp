@@ -39,6 +39,6 @@ void Game::display(float dt) {
 
     // Draw arena obstacles
     for (auto& obstacle : obstacles) {
-        obstacle->display(dt);
+        obstacle->display(dt, controller);
     }
 }

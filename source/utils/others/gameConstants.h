@@ -10,7 +10,8 @@ enum class BoxType {
     CHAIN = 2,
     DARK_OAK = 3,
     PORTAL = 4,
-    TORCH = 5
+    TORCH = 5,
+    FLAME = 6
 };
 
 extern std::shared_ptr<Texture> CHAIN_TEX;
@@ -20,6 +21,8 @@ extern std::shared_ptr<Texture> DEEPSLATE_BRICKS_TEX;
 extern std::shared_ptr<Texture> CRACKED_DEEPSLATE_BRICKS_TEX;
 extern std::shared_ptr<Texture> MOSSY_DEEPSLATE_BRICKS_TEX;
 extern std::shared_ptr<Texture> PORTAL_TEX;
+extern std::shared_ptr<Texture> TORCH_TEX;
+extern std::shared_ptr<Texture> FLAME_TEX;
 
 namespace GameConstants {
     void load_textures();
