@@ -108,12 +108,15 @@ static void create_boxes(
 static void add_torchs(std::shared_ptr<SVGData> data) {
     float space = data->arena_width/3.f;
     float height = data->arena_height;
+
     vec3 center(1*space - height/2.f,
         data->arena_height/2.f, 1.1*data->block_size);
     data->rects.push_back(std::make_shared<Torch>(center));
+
     center = vec3(2*space - height/2.f, data->arena_height/2.f,
         1.1*data->block_size);
     data->rects.push_back(std::make_shared<Torch>(center));
+
     center = vec3(3*space - height/2.f, data->arena_height/2.f,
         1.1*data->block_size);
     data->rects.push_back(std::make_shared<Torch>(center));
