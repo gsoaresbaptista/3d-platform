@@ -10,7 +10,11 @@ Game::Game(
                 data->arena_depth/2.0)) {
     this->obstacles = data->rects;
     this->block_size = data->block_size;
+    this->data = data;
     this->controller = flags;
+
+    // Create player
+    this->player = new Player(data->player_pos, data->block_size);
 }
 
 void Game::draw(
@@ -21,11 +25,16 @@ void Game::draw(
     for (auto& obstacle : obstacles) {
         obstacle->draw_block(block_size, GL_FILL);
     }
+
+    this->player->draw();
 }
 
 void Game::display(float dt) {
     // Move arena to origin
-    glTranslatef(0, 0, -2*center.z);
+    glTranslatef(
+        -this->data->arena_height/2.f,
+        -this->data->arena_height/2.f,
+        -2*center.z - 100);
 
     // TODO(all): Remove, temporary camera movement
     glTranslatef(
@@ -41,4 +50,6 @@ void Game::display(float dt) {
     for (auto& obstacle : obstacles) {
         obstacle->display(dt, controller);
     }
+
+    this->player->display(dt);
 }

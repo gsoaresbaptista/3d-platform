@@ -31,6 +31,7 @@ struct SVGData {
     float arena_x;
     float arena_y;
     float block_size;
+    vec3 player_pos;
 };
 
 std::shared_ptr<SVGData> readSVG(const char* file_path);

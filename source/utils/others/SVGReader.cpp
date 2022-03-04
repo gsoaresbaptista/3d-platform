@@ -32,6 +32,12 @@ struct Object {
     }
 };
 
+struct CircleObject {
+    float cx;
+    float cy;
+    float radius;
+};
+
 static void normalize_centers(
         std::vector<Object>* tmp,
         std::shared_ptr<SVGData> data) {
@@ -39,6 +45,21 @@ static void normalize_centers(
         shape.x = shape.x - data->arena_x + shape.width/2.f;
         shape.y = data->arena_height - shape.y +
                   data->arena_y - shape.height/2.f;
+    }
+}
+
+static void normalize_center(
+        CircleObject* obj,
+        std::shared_ptr<SVGData> data) {
+    obj->cx = obj->cx - data->arena_x;
+    obj->cy = data->arena_height - obj->cy + data->arena_y;
+}
+
+static void normalize_centers(
+        std::vector<CircleObject>* tmp,
+        std::shared_ptr<SVGData> data) {
+    for (auto& shape : *tmp) {
+        normalize_center(&shape, data);
     }
 }
 
@@ -160,7 +181,6 @@ static void get_circles(std::shared_ptr<SVGData> data, XMLDocument* svg) {
     vector<Object> tmp;
     XMLElement* file = svg->FirstChildElement();
     XMLElement* circ = file->FirstChildElement("circle");
-    // std::vector<std::shared_ptr<Box>> rects;
 
     for (; circ != NULL; circ = circ->NextSiblingElement("circle")) {
         float radius, cx, cy;
@@ -169,8 +189,13 @@ static void get_circles(std::shared_ptr<SVGData> data, XMLDocument* svg) {
         circ->QueryFloatAttribute("cy", &cy);
         circ->QueryFloatAttribute("r", &radius);
 
+
         if (!strcmp(circ->Attribute("fill"), "green")) {
+            CircleObject player = { .cx = cx, .cy = cy, .radius = radius };
+            normalize_center(&player, data);
             data->block_size = radius;
+            data->player_pos = vec3(
+                player.cx, player.cy, data->arena_depth/2.0);
         } else {
         }
     }

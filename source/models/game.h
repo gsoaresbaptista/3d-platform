@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include "player.h"
 #include "../utils/shapes/shape.h"
 #include "../utils/shapes/3d/box.h"
 #include "../utils/others/SVGReader.h"
@@ -16,6 +17,8 @@ class Game: public Shape {
         GLfloat block_size;
         std::vector<std::shared_ptr<Shape>> obstacles;
         std::shared_ptr<ControllerData> controller;
+        std::shared_ptr<SVGData> data;
+        Player* player;
         // std::vector<Enemy> enemies;
 
     public:

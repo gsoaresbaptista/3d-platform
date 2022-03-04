@@ -52,7 +52,7 @@ class Shape {
                 GLenum mode = GL_FILL,
                 Outline outline = Outline::SPLITTED) = 0;
 
-        virtual void draw_block(GLfloat block_size, GLenum mode) {};
+        virtual void draw_block(GLfloat block_size, GLenum mode) {}
 };
 
 #endif  // SOURCE_UTILS_SHAPES_SHAPE_H_
