@@ -1,5 +1,7 @@
 #include "canvas.h"
 #include <GL/glut.h>
+#include <GL/freeglut.h>
+
 #include <iostream>
 
 //
@@ -23,10 +25,10 @@ static void window_resize(float width, float height) {
 
     float aspect = (width > height) ? (width/height):(height/width);
 
-    glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, aspect, 0.1, 1000);
+    glViewport(0, 0, width, height);
+    gluPerspective(45.0, aspect, 0.1, 500);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -43,6 +45,9 @@ void Canvas::init() {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(canvas_width, canvas_height);
     canvas_id = glutCreateWindow(canvas_name);
+    glutSetOption(
+        GLUT_ACTION_ON_WINDOW_CLOSE,
+        GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
     //
     glAlphaFunc(GL_GREATER, 0.5);

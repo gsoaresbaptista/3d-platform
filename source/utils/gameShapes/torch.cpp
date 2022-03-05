@@ -45,14 +45,11 @@ void Torch::display(float dt, std::shared_ptr<ControllerData> controller) {
     glPushMatrix();
         glPushMatrix();
             this->flame->translate();
-            glTranslatef(
-                flame_size/2.f,
-                block_size/2+flame_size/2,
-                -block_size/2);
+            glTranslatef(0, block_size/2, -block_size/4 - flame_size/2);
+            glScalef(flame_size, flame_size, flame_size);
             glRotatef(controller->to_rotate.z, 0, 0, -1);
             glRotatef(controller->to_rotate.y, 0, -1, 0);
             glRotatef(controller->to_rotate.x, -1, 0, 0);
-            glScalef(flame_size, flame_size, flame_size);
             this->flame->display(dt);
         glPopMatrix();
         this->translate();

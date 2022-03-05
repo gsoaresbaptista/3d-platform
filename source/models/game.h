@@ -24,7 +24,8 @@ class Game: public Shape {
 
         //
         void update(float dt);
-        void update_keys(float dt);
+        void update_player_move(float dt);
+        void update_player_jump(float dt);
         void gravity(float dt);
 
     public:

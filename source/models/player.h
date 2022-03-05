@@ -23,6 +23,7 @@ class Player: public Shape {
 
     public:
         Player(vec3 center, GLfloat height);
+        ~Player();
 
         void draw(
             std::shared_ptr<Texture> texture = nullptr,

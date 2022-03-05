@@ -21,10 +21,10 @@ int main() {
     auto controllerData = Controller::registerCallbacks();
 
     auto data = readSVG("inputs/original_map.svg");
-    auto arena = std::make_shared<Game>(data, controllerData);
-    arena->draw();
+    auto game = std::make_shared<Game>(data, controllerData);
+    game->draw();
 
-    canvas.subscription(arena);
+    canvas.subscription(game);
     canvas.run();
 
     return 0;

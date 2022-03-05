@@ -1,6 +1,7 @@
 #include "game.h"
 #include "../utils/others/gameConstants.h"
 #include <iostream>
+#include <GL/glut.h>
 
 Game::Game(
         std::shared_ptr<SVGData> data,
@@ -30,45 +31,6 @@ void Game::draw(
     this->player->draw();
 }
 
-void Game::update_keys(float dt) {
-    // TODO(all): Trocar as chamadas de função
-    if (this->controller->keys['d']) {
-        this->player->move_forward_backward(block_size * 0.06);
-    } else if (this->controller->keys['a']) {
-        this->player->move_forward_backward(-block_size * 0.06);
-    }
-
-    if (this->controller->keys['w']) {
-        this->player->move_left_right(block_size * 0.06);
-    } else if (this->controller->keys['s']) {
-        this->player->move_left_right(-block_size * 0.06);
-    }
-
-    // Lógica do pulo quando pressionado ou largado o espaço
-    static bool first_falling = true;
-
-    if (this->controller->keys[' '] && (this->player->is_rising() ||
-        (!this->player->is_rising() && !this->player->is_falling()))) {
-        this->player->set_rising(true);
-        this->player->move_up(block_size * 0.24);
-        player->increment_on_air_time(dt);
-        first_falling = true;
-
-    } else if (this->player->is_falling()) {
-        if (first_falling) {
-            first_falling = false;
-            this->player->clear_on_air_time();
-        } else {
-            player->increment_on_air_time(dt);
-        }
-
-    } else if (!this->controller->keys[' '] && this->player->is_rising()) {
-        this->player->clear_on_air_time();
-        this->player->set_rising(false);
-        this->player->set_falling(true);
-    }
-}
-
 void Game::gravity(float dt) {
     if ((player->is_falling() || player->is_rising())) {
         float acceleration = -player->get_on_air_time() * block_size/3.f;
@@ -93,6 +55,64 @@ void Game::gravity(float dt) {
     }
 }
 
+void Game::update_player_move(float dt) {
+    if (controller->keys['d']) {
+        if (current_camera == 4)
+            player->move_forward_backward(block_size * 0.065);
+        else
+            player->move_left_right(-block_size * 0.065);
+
+    } else if (controller->keys['a']) {
+        if (current_camera == 4)
+            player->move_forward_backward(-block_size * 0.065);
+        else
+            player->move_left_right(block_size * 0.065);
+    }
+
+    if (controller->keys['w']) {
+        if (current_camera == 4)
+            player->move_left_right(block_size * 0.065);
+        else
+            player->move_forward_backward(block_size * 0.065);
+
+    } else if (controller->keys['s']) {
+        if (current_camera == 4)
+            player->move_left_right(-block_size * 0.065);
+        else
+            player->move_forward_backward(-block_size * 0.065);
+    }
+}
+
+void Game::update_player_jump(float dt) {
+    // Jump logic
+    static bool first_falling = true;
+
+    if (this->controller->keys[' '] && (this->player->is_rising() ||
+        (!this->player->is_rising() && !this->player->is_falling()))) {
+        // Pressing space, in floor or rising
+        this->player->set_rising(true);
+        this->player->move_up(block_size * 0.24);
+        player->increment_on_air_time(dt);
+        first_falling = true;
+
+    } else if (this->player->is_falling()) {
+        // Player falling, clear on_air_time and increment time falling
+        if (first_falling) {
+            first_falling = false;
+            this->player->clear_on_air_time();
+        } else {
+            player->increment_on_air_time(dt);
+        }
+
+    } else if (!this->controller->keys[' '] && this->player->is_rising()) {
+        // Space key up, update player conditition
+        this->player->clear_on_air_time();
+        this->player->set_rising(false);
+        this->player->set_falling(true);
+    }
+}
+
+
 void Game::update(float dt) {
     if (this->current_camera == 4) {
         this->controller->to_translate = this->player->get_position() * -1.0;
@@ -100,22 +120,31 @@ void Game::update(float dt) {
         this->controller->to_translate.y = 0;
         this->controller->to_translate.z = 0;
 
-        // set the cameras if they go outside the map boundaries
-        if (player->get_position().x < data->arena_height/2.f - block_size) {
+        float width = (float)glutGet(GLUT_WINDOW_WIDTH);
+        float height = (float)glutGet(GLUT_WINDOW_HEIGHT);
+        float aspect = width/height;
+
+        float diff = (800 - height) * (data->arena_height/2)/(800.0 / aspect) -
+                     (800 - width) * (data->arena_height/2)/(800.0);
+
+        // // set the cameras if they go outside the map boundaries
+        if (player->get_position().x - diff <
+            data->arena_height/2.f - block_size) {
             // outside left boundary
-            this->controller->to_translate.x = 0;
+            this->controller->to_translate.x = -diff;
         }
 
-        if (player->get_position().x + data->arena_height/2.f +
-            block_size > data->arena_width) {
+        if (player->get_position().x + data->arena_height/2.0 +
+            block_size + diff > data->arena_width) {
             // outside right boundary
             this->controller->to_translate.x = -data->arena_width +
-                data->arena_height;
+                data->arena_height + diff;
         }
     }
 
     // Update player position
-    this->update_keys(dt);
+    this->update_player_move(dt);
+    this->update_player_jump(dt);
     this->gravity(dt);
 }
 

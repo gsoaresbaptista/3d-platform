@@ -17,6 +17,10 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->on_air_time = 0;
 }
 
+Player::~Player() {
+    delete this->collision_boundary;
+}
+
 void Player::increment_on_air_time(GLfloat dt) {
     this->on_air_time += dt;
 }
