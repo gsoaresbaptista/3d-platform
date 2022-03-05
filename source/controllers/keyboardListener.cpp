@@ -8,8 +8,54 @@
 static GLuint ANGLE_ID = -1;
 static vec3* TRANSLATE_VECTOR;
 static vec3* ANGLE_VECTOR;
+static GLuint* KEYS;
 
-static void keyboard_function(unsigned char key, int x, int y) {
+static void key_down(unsigned char key, int x, int y) {
+    switch (key) {
+    case 'd':
+    case 'D':
+        KEYS['d'] = true;
+        break;
+    case 'a':
+    case 'A':
+        KEYS['a'] = true;
+        break;
+    case 'w':
+    case 'W':
+        KEYS['w'] = true;
+        break;
+    case 's':
+    case 'S':
+        KEYS['s'] = true;
+        break;
+    case ' ':
+        KEYS[' '] = true;
+        break;
+    }
+}
+
+static void key_up(unsigned char key, int x, int y) {
+    switch (key) {
+    case 'd':
+    case 'D':
+        KEYS['d'] = false;
+        break;
+    case 'a':
+    case 'A':
+        KEYS['a'] = false;
+        break;
+    case 'w':
+    case 'W':
+        KEYS['w'] = false;
+        break;
+    case 's':
+    case 'S':
+        KEYS['s'] = false;
+        break;
+    case ' ':
+        KEYS[' '] = false;
+        break;
+    }
 }
 
 static void keyboard_special_function(int key, int x, int y) {
@@ -56,6 +102,8 @@ static void keyboard_special_function(int key, int x, int y) {
 void KeyboardListener::registerCallbacks(std::shared_ptr<ControllerData> data) {
     TRANSLATE_VECTOR = &(data->to_translate);
     ANGLE_VECTOR = &(data->to_rotate);
-    glutKeyboardFunc(keyboard_function);
+    KEYS = data->keys;
+    glutKeyboardFunc(key_down);
+    glutKeyboardUpFunc(key_up);
     glutSpecialFunc(keyboard_special_function);
 }

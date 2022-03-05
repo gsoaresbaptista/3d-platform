@@ -8,6 +8,7 @@ Camera::Camera(vec3 pos) {
     this->left = vec3(-1, 0, 0);
     this->up = vec3(0, 1, 0);
     this->pitch = 0;
+    this->yaw = 0;
 }
 
 Camera::~Camera() {
@@ -28,17 +29,17 @@ void Camera::move_left() {
 
 void Camera::move_right() {
     vec3 velocity = this->left.normalize() * (-this->movement_constant);
-    this->position = this->position + vec3(velocity.x, velocity.y, velocity.z);
+    this->position = this->position + vec3(velocity.x, 0, velocity.z);
 }
 
 void Camera::move_forward() {
     vec3 velocity = this->direction * this->movement_constant;
-    this->position = this->position + vec3(velocity.x, velocity.y, velocity.z);
+    this->position = this->position + vec3(velocity.x, 0, velocity.z);
 }
 
 void Camera::move_backward() {
     vec3 velocity = this->direction * (-this->movement_constant);
-    this->position = this->position + vec3(velocity.x, velocity.y, velocity.z);
+    this->position = this->position + vec3(velocity.x, 0, velocity.z);
 }
 
 void Camera::increment_yaw(float dYaw) {

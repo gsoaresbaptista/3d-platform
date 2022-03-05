@@ -6,6 +6,7 @@
 struct ControllerData {
     vec3 to_translate;
     vec3 to_rotate;
+    GLuint keys[256];
 };
 
 #endif  // SOURCE_CONTROLLERS_CONTROLLERDATA_H_

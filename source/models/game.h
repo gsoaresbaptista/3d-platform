@@ -21,6 +21,11 @@ class Game: public Shape {
         Player* player;
         // std::vector<Enemy> enemies;
 
+        //
+        void update(float dt);
+        void update_keys(float dt);
+        void gravity(float dt);
+
     public:
         Game(
             std::shared_ptr<SVGData> data,
@@ -30,6 +35,7 @@ class Game: public Shape {
                 std::shared_ptr<Texture> texture = nullptr,
                 GLenum mode = GL_FILL,
                 Outline outline = Outline::SPLITTED);
+
 
         void display(float dt);
 };

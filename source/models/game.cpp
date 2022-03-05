@@ -29,7 +29,68 @@ void Game::draw(
     this->player->draw();
 }
 
+void Game::update_keys(float dt) {
+    // TODO(all): Trocar as chamadas de função
+    if (this->controller->keys['d']) {
+        this->player->move_forward_backward(block_size * 0.06);
+    } else if (this->controller->keys['a']) {
+        this->player->move_forward_backward(-block_size * 0.06);
+    }
+
+    if (this->controller->keys['w']) {
+        this->player->move_left_right(block_size * 0.06);
+    } else if (this->controller->keys['s']) {
+        this->player->move_left_right(-block_size * 0.06);
+    }
+
+    if (this->controller->keys[' '] && (this->player->is_rising() ||
+        (!this->player->is_rising() && !this->player->is_falling()))) {
+        this->player->set_rising(true);
+        this->player->move_up(block_size * 0.24);
+        player->increment_on_air_time(dt);
+    } else {
+        // TODO(all): Colissão das plataformas
+        if (player->get_position().y - block_size <= 0) {
+            this->player->set_rising(false);
+            this->player->set_falling(false);
+            this->player->set_y(0);
+            this->player->clear_on_air_time();
+        } else {
+            this->player->set_rising(false);
+            this->player->set_falling(true);
+            player->increment_on_air_time(dt);
+        }
+    }
+}
+
+void Game::gravity(float dt) {
+    if ((player->is_falling() || player->is_rising())) {
+        float acceleration = -player->get_on_air_time() * block_size/3.5;
+        this->player->move_up(acceleration);
+
+        //
+        if (block_size * 0.24 + acceleration <= 0) {
+            player->set_rising(false);
+            player->set_falling(true);
+            this->player->clear_on_air_time();
+        }
+    }
+}
+
+void Game::update(float dt) {
+    // TODO(all): Remover
+    this->controller->to_translate = this->player->get_position() * -1.0;
+    this->controller->to_translate.x += data->arena_height/2.f - block_size;
+    this->controller->to_translate.y = 0;
+
+    this->update_keys(dt);
+    this->gravity(dt);
+}
+
 void Game::display(float dt) {
+    //
+    this->update(dt);
+
     // Move arena to origin
     glTranslatef(
         -this->data->arena_height/2.f,
