@@ -21,7 +21,7 @@ void Game::draw(
         std::shared_ptr<Texture> texture,
         GLenum mode,
         Outline outline) {
-    //
+    // Draw all obstacles
     for (auto& obstacle : obstacles) {
         obstacle->draw_block(block_size, GL_FILL);
     }
@@ -43,35 +43,50 @@ void Game::update_keys(float dt) {
         this->player->move_left_right(-block_size * 0.06);
     }
 
+    // Lógica do pulo quando pressionado ou largado o espaço
+    static bool first_falling = true;
+
     if (this->controller->keys[' '] && (this->player->is_rising() ||
         (!this->player->is_rising() && !this->player->is_falling()))) {
         this->player->set_rising(true);
         this->player->move_up(block_size * 0.24);
         player->increment_on_air_time(dt);
-    } else {
-        // TODO(all): Colissão das plataformas
-        if (player->get_position().y - block_size <= 0) {
-            this->player->set_rising(false);
-            this->player->set_falling(false);
-            this->player->set_y(0);
+        first_falling = true;
+
+    } else if (this->player->is_falling()) {
+        if (first_falling) {
+            first_falling = false;
             this->player->clear_on_air_time();
         } else {
-            this->player->set_rising(false);
-            this->player->set_falling(true);
             player->increment_on_air_time(dt);
         }
+
+    } else if (!this->controller->keys[' '] && this->player->is_rising()) {
+        this->player->clear_on_air_time();
+        this->player->set_rising(false);
+        this->player->set_falling(true);
     }
 }
 
 void Game::gravity(float dt) {
     if ((player->is_falling() || player->is_rising())) {
-        float acceleration = -player->get_on_air_time() * block_size/3.5;
-        this->player->move_up(acceleration);
+        float acceleration = -player->get_on_air_time() * block_size/3.f;
 
-        //
-        if (block_size * 0.24 + acceleration <= 0) {
+        if (player->is_rising() && (block_size * 0.24 + acceleration <= 0)) {
             player->set_rising(false);
             player->set_falling(true);
+            this->player->clear_on_air_time();
+        }
+
+        // TODO(all): Verificar aqui as plataformos além do >= 0
+        if (player->get_feet_height() + acceleration >= 0) {
+        // if ((player->get_feet_height() + acceleration >= 0) &&
+            // !this->player_will_collide(vec3(0, acceleration, 0))) {
+            this->player->move_up(acceleration);
+        } else {
+            this->player->set_rising(false);
+            this->player->set_falling(false);
+            this->player->set_y(0);
             this->player->clear_on_air_time();
         }
     }
@@ -82,7 +97,9 @@ void Game::update(float dt) {
     this->controller->to_translate = this->player->get_position() * -1.0;
     this->controller->to_translate.x += data->arena_height/2.f - block_size;
     this->controller->to_translate.y = 0;
+    this->controller->to_translate.z = 0;
 
+    // Update player position
     this->update_keys(dt);
     this->gravity(dt);
 }

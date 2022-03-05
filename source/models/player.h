@@ -42,6 +42,9 @@ class Player: public Shape {
         void clear_on_air_time();
         void increment_on_air_time(GLfloat dt);
 
+        //
+        GLfloat get_feet_height();
+
         vec3 get_position();
         void set_y(GLfloat y);
 

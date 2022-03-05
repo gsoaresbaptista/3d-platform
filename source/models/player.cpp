@@ -66,6 +66,10 @@ GLboolean Player::is_rising() {
     return this->rising;
 }
 
+GLfloat Player::get_feet_height() {
+    return position.y + center.y - height;
+}
+
 void Player::set_rising(GLboolean flag) {
     this->rising = flag;
 }
