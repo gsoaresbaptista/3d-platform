@@ -12,6 +12,7 @@ Game::Game(
     this->block_size = data->block_size;
     this->data = data;
     this->controller = flags;
+    this->current_camera = 4;
 
     // Create player
     this->player = new Player(data->player_pos, data->block_size);
@@ -93,11 +94,25 @@ void Game::gravity(float dt) {
 }
 
 void Game::update(float dt) {
-    // TODO(all): Remover
-    this->controller->to_translate = this->player->get_position() * -1.0;
-    this->controller->to_translate.x += data->arena_height/2.f - block_size;
-    this->controller->to_translate.y = 0;
-    this->controller->to_translate.z = 0;
+    if (this->current_camera == 4) {
+        this->controller->to_translate = this->player->get_position() * -1.0;
+        this->controller->to_translate.x += data->arena_height/2.f - block_size;
+        this->controller->to_translate.y = 0;
+        this->controller->to_translate.z = 0;
+
+        // set the cameras if they go outside the map boundaries
+        if (player->get_position().x < data->arena_height/2.f - block_size) {
+            // outside left boundary
+            this->controller->to_translate.x = 0;
+        }
+
+        if (player->get_position().x + data->arena_height/2.f +
+            block_size > data->arena_width) {
+            // outside right boundary
+            this->controller->to_translate.x = -data->arena_width +
+                data->arena_height;
+        }
+    }
 
     // Update player position
     this->update_keys(dt);
@@ -119,10 +134,6 @@ void Game::display(float dt) {
         controller->to_translate.x,
         controller->to_translate.y,
         controller->to_translate.z);
-
-    glRotatef(controller->to_rotate.x, 1, 0, 0);
-    glRotatef(controller->to_rotate.y, 0, 1, 0);
-    glRotatef(controller->to_rotate.z, 0, 0, 1);
 
     // Draw arena obstacles
     for (auto& obstacle : obstacles) {

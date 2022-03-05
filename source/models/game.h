@@ -19,6 +19,7 @@ class Game: public Shape {
         std::shared_ptr<ControllerData> controller;
         std::shared_ptr<SVGData> data;
         Player* player;
+        GLuint current_camera;
         // std::vector<Enemy> enemies;
 
         //

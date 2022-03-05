@@ -28,6 +28,12 @@ struct vec3 {
         return vec3(x/k, y/k, z/k);
     }
 
+    void operator+=(const vec3& v) {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+    }
+
     GLfloat distance(const vec3& v) {
         return sqrt(
             pow(x - v.x, 2) +
