@@ -12,6 +12,8 @@ class Plane: public Shape {
         vec3 p0, p1, p2, p3;
 
     public:
+        Plane();
+
         Plane(
             vec3 p0, vec3 p1, vec3 p2, vec3 p3,
             BoxType type = BoxType::DEEPSLATE_BRICKS,

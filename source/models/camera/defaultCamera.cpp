@@ -17,7 +17,6 @@ void DefaultCamera::increment_yaw(float dYaw) {
 }
 
 void DefaultCamera::increment_pitch(float dPitch) {
-    // printf("INCREMENTANDO PITCH!\n");
     if (pitch + dPitch <= 45 && pitch + dPitch >= -45)
         this->pitch += dPitch;
 }
@@ -41,7 +40,7 @@ void DefaultCamera::update() {
 }
 
 void DefaultCamera::activate() {
-    vec3 position = player->position + center;
+    vec3 position = player->position + vec3(center.x, 2*center.y, center.z);
     vec3 look = position + player->direction;
 
     gluLookAt(

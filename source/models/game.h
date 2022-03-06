@@ -5,6 +5,7 @@
 #include <memory>
 #include "player.h"
 #include "../utils/shapes/shape.h"
+#include "../utils/gameShapes/plane.h"
 #include "../utils/shapes/3d/box.h"
 #include "../utils/others/SVGReader.h"
 #include "../utils/math/math.h"
@@ -22,6 +23,7 @@ class Game: public Shape {
         Player* player;
         GLuint current_camera;
         Camera* camera;
+        Plane crosshair;
         // std::vector<Enemy> enemies;
 
         //
@@ -31,6 +33,7 @@ class Game: public Shape {
         void update_player_move(float dt);
         void update_player_jump(float dt);
         void gravity(float dt);
+        void display_hud();
 
     public:
         Game(

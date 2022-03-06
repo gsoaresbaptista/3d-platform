@@ -40,7 +40,9 @@ class Shape {
         }
 
         virtual void display(float dt) {
-            glCallList(this->id_);
+            glPushMatrix();
+                glCallList(this->id_);
+            glPopMatrix();
         }
 
         vec3 get_center() {

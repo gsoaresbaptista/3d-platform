@@ -5,6 +5,8 @@
 #include <GL/freeglut.h>
 #include "camera/freeCamera.h"
 #include "camera/defaultCamera.h"
+#include "../utils/shapes/2d/rectangle.h"
+#include "../controllers/mouseListener.h"
 
 Game::Game(
         std::shared_ptr<SVGData> data,
@@ -22,6 +24,13 @@ Game::Game(
 
     // Create camera
     this->update_camera_type();
+
+    //
+    this->crosshair  = Plane(
+        vec3(-0.08, 0.08, 0),
+        vec3(-0.08, -0.08, 0),
+        vec3(0.08, -0.08, 0),
+        vec3(0.08, 0.08, 0));
 }
 
 void Game::draw(
@@ -129,6 +138,7 @@ void Game::update_camera_type() {
         //
         first = false;
         this->controller->to_rotate = vec3(0, 0, 0);
+        MouseListener::set_camera((DefaultCamera*)this->camera);
 
     } else if (controller->keys['4'] && current_camera != 4) {
         //
@@ -138,6 +148,7 @@ void Game::update_camera_type() {
         coord->position = player->get_coordinate_system()->position;
         coord->up = vec3(0, 1, 0);
         this->player->set_coordinate_system(coord);
+        MouseListener::set_camera(nullptr);
 
         //
         this->current_camera = 4;
@@ -155,11 +166,8 @@ void Game::update_camera_type() {
 void Game::update_mouse(float dt) {
     if (current_camera == 1) {
         DefaultCamera* cam = (DefaultCamera*)this->camera;
-        cam->increment_pitch(-controller->mouse_delta.y);
-        cam->increment_yaw(-controller->mouse_delta.x);
         this->controller->to_rotate.x = cam->get_yaw();
         this->controller->to_rotate.y = cam->get_pitch();
-        controller->mouse_delta = vec2(0, 0);
     }
 }
 
@@ -180,17 +188,35 @@ void Game::update(float dt) {
     this->gravity(dt);
 }
 
+void Game::display_hud() {
+    // Draw static info, first set ortogonal projection
+    glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(-1, 1, -1, 1, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+    // Clear the model_view matrix
+    glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+    // Draw static info
+        glColor3f(1, 0, 0);
+        if (current_camera != 4)
+            this->crosshair.draw(CROSSHAIR_TEX);
+}
+
 void Game::display(float dt) {
     //
     this->update(dt);
 
     //
+    glLoadIdentity();
     this->camera->activate();
+    this->player->display(dt);
 
     // Draw arena obstacles
     for (auto& obstacle : obstacles) {
         obstacle->display(dt, controller);
     }
 
-    this->player->display(dt);
+    this->display_hud();
 }

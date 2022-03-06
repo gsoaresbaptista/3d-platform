@@ -9,8 +9,10 @@ std::shared_ptr<Texture> MOSSY_DEEPSLATE_BRICKS_TEX = nullptr;
 std::shared_ptr<Texture> PORTAL_TEX = nullptr;
 std::shared_ptr<Texture> TORCH_TEX = nullptr;
 std::shared_ptr<Texture> FLAME_TEX = nullptr;
+std::shared_ptr<Texture> CROSSHAIR_TEX = nullptr;
 
 void GameConstants::load_textures() {
+    //
     PORTAL_TEX = Texture::load("resources/portal.png", true);
     CHAIN_TEX = Texture::load("resources/chain.png", true);
     SPRUCE_PLANKS_TEX = Texture::load("resources/spruce_planks.png", true);
@@ -23,4 +25,7 @@ void GameConstants::load_textures() {
         "resources/cracked_deepslate_bricks.png", true);
     MOSSY_DEEPSLATE_BRICKS_TEX = Texture::load(
         "resources/mossy_deepslate_bricks.png", true);
+
+    //
+    CROSSHAIR_TEX = Texture::load("resources/crosshair013.png", true);
 }

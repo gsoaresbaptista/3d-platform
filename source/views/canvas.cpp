@@ -25,9 +25,9 @@ static void window_resize(float width, float height) {
 
     float aspect = (width > height) ? (width/height):(height/width);
 
+    glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glViewport(0, 0, width, height);
     gluPerspective(45.0, aspect, 0.1, 500);
     glMatrixMode(GL_MODELVIEW);
 }
@@ -83,7 +83,7 @@ void Canvas::update(int value) {
     //
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     window_resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-    glLoadIdentity();
+    // glLoadIdentity();
 
     //
     for (auto& shape : canvas_shapes) {
