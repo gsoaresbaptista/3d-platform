@@ -7,9 +7,13 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
         this->center, 2*block_size, this->height);
 
     //
-    this->direction = vec3(1, 0, 0);
-    this->left = vec3(0, 0, -1);
-    this->up = vec3(0, 1, 0);
+    this->center.y = block_size;
+
+    //
+    this->coordinateSystem = new CoordinateSystem();
+    this->coordinateSystem->direction = vec3(1, 0, 0);
+    this->coordinateSystem->left = vec3(0, 0, -1);
+    this->coordinateSystem->up = vec3(0, 1, 0);
 
     //
     this->falling = false;
@@ -36,26 +40,26 @@ void Player::draw(std::shared_ptr<Texture> texture,
 }
 
 void Player::set_y(GLfloat y) {
-    this->position.y = y;
+    this->coordinateSystem->position.y = y;
 }
 
 void Player::move_left_right(GLfloat direction) {
-    vec3 velocity = left.normalize() * direction;
-    this->position = this->position + vec3(velocity.x, 0, velocity.z);
+    vec3 velocity = coordinateSystem->left.normalize() * direction;
+    coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
 }
 
 void Player::move_forward_backward(GLfloat direction) {
-    vec3 velocity = this->direction.normalize() * direction;
-    this->position = this->position + vec3(velocity.x, 0, velocity.z);
+    vec3 velocity = coordinateSystem->direction.normalize() * direction;
+    coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
 }
 
 void Player::move_up(GLfloat direction) {
-    vec3 velocity = this->up.normalize() * direction;
-    this->position = this->position + vec3(0, velocity.y, 0);
+    vec3 velocity = coordinateSystem->up.normalize() * direction;
+    coordinateSystem->position += vec3(0, velocity.y, 0);
 }
 
-vec3 Player::get_position() {
-    return this->position;
+CoordinateSystem* Player::get_coordinate_system() {
+    return this->coordinateSystem;
 }
 
 GLboolean Player::is_falling() {
@@ -71,7 +75,7 @@ GLboolean Player::is_rising() {
 }
 
 GLfloat Player::get_feet_height() {
-    return position.y + center.y - height;
+    return coordinateSystem->position.y + center.y - height;
 }
 
 void Player::set_rising(GLboolean flag) {
@@ -85,7 +89,10 @@ GLfloat Player::get_on_air_time() {
 void Player::display(float dt) {
     glPushMatrix();
         this->translate();
-        glTranslatef(position.x, position.y, position.z);
+        glTranslatef(
+            coordinateSystem->position.x,
+            coordinateSystem->position.y,
+            coordinateSystem->position.z);
         glPushMatrix();
             glRotatef(90, 1, 0, 0);
             glCallList(this->collision_boundary->getID());

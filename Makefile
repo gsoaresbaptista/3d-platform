@@ -31,7 +31,7 @@ objFolder:
 	@ mkdir -p objects/models
 	@ mkdir -p objects/utils
 	@ mkdir -p objects/controllers
-	@ mkdir -p objects/controllers/camera
+	@ mkdir -p objects/models/camera
 	@ mkdir -p objects/utils/others
 	@ mkdir -p objects/utils/style
 	@ mkdir -p objects/utils/gameShapes
@@ -46,7 +46,7 @@ clean:
 	@ rm -rf ./objects/views
 	@ rm -rf ./objects/models
 	@ rm -rf ./objects/controllers
-	@ rm -rf ./objects/controllers/camera
+	@ rm -rf ./objects/models/camera
 	@ rm -rf ./objects/utils/math
 	@ rm -rf ./objects/utils/others
 	@ rm -rf ./objects/utils/style

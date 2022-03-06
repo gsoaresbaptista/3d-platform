@@ -12,49 +12,79 @@ static GLuint* KEYS;
 
 static void key_down(unsigned char key, int x, int y) {
     switch (key) {
-    case 'd':
-    case 'D':
-        KEYS['d'] = true;
-        break;
-    case 'a':
-    case 'A':
-        KEYS['a'] = true;
-        break;
-    case 'w':
-    case 'W':
-        KEYS['w'] = true;
-        break;
-    case 's':
-    case 'S':
-        KEYS['s'] = true;
-        break;
-    case ' ':
-        KEYS[' '] = true;
-        break;
+        case '1':
+            KEYS['1'] = true;
+            break;
+        case '2':
+            KEYS['2'] = true;
+            break;
+        case '3':
+            KEYS['3'] = true;
+            break;
+        case '4':
+            KEYS['4'] = true;
+            break;
+        case '5':
+            KEYS['5'] = true;
+            break;
+        case 'd':
+        case 'D':
+            KEYS['d'] = true;
+            break;
+        case 'a':
+        case 'A':
+            KEYS['a'] = true;
+            break;
+        case 'w':
+        case 'W':
+            KEYS['w'] = true;
+            break;
+        case 's':
+        case 'S':
+            KEYS['s'] = true;
+            break;
+        case ' ':
+            KEYS[' '] = true;
+            break;
     }
 }
 
 static void key_up(unsigned char key, int x, int y) {
     switch (key) {
-    case 'd':
-    case 'D':
-        KEYS['d'] = false;
-        break;
-    case 'a':
-    case 'A':
-        KEYS['a'] = false;
-        break;
-    case 'w':
-    case 'W':
-        KEYS['w'] = false;
-        break;
-    case 's':
-    case 'S':
-        KEYS['s'] = false;
-        break;
-    case ' ':
-        KEYS[' '] = false;
-        break;
+        case '1':
+            KEYS['1'] = false;
+            break;
+        case '2':
+            KEYS['2'] = false;
+            break;
+        case '3':
+            KEYS['3'] = false;
+            break;
+        case '4':
+            KEYS['4'] = false;
+            break;
+        case '5':
+            KEYS['5'] = false;
+            break;
+        case 'd':
+        case 'D':
+            KEYS['d'] = false;
+            break;
+        case 'a':
+        case 'A':
+            KEYS['a'] = false;
+            break;
+        case 'w':
+        case 'W':
+            KEYS['w'] = false;
+            break;
+        case 's':
+        case 'S':
+            KEYS['s'] = false;
+            break;
+        case ' ':
+            KEYS[' '] = false;
+            break;
     }
 }
 

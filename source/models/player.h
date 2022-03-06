@@ -5,16 +5,19 @@
 #include "../utils/shapes/shape.h"
 #include "../utils/shapes/3d/cylinder.h"
 
+struct CoordinateSystem {
+    vec3 position;
+    vec3 direction;
+    vec3 left;
+    vec3 up;
+};
+
+
 class Player: public Shape {
     private:
         Cylinder* collision_boundary;
         GLfloat height;
-
-        // Move params
-        vec3 position;
-        vec3 direction;
-        vec3 left;
-        vec3 up;
+        CoordinateSystem* coordinateSystem;
 
         //
         GLboolean falling;
@@ -46,7 +49,7 @@ class Player: public Shape {
         //
         GLfloat get_feet_height();
 
-        vec3 get_position();
+        CoordinateSystem* get_coordinate_system();
         void set_y(GLfloat y);
 
         void display(float dt);

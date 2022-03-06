@@ -10,6 +10,7 @@
 #include "../utils/math/math.h"
 #include "../controllers/controller.h"
 #include "../utils/style/texture.h"
+#include "camera/camera.h"
 
 class Game: public Shape {
     private:
@@ -20,10 +21,12 @@ class Game: public Shape {
         std::shared_ptr<SVGData> data;
         Player* player;
         GLuint current_camera;
+        Camera* camera;
         // std::vector<Enemy> enemies;
 
         //
         void update(float dt);
+        void update_camera_type();
         void update_player_move(float dt);
         void update_player_jump(float dt);
         void gravity(float dt);
