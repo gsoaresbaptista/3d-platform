@@ -45,6 +45,10 @@ class Shape {
             glPopMatrix();
         }
 
+        // TODO (=0)
+        virtual GLfloat get_width(){};
+        virtual GLfloat get_height(){};
+
         vec3 get_center() {
             return this->center;
         }

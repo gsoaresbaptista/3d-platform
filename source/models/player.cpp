@@ -103,3 +103,15 @@ void Player::display(float dt) {
         glPopMatrix();
     glPopMatrix();
 }
+
+vec3 Player::get_position() {
+    return this->coordinateSystem->position;
+}
+
+GLfloat Player::get_collision_radius() {
+    return this->collision_boundary->get_radius();
+}
+
+GLfloat Player::get_head_height() {
+    return coordinateSystem->position.y + center.y;
+}

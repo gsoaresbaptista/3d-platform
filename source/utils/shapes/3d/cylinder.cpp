@@ -84,3 +84,7 @@ void Cylinder::draw(
         if (texture != nullptr) texture->unbind();
     glEndList();
 }
+
+GLfloat Cylinder::get_radius() {
+    return this->radius;
+}

@@ -51,6 +51,9 @@ class Player: public Shape {
 
         CoordinateSystem* get_coordinate_system();
         void set_coordinate_system(CoordinateSystem* system);
+        vec3 get_position();
+        GLfloat get_collision_radius();
+        GLfloat get_head_height();
         void set_y(GLfloat y);
 
         void display(float dt);
