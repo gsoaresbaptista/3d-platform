@@ -47,6 +47,8 @@ class Player: public Shape {
         GLfloat get_feet_height();
 
         vec3 get_position();
+        GLfloat get_collision_radius();
+        GLfloat get_head_height();
         void set_y(GLfloat y);
 
         void display(float dt);

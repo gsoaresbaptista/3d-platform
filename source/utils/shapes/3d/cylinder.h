@@ -24,6 +24,8 @@ class Cylinder: public Shape {
             std::shared_ptr<Texture> texture = nullptr,
             GLenum mode = GL_FILL,
             Outline outline = Outline::SPLITTED);
+
+        GLfloat get_radius();
 };
 
 #endif  // SOURCE_UTILS_SHAPES_3D_CYLINDER_H_

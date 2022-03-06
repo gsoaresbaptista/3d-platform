@@ -92,3 +92,11 @@ void Player::display(float dt) {
         glPopMatrix();
     glPopMatrix();
 }
+
+GLfloat Player::get_collision_radius() {
+    return this->collision_boundary->get_radius();
+}
+
+GLfloat Player::get_head_height() {
+    return position.y + center.y;
+}

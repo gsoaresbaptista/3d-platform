@@ -55,31 +55,75 @@ void Game::gravity(float dt) {
     }
 }
 
+bool Game::x_obstacle_collision(float dt, GLfloat x_player, GLfloat radius, std::shared_ptr<Shape> obstacle) {
+    GLfloat x_obstacle = obstacle->get_center().x;
+    GLfloat width_obstacle = obstacle->get_width();
+
+    if ((x_player + dt * block_size * 1.8 + radius > x_obstacle - width_obstacle/2.0) &&
+        (x_player + dt * block_size * 1.8 - radius < x_obstacle + width_obstacle/2.0) && 
+        x_obstacle > 0) {
+            return true;
+        }
+    
+    return false;
+}
+
+bool Game::y_obstacle_collision(GLfloat head_player, GLfloat feet_player, std::shared_ptr<Shape> obstacle) {
+    GLfloat y_obstacle = obstacle->get_center().y;
+    GLfloat height_obstacle = obstacle->get_height();
+
+    if (feet_player < y_obstacle + height_obstacle/2.0 &&
+         head_player > y_obstacle - height_obstacle/2.0) {
+        return true;
+    }
+
+    return false;
+}
+
+bool Game::lateral_collision(float dt) {
+    GLfloat x_player = this->player->get_position().x + this->player->get_center().x;
+    GLfloat radius = this->player->get_collision_radius();
+    GLfloat head_player = this->player->get_head_height();
+    GLfloat feet_player = this->player->get_feet_height();
+
+    for (auto& obstacle : obstacles) {
+        if (x_obstacle_collision(dt, x_player, radius, obstacle) &&
+         y_obstacle_collision(head_player, feet_player, obstacle)) {
+             return true;
+         }
+    }
+    return false;
+}
+
 void Game::update_player_move(float dt) {
     if (controller->keys['d']) {
-        if (current_camera == 4)
-            player->move_forward_backward(block_size * 0.065);
+        if (current_camera == 4){
+            if (!lateral_collision(dt)) 
+                player->move_forward_backward(block_size * 1.8 * dt);
+            }
         else
-            player->move_left_right(-block_size * 0.065);
+            player->move_left_right(-block_size * 1.8 * dt);
 
     } else if (controller->keys['a']) {
-        if (current_camera == 4)
-            player->move_forward_backward(-block_size * 0.065);
+        if (current_camera == 4){
+            if (!lateral_collision(-dt)) 
+                player->move_forward_backward(-block_size * 1.8 * dt);
+        }
         else
-            player->move_left_right(block_size * 0.065);
+            player->move_left_right(block_size * 1.8 * dt);
     }
 
     if (controller->keys['w']) {
         if (current_camera == 4)
-            player->move_left_right(block_size * 0.065);
+            player->move_left_right(block_size * 1.8 * dt);
         else
-            player->move_forward_backward(block_size * 0.065);
+            player->move_forward_backward(block_size * 1.8 * dt);
 
     } else if (controller->keys['s']) {
         if (current_camera == 4)
-            player->move_left_right(-block_size * 0.065);
+            player->move_left_right(-block_size * 1.8 * dt);
         else
-            player->move_forward_backward(-block_size * 0.065);
+            player->move_forward_backward(-block_size * 1.8 * dt);
     }
 }
 
