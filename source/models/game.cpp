@@ -176,6 +176,8 @@ void Game::update_player_move(float dt) {
     }
 }
 
+// TODO(all): Arrumar quando solta o espaço durante a queda
+//            dps de segurar até a velocidade ficar negativa.
 void Game::update_player_jump(float dt) {
     // Jump logic
     static bool first_falling = true;
@@ -195,8 +197,6 @@ void Game::update_player_jump(float dt) {
             this->player->set_falling(true);
             this->player->clear_on_air_time();
         }
-
-
     } else if (this->player->is_falling()) {
         // Player falling, clear on_air_time and increment time falling
         if (first_falling) {
