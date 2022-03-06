@@ -33,6 +33,10 @@ void Player::clear_on_air_time() {
     this->on_air_time = 0;
 }
 
+void Player::set_coordinate_system(CoordinateSystem* system) {
+    this->coordinateSystem = system;
+}
+
 void Player::draw(std::shared_ptr<Texture> texture,
     GLenum mode, Outline outline) {
     //

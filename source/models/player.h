@@ -50,6 +50,7 @@ class Player: public Shape {
         GLfloat get_feet_height();
 
         CoordinateSystem* get_coordinate_system();
+        void set_coordinate_system(CoordinateSystem* system);
         void set_y(GLfloat y);
 
         void display(float dt);

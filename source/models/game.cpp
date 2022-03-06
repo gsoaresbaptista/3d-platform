@@ -131,10 +131,20 @@ void Game::update_camera_type() {
         this->controller->to_rotate = vec3(0, 0, 0);
 
     } else if (controller->keys['4'] && current_camera != 4) {
+        //
+        CoordinateSystem* coord = new CoordinateSystem();
+        coord->direction = vec3(1, 0, 0);
+        coord->left = vec3(0, 0, -1);
+        coord->position = player->get_coordinate_system()->position;
+        coord->up = vec3(0, 1, 0);
+        this->player->set_coordinate_system(coord);
+
+        //
         this->current_camera = 4;
         this->camera = new FreeCamera(
             this->player->get_coordinate_system(),
             this->data, this->block_size);
+
 
         //
         this->controller->to_rotate = vec3(0, 0, 0);
