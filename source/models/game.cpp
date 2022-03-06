@@ -5,6 +5,7 @@
 #include <GL/freeglut.h>
 #include "camera/freeCamera.h"
 #include "camera/defaultCamera.h"
+#include "camera/orbitalCamera.h"
 #include "../utils/shapes/2d/rectangle.h"
 #include "../controllers/mouseListener.h"
 
@@ -137,8 +138,19 @@ void Game::update_camera_type() {
 
         //
         first = false;
-        this->controller->to_rotate = vec3(0, 0, 0);
         MouseListener::set_camera((DefaultCamera*)this->camera);
+
+    } else if (controller->keys['3'] && current_camera != 3) {
+        this->current_camera = 3;
+        this->camera = new OrbitalCamera(
+            this->player->get_coordinate_system(),
+            player->get_center(),
+            block_size);
+
+        //
+        first = false;
+        controller->move_orbital_camera = false;
+        MouseListener::set_camera((OrbitalCamera*)this->camera);
 
     } else if (controller->keys['4'] && current_camera != 4) {
         //
@@ -148,7 +160,6 @@ void Game::update_camera_type() {
         coord->position = player->get_coordinate_system()->position;
         coord->up = vec3(0, 1, 0);
         this->player->set_coordinate_system(coord);
-        MouseListener::set_camera(nullptr);
 
         //
         this->current_camera = 4;
@@ -158,8 +169,8 @@ void Game::update_camera_type() {
 
 
         //
-        this->controller->to_rotate = vec3(0, 0, 0);
         first = false;
+        MouseListener::clear_camera();
     }
 }
 
@@ -168,6 +179,20 @@ void Game::update_mouse(float dt) {
         DefaultCamera* cam = (DefaultCamera*)this->camera;
         this->controller->to_rotate.x = cam->get_yaw();
         this->controller->to_rotate.y = cam->get_pitch();
+
+    } else if (current_camera == 3) {
+        OrbitalCamera* orbital = (OrbitalCamera*)this->camera;
+
+        if (controller->keys['+']) {
+            orbital->zoom_in();
+        } else if (controller->keys['-']) {
+            orbital->zoom_out();
+        }
+
+        if (controller->keys['x']) {
+            controller->keys['x'] = false;
+            controller->move_orbital_camera = !controller->move_orbital_camera;
+        }
     }
 }
 
@@ -200,7 +225,7 @@ void Game::display_hud() {
 
     // Draw static info
         glColor3f(1, 0, 0);
-        if (current_camera != 4)
+        if (current_camera <= 2)
             this->crosshair.draw(CROSSHAIR_TEX);
 }
 
