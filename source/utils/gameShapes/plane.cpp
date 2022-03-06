@@ -38,3 +38,16 @@ void Plane::draw(std::shared_ptr<Texture> texture, GLenum mode, Outline outline)
     glEnd();
     texture->unbind();
 }
+
+GLfloat Plane::get_width() {
+    return abs(p2.x - p0.x);
+}
+
+GLfloat Plane::get_height() {
+    return abs(p0.y - p2.y);
+}
+
+GLfloat Plane::get_depth() {
+    return abs(p2.z - p0.z);
+}
+

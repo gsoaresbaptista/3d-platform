@@ -46,8 +46,9 @@ class Shape {
         }
 
         // TODO (=0)
-        virtual GLfloat get_width(){};
-        virtual GLfloat get_height(){};
+        virtual GLfloat get_width() {}
+        virtual GLfloat get_height() {}
+        virtual GLfloat get_depth() {}
 
         vec3 get_center() {
             return this->center;

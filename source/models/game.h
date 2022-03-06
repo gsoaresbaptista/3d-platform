@@ -36,10 +36,7 @@ class Game: public Shape {
         void update_player_jump(float dt);
         void gravity(float dt);
         void display_hud();
-        bool x_obstacle_collision(float dt, GLfloat x_player, GLfloat radius, std::shared_ptr<Shape> obstacle);
-        bool y_obstacle_collision(GLfloat head_player, GLfloat feet_player, std::shared_ptr<Shape> obstacle);
-        bool lateral_collision(float dt);
-        bool floor_collision_obstacle(float dt);
+        bool obstacle_collision(vec3 movement);
 
     public:
         Game(

@@ -6,5 +6,7 @@
 #include "vec3.h"
 
 float random_float(float min, float max);
+float distance(float num_a, float num_b);
+
 
 #endif  // SOURCE_UTILS_MATH_MATH_H_

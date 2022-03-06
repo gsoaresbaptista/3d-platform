@@ -33,8 +33,8 @@ class Player: public Shape {
             GLenum mode = GL_FILL,
             Outline outline = Outline::SPLITTED);
 
-        void move_left_right(GLfloat direction);
-        void move_forward_backward(GLfloat direction);
+        void move_left_right(vec3 direction);
+        void move_forward_backward(vec3 direction);
         void move_up(GLfloat direction);
 
         //

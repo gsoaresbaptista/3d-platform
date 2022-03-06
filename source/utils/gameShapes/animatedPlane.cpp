@@ -3,9 +3,10 @@
 #include "../others/gameConstants.h"
 
 AnimatedPlane::AnimatedPlane(
-        vec3 p0, vec3 p1, vec3 p2, vec3 p3, std::shared_ptr<Texture> sprite,
+        vec3 p0, vec3 p1, vec3 p2, vec3 p3, vec3 center,
+        std::shared_ptr<Texture> sprite,
         GLuint n_frames)
-        : Plane(p0, p1, p2, p3, BoxType::PORTAL) {
+        : Plane(p0, p1, p2, p3, BoxType::PORTAL, center) {
     this->sprite = this->sprite;
     this->current_sprite = 0;
     this->accumulated_time = 0;

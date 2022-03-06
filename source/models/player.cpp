@@ -4,7 +4,7 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->center = center;
     this->height = block_size;
     this->collision_boundary = new Cylinder(
-        this->center, 2*block_size, this->height);
+        this->center, 2*block_size, block_size);
 
     //
     this->center.y = block_size;
@@ -47,13 +47,13 @@ void Player::set_y(GLfloat y) {
     this->coordinateSystem->position.y = y;
 }
 
-void Player::move_left_right(GLfloat direction) {
-    vec3 velocity = coordinateSystem->left.normalize() * direction;
+void Player::move_left_right(vec3 direction) {
+    vec3 velocity = direction;
     coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
 }
 
-void Player::move_forward_backward(GLfloat direction) {
-    vec3 velocity = coordinateSystem->direction.normalize() * direction;
+void Player::move_forward_backward(vec3 direction) {
+    vec3 velocity = direction;
     coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
 }
 

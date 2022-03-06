@@ -17,7 +17,7 @@ class AnimatedPlane: public Plane {
 
     public:
         AnimatedPlane(
-            vec3 p0, vec3 p1, vec3 p2, vec3 p3,
+            vec3 p0, vec3 p1, vec3 p2, vec3 p3, vec3 center,
             std::shared_ptr<Texture> sprite = nullptr,
             GLuint n_frames = 0);
 

@@ -25,6 +25,10 @@ class Plane: public Shape {
             Outline outline = Outline::ENTIRE);
 
         void draw_block(GLfloat block_size, GLenum mode = GL_FILL);
+
+        GLfloat get_width();
+        GLfloat get_height();
+        GLfloat get_depth();
 };
 
 #endif  // SOURCE_UTILS_GAMESHAPES_PLANE_H_
