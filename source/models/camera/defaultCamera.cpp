@@ -17,9 +17,19 @@ void DefaultCamera::increment_yaw(float dYaw) {
 }
 
 void DefaultCamera::increment_pitch(float dPitch) {
+    // printf("INCREMENTANDO PITCH!\n");
     if (pitch + dPitch <= 45 && pitch + dPitch >= -45)
         this->pitch += dPitch;
 }
+
+float DefaultCamera::get_yaw() {
+    return this->yaw;
+}
+
+float DefaultCamera::get_pitch() {
+    return this->pitch;
+}
+
 
 void DefaultCamera::update() {
     float yaw = this->yaw * M_PI/180.0;

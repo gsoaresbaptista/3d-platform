@@ -2,6 +2,7 @@
 #include "../utils/others/gameConstants.h"
 #include <iostream>
 #include <GL/glut.h>
+#include <GL/freeglut.h>
 #include "camera/freeCamera.h"
 #include "camera/defaultCamera.h"
 
@@ -20,10 +21,7 @@ Game::Game(
     this->player = new Player(data->player_pos, data->block_size);
 
     // Create camera
-    this->current_camera = 1;
-    this->camera = new DefaultCamera(
-        this->player->get_coordinate_system(),
-        player->get_center());
+    this->update_camera_type();
 }
 
 void Game::draw(
@@ -120,23 +118,50 @@ void Game::update_player_jump(float dt) {
 }
 
 void Game::update_camera_type() {
-    if (controller->keys['1']) {
+    static bool first = true;
+
+    if (controller->keys['1'] && current_camera != 1 || first) {
         this->current_camera = 1;
         this->camera = new DefaultCamera(
             this->player->get_coordinate_system(),
             player->get_center());
 
-    } else if (controller->keys['4']) {
+        //
+        first = false;
+        this->controller->to_rotate = vec3(0, 0, 0);
+
+    } else if (controller->keys['4'] && current_camera != 4) {
         this->current_camera = 4;
         this->camera = new FreeCamera(
             this->player->get_coordinate_system(),
             this->data, this->block_size);
+
+        //
+        this->controller->to_rotate = vec3(0, 0, 0);
+        first = false;
+    }
+}
+
+void Game::update_mouse(float dt) {
+    if (current_camera == 1) {
+        DefaultCamera* cam = (DefaultCamera*)this->camera;
+        cam->increment_pitch(-controller->mouse_delta.y);
+        cam->increment_yaw(-controller->mouse_delta.x);
+        this->controller->to_rotate.x = cam->get_yaw();
+        this->controller->to_rotate.y = cam->get_pitch();
+        controller->mouse_delta = vec2(0, 0);
     }
 }
 
 void Game::update(float dt) {
     //
+    if (controller->keys[27]) {
+        glutLeaveMainLoop();
+    }
+
+    //
     this->update_camera_type();
+    this->update_mouse(dt);
     this->camera->update();
 
     // Update player position

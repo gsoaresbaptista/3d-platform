@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "keyboardListener.h"
+#include "mouseListener.h"
 #include "../utils/math/math.h"
 #include "controllerData.h"
 
@@ -14,6 +15,7 @@ class Controller {
 
             // Listeners
             KeyboardListener::registerCallbacks(data);
+            MouseListener::registerCallbacks(data);
 
             return data;
         }

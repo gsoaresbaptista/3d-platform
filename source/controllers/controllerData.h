@@ -4,8 +4,8 @@
 #include "../utils/math/math.h"
 
 struct ControllerData {
-    vec3 to_translate;
     vec3 to_rotate;
+    vec2 mouse_delta;
     GLuint keys[256];
 };
 

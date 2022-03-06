@@ -14,6 +14,8 @@ class DefaultCamera: public Camera {
         ~DefaultCamera();
         void increment_yaw(float dYaw);
         void increment_pitch(float dPitch);
+        float get_yaw();
+        float get_pitch();
         void activate();
         void update();
 };

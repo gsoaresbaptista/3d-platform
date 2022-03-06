@@ -60,6 +60,7 @@ void Canvas::init() {
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
     glCullFace(GL_CW);
+    glutSetCursor(GLUT_CURSOR_NONE);
 
     // TODO(all): remember to replace when add lighting
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);

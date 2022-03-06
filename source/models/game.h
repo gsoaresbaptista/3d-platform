@@ -26,6 +26,7 @@ class Game: public Shape {
 
         //
         void update(float dt);
+        void update_mouse(float dt);
         void update_camera_type();
         void update_player_move(float dt);
         void update_player_jump(float dt);
