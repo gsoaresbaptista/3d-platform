@@ -26,6 +26,10 @@ class Cylinder: public Shape {
             Outline outline = Outline::SPLITTED);
 
         GLfloat get_radius();
+        GLfloat get_width();
+        GLfloat get_height();
+        GLfloat get_depth();
+
 };
 
 #endif  // SOURCE_UTILS_SHAPES_3D_CYLINDER_H_

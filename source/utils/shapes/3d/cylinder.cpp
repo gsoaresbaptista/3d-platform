@@ -18,6 +18,19 @@ void Cylinder::draw(
     Cylinder::draw(10, 10, texture, mode, outline);
 }
 
+GLfloat Cylinder::get_width() {
+    return 2*this->radius;
+}
+
+GLfloat Cylinder::get_height() {
+    return 2*this->radius;
+}
+
+GLfloat Cylinder::get_depth() {
+    return 2*this->radius;
+}
+
+
 void Cylinder::draw(
         GLuint n_segs,
         GLuint n_stacks,

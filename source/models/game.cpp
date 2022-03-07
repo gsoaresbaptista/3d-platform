@@ -9,7 +9,7 @@
 #include "../utils/shapes/2d/rectangle.h"
 #include "../controllers/mouseListener.h"
 
-#define acceleration (-player->get_on_air_time() * block_size/3.0)
+#define acceleration (-player->get_on_air_time() * block_size * 18.0)
 
 Game::Game(
         std::shared_ptr<SVGData> data,
@@ -37,7 +37,27 @@ Game::Game(
         vec3(-0.08, -0.08, 0),
         vec3(0.08, -0.08, 0),
         vec3(0.08, 0.08, 0));
+
+    //
+    create_lights();
 }
+
+void Game::create_lights() {
+    
+}
+
+GLfloat Game::get_width() {
+    return this->data->arena_width;
+}
+
+GLfloat Game::get_height() {
+    return this->data->arena_height;
+}
+
+GLfloat Game::get_depth() {
+    return this->data->arena_depth;
+}
+
 
 void Game::draw(
         std::shared_ptr<Texture> texture,
@@ -54,26 +74,37 @@ void Game::draw(
 void Game::gravity(float dt) {
     if ((player->is_falling() || player->is_rising())) {
         if ((player->is_rising()) &&
-            (this->player_jump_speed + acceleration * dt <= 0)) {
+            (this->player_jump_speed + acceleration <= 0)) {
             //
             player->set_rising(false);
             player->set_falling(true);
             this->player->clear_on_air_time();
-        }
-
-        if ((player->get_feet_height() + acceleration * dt >= 0) &&
-            (!obstacle_collision(vec3(0, acceleration, 0)))) {
-            //
-            this->player->move_up(acceleration);
         } else {
-            this->player->set_rising(false);
-            this->player->set_falling(false);
-            this->player->clear_on_air_time();
+            if ((player->get_feet_height() + acceleration * dt >= 0) &&
+                (!obstacle_collision(
+                    vec3(0, acceleration * dt, 0), false, true))) {
+                //
+                this->player->move_up(acceleration * dt);
+            } else {
+                this->player->set_rising(false);
+                this->player->set_falling(false);
+                this->player->clear_on_air_time();
+            }
+            //
+            if (player->get_feet_height() + acceleration*dt <= 0) {
+                player->set_y(0);
+            }
         }
+    } else if (!obstacle_collision(
+            vec3(0, acceleration * dt, 0), false, true)) {
+        this->player->move_up(acceleration * dt);
+        player->set_falling(true);
     }
 }
 
-bool Game::obstacle_collision(vec3 movement) {
+bool Game::obstacle_collision(
+        vec3 movement, bool set_x, bool set_y, bool set_z) {
+    //
     CoordinateSystem* coord = player->get_coordinate_system();
     vec3 pos = coord->position + player->get_center() + movement;
 
@@ -90,6 +121,22 @@ bool Game::obstacle_collision(vec3 movement) {
             (pos.z + block_size > center.z - d2) &&
             (pos.z - block_size < center.z + d2)) {
             //
+            if (set_x && movement.x < 0)
+                player->set_x(obstacle->get_center().x - w2);
+            else if (set_x)
+                player->set_x(obstacle->get_center().x + w2);
+
+            if (set_y && movement.y < 0)
+                player->set_y(obstacle->get_center().y + h2);
+            else if (set_y)
+                player->set_y(obstacle->get_center().y - h2);
+
+
+            if (set_z && movement.z < 0)
+                player->set_z(obstacle->get_center().z + d2);
+            else if (set_z)
+                player->set_z(obstacle->get_center().z - d2);
+
             return true;
         }
     }
@@ -147,14 +194,13 @@ void Game::update_player_move(float dt) {
                 player->move_forward_backward(movement);
 
             } else {
-                if (abs(movement.x) > abs(movement.z)) {
-                    movement = vec3(movement.x, 0, 0);
-                } else {
-                    movement = vec3(0, 0, movement.z);
-                }
+                vec3 movement0 = vec3(movement.x, 0, 0);
+                vec3 movement1 = vec3(0, 0, movement.z);
 
-                if (!obstacle_collision(movement)) {
-                    player->move_forward_backward(movement);
+                if (!obstacle_collision(movement0)) {
+                    player->move_forward_backward(movement0);
+                } else if (!obstacle_collision(movement1)) {
+                    player->move_forward_backward(movement1);
                 }
             }
         }
@@ -180,7 +226,6 @@ void Game::update_player_move(float dt) {
 //            dps de segurar até a velocidade ficar negativa.
 void Game::update_player_jump(float dt) {
     // Jump logic
-    static bool first_falling = true;
 
     if ((this->controller->keys[' ']) && (this->player->is_rising() ||
         (!this->player->is_rising() && !this->player->is_falling()))) {
@@ -190,7 +235,6 @@ void Game::update_player_jump(float dt) {
             this->player->set_rising(true);
             this->player->move_up(this->player_jump_speed*dt);
             player->increment_on_air_time(dt);
-            first_falling = true;
 
         } else {
             this->player->set_rising(false);
@@ -198,13 +242,8 @@ void Game::update_player_jump(float dt) {
             this->player->clear_on_air_time();
         }
     } else if (this->player->is_falling()) {
-        // Player falling, clear on_air_time and increment time falling
-        if (first_falling) {
-            first_falling = false;
-            this->player->clear_on_air_time();
-        } else {
-            player->increment_on_air_time(dt);
-        }
+        // Player falling, increment time falling
+        player->increment_on_air_time(dt);
 
     } else if (!this->controller->keys[' '] && this->player->is_rising()) {
         // Space key up, update player conditition
@@ -295,9 +334,9 @@ void Game::update(float dt) {
     this->camera->update();
 
     // Update player position
+    this->gravity(dt);
     this->update_player_move(dt);
     this->update_player_jump(dt);
-    this->gravity(dt);
 }
 
 void Game::display_hud() {

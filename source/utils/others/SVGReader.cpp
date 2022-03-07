@@ -2,7 +2,6 @@
 #include "../math/math.h"
 #include "../gameShapes/chain.h"
 #include "../gameShapes/plane.h"
-#include "../gameShapes/torch.h"
 #include "../gameShapes/animatedPlane.h"
 #include <iostream>
 #include <string.h>
@@ -129,14 +128,17 @@ static void add_torchs(std::shared_ptr<SVGData> data) {
     vec3 center(1*space - height/2.f,
         data->arena_height/2.f, 1.1*data->block_size);
     data->rects.push_back(std::make_shared<Torch>(center));
+    data->torchs.push_back(std::make_shared<Torch>(center));
 
     center = vec3(2*space - height/2.f, data->arena_height/2.f,
         1.1*data->block_size);
     data->rects.push_back(std::make_shared<Torch>(center));
+    data->torchs.push_back(std::make_shared<Torch>(center));
 
     center = vec3(3*space - height/2.f, data->arena_height/2.f,
         1.1*data->block_size);
     data->rects.push_back(std::make_shared<Torch>(center));
+    data->torchs.push_back(std::make_shared<Torch>(center));
 }
 
 static void get_rects(std::shared_ptr<SVGData> data, XMLDocument* svg) {

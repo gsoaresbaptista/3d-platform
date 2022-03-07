@@ -37,14 +37,35 @@ void Player::set_coordinate_system(CoordinateSystem* system) {
     this->coordinateSystem = system;
 }
 
+GLfloat Player::get_width() {
+    return this->height;
+}
+
+GLfloat Player::get_height() {
+    return this->height*2;
+}
+
+GLfloat Player::get_depth() {
+    return this->height;
+}
+
+
 void Player::draw(std::shared_ptr<Texture> texture,
     GLenum mode, Outline outline) {
     //
     this->collision_boundary->draw(30, 10, nullptr, GL_LINE, Outline::ENTIRE);
 }
 
+void Player::set_x(GLfloat x) {
+    this->coordinateSystem->position.x = x;
+}
+
 void Player::set_y(GLfloat y) {
     this->coordinateSystem->position.y = y;
+}
+
+void Player::set_z(GLfloat z) {
+    this->coordinateSystem->position.z = z;
 }
 
 void Player::move_left_right(vec3 direction) {

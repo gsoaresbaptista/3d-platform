@@ -54,7 +54,12 @@ class Player: public Shape {
         vec3 get_position();
         GLfloat get_collision_radius();
         GLfloat get_head_height();
+        void set_x(GLfloat x);
         void set_y(GLfloat y);
+        void set_z(GLfloat z);
+        GLfloat get_width();
+        GLfloat get_height();
+        GLfloat get_depth();
 
         void display(float dt);
 };

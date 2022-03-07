@@ -29,6 +29,7 @@ class Game: public Shape {
         // std::vector<Enemy> enemies;
 
         //
+        void create_lights();
         void update(float dt);
         void update_mouse(float dt);
         void update_camera_type();
@@ -36,7 +37,11 @@ class Game: public Shape {
         void update_player_jump(float dt);
         void gravity(float dt);
         void display_hud();
-        bool obstacle_collision(vec3 movement);
+        bool obstacle_collision(
+            vec3 movement,
+            bool set_x = false,
+            bool set_y = false,
+            bool set_z = false);
 
     public:
         Game(
@@ -48,6 +53,10 @@ class Game: public Shape {
                 GLenum mode = GL_FILL,
                 Outline outline = Outline::SPLITTED);
 
+
+        GLfloat get_width();
+        GLfloat get_height();
+        GLfloat get_depth();
 
         void display(float dt);
 };

@@ -7,24 +7,16 @@
 #include "../shapes/3d/box.h"
 #include "../shapes/shape.h"
 #include "../shapes/2d/circle.h"
+#include "../gameShapes/torch.h"
 #include "../libs/tinyxml2.h"
 
 using namespace tinyxml2;
 using std::vector;
 
-// Classe para leitor de svg
-// class SVGReader {
-//     XMLDocument svg;
-
-//     public:
-//         SVGReader(const char* pFilename);
-//         vector<Circle> getCircles();
-//         vector<Rectangle> getRects();
-// };
-
 struct SVGData {
     // std::vector<Circle> circles;
     std::vector<std::shared_ptr<Shape>> rects;
+    std::vector<std::shared_ptr<Torch>> torchs;
     float arena_width;
     float arena_height;
     float arena_depth;
