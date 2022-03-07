@@ -10,20 +10,20 @@ static inline void draw_box(
         int n_segs, int n_stacks, Outline outline, GLuint id_,
         std::shared_ptr<Texture> texture, GLenum mode) {
     glNewList(id_, GL_COMPILE);
-        glPolygonMode(GL_FRONT, mode);
+        glPolygonMode(GL_FRONT_AND_BACK, mode);
         if (texture != nullptr) texture->bind();
         Rectangle::draw(  // Frente
-            p0, p1, p2, p3, n_segs, n_stacks, RED, outline);
+            p0, p1, p2, p3, n_segs, n_stacks, WHITE, outline);
         Rectangle::draw(  // Direita
-            p3, p2, p5, p4, n_segs, n_stacks, BLUE, outline);
+            p3, p2, p5, p4, n_segs, n_stacks, WHITE, outline);
         Rectangle::draw(  // Trás
-            p4, p5, p6, p7, n_segs, n_stacks, YELLOW, outline);
+            p4, p5, p6, p7, n_segs, n_stacks, WHITE, outline);
         Rectangle::draw(  // Esquerda
-            p7, p6, p1, p0, n_segs, n_stacks, GREEN, outline);
+            p7, p6, p1, p0, n_segs, n_stacks, WHITE, outline);
         Rectangle::draw(  // Cima
-            p7, p0, p3, p4, n_segs, n_stacks, ORANGE, outline);
+            p7, p0, p3, p4, n_segs, n_stacks, WHITE, outline);
         Rectangle::draw(  // Baixo
-            p1, p6, p5, p2, n_segs, n_stacks, VIOLET, outline);
+            p1, p6, p5, p2, n_segs, n_stacks, WHITE, outline);
         if (texture != nullptr) texture->unbind();
     glEndList();
 }
@@ -33,19 +33,32 @@ static inline void draw_blocks(
         const vec3& p4, const vec3& p5, const vec3& p6, const vec3& p7,
         float block_size, BoxType type, GLenum mode, GLuint id_) {
     glNewList(id_, GL_COMPILE);
+
         glPolygonMode(GL_FRONT, mode);
+
+        glNormal3f(0, 0, 1);
         Rectangle::draw_block(  // Frente
-            p0, p1, p2, p3, block_size, RED, Outline::ENTIRE, type);
+            p0, p1, p2, p3, block_size, WHITE, Outline::ENTIRE, type);
+
+        glNormal3f(1, 0, 0);
         Rectangle::draw_block(  // Direita
-            p3, p2, p5, p4, block_size, BLUE, Outline::ENTIRE, type);
+            p3, p2, p5, p4, block_size, WHITE, Outline::ENTIRE, type);
+
+        glNormal3f(0, 0, -1);
         Rectangle::draw_block(  // Trás
-            p4, p5, p6, p7, block_size, YELLOW, Outline::ENTIRE, type);
+            p4, p5, p6, p7, block_size, WHITE, Outline::ENTIRE, type);
+
+        glNormal3f(-1, 0, 0);
         Rectangle::draw_block(  // Esquerda
-            p7, p6, p1, p0, block_size, GREEN, Outline::ENTIRE, type);
+            p7, p6, p1, p0, block_size, WHITE, Outline::ENTIRE, type);
+
+        glNormal3f(0, 1, 0);
         Rectangle::draw_block(  // Cima
-            p7, p0, p3, p4, block_size, ORANGE, Outline::ENTIRE, type);
+            p7, p0, p3, p4, block_size, WHITE, Outline::ENTIRE, type);
+
+        glNormal3f(0, -1, 0);
         Rectangle::draw_block(  // Baixo
-            p1, p6, p5, p2, block_size, VIOLET, Outline::ENTIRE, type);
+            p1, p6, p5, p2, block_size, WHITE, Outline::ENTIRE, type);
     glEndList();
 }
 

@@ -24,7 +24,7 @@ void Torch::draw_block(GLfloat block_size, GLenum mode) {
     vec3 p2(block_size/2, -block_size/2, -block_size/2);
     vec3 p3(block_size/2, +block_size/2, -block_size/2);
     vec3 nc(center.x, center.y, center.z + block_size*0.7);
-    this->flame = std::make_shared<Plane>(p0, p1, p2, p3, BoxType::FLAME, nc);
+    this->flame = std::make_shared<Plane>(p0, p1, p2, p3, vec3(0, 0, 1), BoxType::FLAME, nc);
 
     this->flame->draw_block(block_size, mode);
     Box::draw_block(block_size, mode);

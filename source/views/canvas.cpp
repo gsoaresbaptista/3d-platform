@@ -56,14 +56,24 @@ void Canvas::init() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
     glCullFace(GL_CW);
     glutSetCursor(GLUT_CURSOR_NONE);
 
-    // TODO(all): remember to replace when add lighting
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    //
+    glEnable(GL_LIGHTING);
+    glShadeModel(GL_SMOOTH);
+
+    // glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+    float globalAmb[] = { 0.3, 0.3, 0.3, 1.f };
+    // glColorMaterial();
+    glEnable(GL_COLOR_MATERIAL);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmb);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 void Canvas::run() {
@@ -86,6 +96,7 @@ void Canvas::update(int value) {
     // glLoadIdentity();
 
     //
+    glColor3f(1, 1, 1);
     for (auto& shape : canvas_shapes) {
         shape->display(dt);
     }

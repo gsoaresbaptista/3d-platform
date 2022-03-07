@@ -37,11 +37,7 @@ class Game: public Shape {
         void update_player_jump(float dt);
         void gravity(float dt);
         void display_hud();
-        bool obstacle_collision(
-            vec3 movement,
-            bool set_x = false,
-            bool set_y = false,
-            bool set_z = false);
+        bool obstacle_collision(vec3 movement, bool set_y = false);
 
     public:
         Game(

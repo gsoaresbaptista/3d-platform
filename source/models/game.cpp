@@ -36,14 +36,33 @@ Game::Game(
         vec3(-0.08, 0.08, 0),
         vec3(-0.08, -0.08, 0),
         vec3(0.08, -0.08, 0),
-        vec3(0.08, 0.08, 0));
+        vec3(0.08, 0.08, 0),
+        vec3(0, 0, 0));
 
     //
-    create_lights();
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
 }
 
 void Game::create_lights() {
-    
+    for (int i = 0; i < 3; i++) {
+        vec3 c0 = data->torchs[i]->get_center();
+        c0.z += block_size;
+        c0.y += block_size/2.f;
+
+        float light0[4][4] = {
+            { 0.1, 0.1, 0.1, 0.1f },  // ambient
+            { 0.8, 0.8, 0.8, 0.3f },  // diffuse
+            { 0.8, 0.8, 0.8, 0.3f },  // specular
+            { c0.x, c0.y, c0.z, 1.f },  // position
+        };
+
+        glLightfv(GL_LIGHT0 + i, GL_AMBIENT, &light0[0][0]);
+        glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, &light0[1][0]);
+        glLightfv(GL_LIGHT0 + i, GL_SPECULAR, &light0[2][0]);
+        glLightfv(GL_LIGHT0 + i, GL_POSITION, &light0[3][0]);
+    }
 }
 
 GLfloat Game::get_width() {
@@ -82,7 +101,7 @@ void Game::gravity(float dt) {
         } else {
             if ((player->get_feet_height() + acceleration * dt >= 0) &&
                 (!obstacle_collision(
-                    vec3(0, acceleration * dt, 0), false, true))) {
+                    vec3(0, acceleration * dt, 0), true))) {
                 //
                 this->player->move_up(acceleration * dt);
             } else {
@@ -96,23 +115,22 @@ void Game::gravity(float dt) {
             }
         }
     } else if (!obstacle_collision(
-            vec3(0, acceleration * dt, 0), false, true)) {
+            vec3(0, acceleration * dt, 0), true)) {
         this->player->move_up(acceleration * dt);
         player->set_falling(true);
     }
 }
 
-bool Game::obstacle_collision(
-        vec3 movement, bool set_x, bool set_y, bool set_z) {
+bool Game::obstacle_collision(vec3 movement, bool set_y) {
     //
     CoordinateSystem* coord = player->get_coordinate_system();
     vec3 pos = coord->position + player->get_center() + movement;
 
     for (auto& obstacle : obstacles) {
         vec3 center = obstacle->get_center();
-        float w2 = obstacle->get_width()/2.f;
-        float h2 = obstacle->get_height()/2.f;
-        float d2 = obstacle->get_depth()/2.f;
+        double w2 = obstacle->get_width()/2.f;
+        double h2 = obstacle->get_height()/2.f;
+        double d2 = obstacle->get_depth()/2.f;
 
         if ((pos.x + block_size > center.x - w2) &&
             (pos.x - block_size < center.x + w2) &&
@@ -121,21 +139,8 @@ bool Game::obstacle_collision(
             (pos.z + block_size > center.z - d2) &&
             (pos.z - block_size < center.z + d2)) {
             //
-            if (set_x && movement.x < 0)
-                player->set_x(obstacle->get_center().x - w2);
-            else if (set_x)
-                player->set_x(obstacle->get_center().x + w2);
-
             if (set_y && movement.y < 0)
-                player->set_y(obstacle->get_center().y + h2);
-            else if (set_y)
-                player->set_y(obstacle->get_center().y - h2);
-
-
-            if (set_z && movement.z < 0)
-                player->set_z(obstacle->get_center().z + d2);
-            else if (set_z)
-                player->set_z(obstacle->get_center().z - d2);
+                player->set_y(obstacle->get_center().y + h2 + 0.001);
 
             return true;
         }
@@ -350,7 +355,6 @@ void Game::display_hud() {
         glLoadIdentity();
 
     // Draw static info
-        glColor3f(1, 0, 0);
         if (current_camera <= 2)
             this->crosshair.draw(CROSSHAIR_TEX);
 }
@@ -363,6 +367,12 @@ void Game::display(float dt) {
     glLoadIdentity();
     this->camera->activate();
     this->player->display(dt);
+
+    //
+    this->create_lights();
+
+    //
+    glColor3f(1, 1, 1);
 
     // Draw arena obstacles
     for (auto& obstacle : obstacles) {

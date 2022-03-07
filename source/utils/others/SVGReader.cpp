@@ -213,28 +213,28 @@ static void add_bounds(std::shared_ptr<SVGData> data) {
     vec3 b7(data->arena_width, data->arena_height, data->arena_depth);
 
     data->rects.push_back(std::make_shared<Plane>(
-        b6, b5, b1, b2, BoxType::DARK_OAK,
+        b6, b5, b1, b2, vec3(0, 1, 0), BoxType::DARK_OAK,
         vec3(data->arena_width/2.f, 0, data->arena_depth/2.f)));  // Floor
 
     data->rects.push_back(std::make_shared<Plane>(
-        b3, b0, b4, b7, BoxType::DARK_OAK,
+        b3, b0, b4, b7, vec3(0, -1, 0), BoxType::DARK_OAK,
         vec3(data->arena_width/2.f, data->arena_height, data->arena_depth/2.f)));  // Roof
 
     data->rects.push_back(std::make_shared<Plane>(
-        b3, b2, b1, b0, BoxType::DEEPSLATE_BRICKS,
+        b3, b2, b1, b0, vec3(1, 0, 0), BoxType::DEEPSLATE_BRICKS,
         vec3(0, data->arena_height/2.f, data->arena_depth/2.f)));  // Wall left
 
     data->rects.push_back(std::make_shared<AnimatedPlane>(
-        b4, b5, b6, b7,
+        b4, b5, b6, b7, vec3(0, -1, 0),
         vec3(data->arena_width, data->arena_height/2.f, data->arena_depth/2.f),
         PORTAL_TEX, 32));  // Portal / Wall Right
 
     data->rects.push_back(std::make_shared<Plane>(
-        b7, b6, b2, b3, BoxType::DEEPSLATE_BRICKS,
+        b7, b6, b2, b3, vec3(0, 0, -1), BoxType::DEEPSLATE_BRICKS,
         vec3(data->arena_width/2.f, data->arena_height/2.f, data->arena_depth)));  // Wall Back
 
     data->rects.push_back(std::make_shared<Plane>(
-        b0, b1, b5, b4, BoxType::DEEPSLATE_BRICKS,
+        b0, b1, b5, b4, vec3(0, 0, 1), BoxType::DEEPSLATE_BRICKS,
         vec3(data->arena_width/2.f, data->arena_height/2.f, 0)));  // Wall Front
 }
 

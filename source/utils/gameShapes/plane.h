@@ -10,12 +10,13 @@ class Plane: public Shape {
     protected:
         BoxType type;
         vec3 p0, p1, p2, p3;
+        vec3 normal;
 
     public:
         Plane();
 
         Plane(
-            vec3 p0, vec3 p1, vec3 p2, vec3 p3,
+            vec3 p0, vec3 p1, vec3 p2, vec3 p3, vec3 normal,
             BoxType type = BoxType::DEEPSLATE_BRICKS,
             vec3 center = vec3(0, 0, 0));
 
