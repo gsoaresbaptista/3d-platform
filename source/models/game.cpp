@@ -136,6 +136,7 @@ void Game::gravity(float dt) {
     }
 }
 
+// TODO(all): Colocar o player como parâmetro
 bool Game::obstacle_collision(vec3 movement) {
     //
     CoordinateSystem* coord = player->get_coordinate_system();
@@ -159,6 +160,10 @@ bool Game::obstacle_collision(vec3 movement) {
     }
     return false;
 }
+
+// Lembrar de verificar se não é ele próprio
+// Inimigo com inimigo, e player com player
+// bool Game::enemies_collision(vec3 movement, Player* player);
 
 void Game::update_player_move(float dt) {
     vec3 movement;
@@ -239,8 +244,6 @@ void Game::update_player_move(float dt) {
     }
 }
 
-// TODO(all): Arrumar quando solta o espaço durante a queda
-//            dps de segurar até a velocidade ficar negativa.
 void Game::update_player_jump(float dt) {
     // Jump logic
 
