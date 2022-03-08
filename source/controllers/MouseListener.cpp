@@ -55,6 +55,7 @@ void MouseListener::registerCallbacks(std::shared_ptr<ControllerData> data) {
     MOUSE_DELTA = &(data->mouse_delta);
     MOVE_ORBITAL_CAMERA = &(data->move_orbital_camera);
     glutPassiveMotionFunc(mouse_callback);
+    glutMotionFunc(mouse_callback);
 }
 
 void MouseListener::set_camera(DefaultCamera* camera) {

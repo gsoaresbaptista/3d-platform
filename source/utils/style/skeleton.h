@@ -116,6 +116,8 @@ namespace skeleton {
 
         glNewList(id, GL_COMPILE);
             glPolygonMode(GL_FRONT, GL_FILL);
+            glPushAttrib(GL_ENABLE_BIT);
+            glDisable(GL_CULL_FACE);
             SKELETON_TEX->bind();
             glNormal3f(-1.f, 0.f, 0.f);draw_rect(v8, v7, v2, v1, vec2(16.0/64.0, 20.0/32.0), vec2(20.0/64.0, 32.0/32.0));
             glNormal3f(0.f, 1.f, 0.f);draw_rect(v8, v1, v4, v5, vec2(20.0/64.0, 16.0/32.0), vec2(28.0/64.0, 20.0/32.0));
@@ -124,6 +126,7 @@ namespace skeleton {
             glNormal3f(0.f, -1.f, 0.f);draw_rect(v2, v7, v6, v3, vec2(28.0/64.0, 16.0/32.0), vec2(36.0/64.0, 20.0/32.0));
             glNormal3f(0.f, 0.f, -1.f);draw_rect(v5, v6, v7, v8, vec2(32.0/64.0, 20.0/32.0), vec2(40.0/64.0, 32.0/32.0));
             SKELETON_TEX->unbind();
+            glPopAttrib();
         glEndList();
     }
 

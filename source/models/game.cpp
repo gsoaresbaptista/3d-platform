@@ -50,23 +50,18 @@ Game::Game(
 
     // Create camera
     this->update_camera_type();
-
-    //
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_LIGHT2);
 }
 
 void Game::create_lights() {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 7; i++) {
         vec3 c0 = data->torchs[i]->get_center();
         c0.z += block_size;
         c0.y += block_size;
 
         float light0[4][4] = {
-            { 0.08, 0.08, 0.08, 0.0f },  // ambient
-            { 0.30, 0.30, 0.30, 1.f },  // diffuse
-            { 0.05, 0.05, 0.05, 0.3f },  // specular
+            { 0.35, 0.35, 0.35, 0.30f },  // ambient
+            { 0.80, 0.80, 0.80, 0.80f },  // diffuse
+            { 0.25, 0.25, 0.25, 0.80f },  // specular
             { c0.x, c0.y, c0.z, 1.f },  // position
         };
 
@@ -74,7 +69,25 @@ void Game::create_lights() {
         glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, &light0[1][0]);
         glLightfv(GL_LIGHT0 + i, GL_SPECULAR, &light0[2][0]);
         glLightfv(GL_LIGHT0 + i, GL_POSITION, &light0[3][0]);
+        glLightf(GL_LIGHT0 + i, GL_CONSTANT_ATTENUATION, 0.15);
+        glLightf(GL_LIGHT0 + i, GL_LINEAR_ATTENUATION, 0.005);
+        glLightf(GL_LIGHT0 + i, GL_QUADRATIC_ATTENUATION, 0.001);
     }
+
+    float light0[4][4] = {
+        { 0.60, 0.20, 0.60, 1.0f },  // ambient
+        { 0.60, 0.20, 0.60, 1.0f },  // diffuse
+        { 0.60, 0.20, 0.60, 1.0f },  // specular
+        { data->arena_width, block_size,  // position
+          data->arena_depth/2.f, 1.f }};
+
+    glLightfv(GL_LIGHT7, GL_AMBIENT, &light0[0][0]);
+    glLightfv(GL_LIGHT7, GL_DIFFUSE, &light0[1][0]);
+    glLightfv(GL_LIGHT7, GL_SPECULAR, &light0[2][0]);
+    glLightfv(GL_LIGHT7, GL_POSITION, &light0[3][0]);
+    glLightf(GL_LIGHT7, GL_CONSTANT_ATTENUATION, 0.15);
+    glLightf(GL_LIGHT7, GL_LINEAR_ATTENUATION, 0.005);
+    glLightf(GL_LIGHT7, GL_QUADRATIC_ATTENUATION, 0.0008);
 }
 
 GLfloat Game::get_width() {
@@ -88,7 +101,6 @@ GLfloat Game::get_height() {
 GLfloat Game::get_depth() {
     return this->data->arena_depth;
 }
-
 
 void Game::draw(
         std::shared_ptr<Texture> texture,
@@ -203,6 +215,7 @@ void Game::update_player_move(float dt) {
     if (controller->keys['w']) {
         if (current_camera == 4) {
             movement = coord->left * dt * player_speed;
+            movement.y = 0;
 
             if (!obstacle_collision(movement)) {
                 player->move_left_right(movement);
@@ -229,6 +242,7 @@ void Game::update_player_move(float dt) {
     } else if (controller->keys['s']) {
         if (current_camera == 4) {
             movement = coord->left * -1 * dt * player_speed;
+            movement.y = 0;
 
             if (!obstacle_collision(movement)) {
                 player->move_left_right(movement);
@@ -236,6 +250,7 @@ void Game::update_player_move(float dt) {
 
         } else {
             movement = coord->direction * -1 * dt * player_speed;
+            movement.y = 0;
 
             if (!obstacle_collision(movement)) {
                 player->move_forward_backward(movement);

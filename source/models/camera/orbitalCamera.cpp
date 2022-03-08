@@ -23,7 +23,7 @@ void OrbitalCamera::activate() {
     gluLookAt(
         position.x, position.y, position.z,
         look.x, look.y, look.z,
-        player->up.x, player->up.y, player->up.z);
+        0, 1, 0);
 }
 
 vec3 OrbitalCamera::cvt2cartesian() {

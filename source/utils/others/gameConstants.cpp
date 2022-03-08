@@ -12,8 +12,29 @@ std::shared_ptr<Texture> FLAME_TEX = nullptr;
 std::shared_ptr<Texture> CROSSHAIR_TEX = nullptr;
 std::shared_ptr<Texture> STEVE_TEX = nullptr;
 std::shared_ptr<Texture> SKELETON_TEX = nullptr;
+std::shared_ptr<Material> STONE_MATERIAL = nullptr;
+std::shared_ptr<Material> WOOD_MATERIAL = nullptr;
+std::shared_ptr<Material> PORTAL_MATERIAL = nullptr;
 
 void GameConstants::load_textures() {
+    //
+    STONE_MATERIAL = std::make_shared<Material>(
+        0.3f, 0.3f, 0.3f,  // Ambient
+        0.8f, 0.8f, 0.8f,  // Diffuse
+        0.05f, 0.05f, 0.05f,  // Specular
+        0.5f);
+    WOOD_MATERIAL = std::make_shared<Material>(
+        0.3f, 0.3f, 0.3f,  // Ambient
+        0.8f, 0.8f, 0.8f,  // Diffuse
+        0.5f, 0.5f, 0.5f,  // Specular
+        0.8f);
+    PORTAL_MATERIAL = std::make_shared<Material>(
+        1.0f, 1.0f, 1.0f,  // Ambient
+        1.0f, 1.0f, 1.0f,  // Diffuse
+        1.0f, 1.0f, 1.0f,  // Specular
+        1.0f,
+        1.0f, 1.0f, 1.0f);
+
     //
     STEVE_TEX = Texture::load("resources/steve.png", true, true);
     SKELETON_TEX = Texture::load("resources/skeleton.png", true, true);

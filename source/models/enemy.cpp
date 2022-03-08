@@ -46,14 +46,14 @@ void Enemy::display_character() {
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(dheight/4.f, -dheight/2.f, 0);
+            glTranslatef(dheight/4.f, -dheight/1.999f, 0);
             glCallList(leg1);
             glTranslatef(0, dheight, 0);
             glCallList(leg0);
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(-dheight/4.f, -dheight/2.f, 0);
+            glTranslatef(-dheight/4.f, -dheight/1.999f, 0);
             glCallList(leg1);
             glTranslatef(0, dheight, 0);
             glCallList(leg0);
@@ -70,10 +70,10 @@ void Enemy::display(float dt) {
             coordinateSystem->position.y + center.y,
             coordinateSystem->position.z + center.z);
 
-        glPushMatrix();
-            glRotatef(90, 1, 0, 0);
-            this->collision_boundary->display(dt);
-        glPopMatrix();
+        // glPushMatrix();
+        //     glRotatef(90, 1, 0, 0);
+        //     this->collision_boundary->display(dt);
+        // glPopMatrix();
 
         glColor3f(1, 1, 1);
         this->display_character();

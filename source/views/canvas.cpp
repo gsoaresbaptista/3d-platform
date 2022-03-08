@@ -28,7 +28,7 @@ static void window_resize(float width, float height) {
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, aspect, 0.1, 500);
+    gluPerspective(45.0, aspect, 0.1, 800);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -50,15 +50,14 @@ void Canvas::init() {
         GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
     //
-    glAlphaFunc(GL_GREATER, 0.5);
-    glEnable(GL_ALPHA_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glAlphaFunc(GL_GREATER, 0.5);
+    glEnable(GL_ALPHA_TEST);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    glEnable(GL_TEXTURE_2D);
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
     glCullFace(GL_CW);
@@ -67,8 +66,15 @@ void Canvas::init() {
     //
     glEnable(GL_LIGHTING);
     glShadeModel(GL_SMOOTH);
-    glEnable(GL_COLOR_MATERIAL);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    //
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+    float global_amb[] = { 0.1f, 0.1f, 0.1f, 1.f };
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_amb);
+
+    //
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_INTERPOLATE);
 }
 
 void Canvas::run() {

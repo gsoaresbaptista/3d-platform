@@ -122,23 +122,19 @@ static void create_boxes(
 }
 
 static void add_torchs(std::shared_ptr<SVGData> data) {
-    float space = data->arena_width/3.f;
+    float space = data->arena_width/8.0;
     float height = data->arena_height;
 
-    vec3 center(1*space - height/2.f,
-        data->arena_height/2.f, 1.1*data->block_size);
-    data->rects.push_back(std::make_shared<Torch>(center));
-    data->torchs.push_back(std::make_shared<Torch>(center));
+    for (int i = 0; i < 7; i++) {
+        glEnable(GL_LIGHT0 + i);
+        vec3 center((i + 1)*space,
+            data->arena_height/2.f, 1.1*data->block_size);
+        data->rects.push_back(std::make_shared<Torch>(center));
+        data->torchs.push_back(std::make_shared<Torch>(center));
+    }
 
-    center = vec3(2*space - height/2.f, data->arena_height/2.f,
-        1.1*data->block_size);
-    data->rects.push_back(std::make_shared<Torch>(center));
-    data->torchs.push_back(std::make_shared<Torch>(center));
-
-    center = vec3(3*space - height/2.f, data->arena_height/2.f,
-        1.1*data->block_size);
-    data->rects.push_back(std::make_shared<Torch>(center));
-    data->torchs.push_back(std::make_shared<Torch>(center));
+    //
+    glEnable(GL_LIGHT7);
 }
 
 static void get_rects(std::shared_ptr<SVGData> data, XMLDocument* svg) {
@@ -235,7 +231,7 @@ static void add_bounds(std::shared_ptr<SVGData> data) {
 
     data->rects.push_back(std::make_shared<Plane>(
         b3, b2, b1, b0, vec3(1, 0, 0), BoxType::DEEPSLATE_BRICKS,
-        vec3(0, data->arena_height/2.f, data->arena_depth/2.f)));  // Wall left
+        vec3(0.1, data->arena_height/2.f, data->arena_depth/2.f)));  // Wall left
 
     data->rects.push_back(std::make_shared<AnimatedPlane>(
         b4, b5, b6, b7, vec3(0, -1, 0),

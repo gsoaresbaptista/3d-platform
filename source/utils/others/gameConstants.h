@@ -2,6 +2,8 @@
 #define SOURCE_UTILS_OTHERS_GAMECONSTANTS_H_
 
 #include "../style/texture.h"
+#include "../style/material.h"
+
 #include <memory>
 
 enum class BoxType {
@@ -13,6 +15,10 @@ enum class BoxType {
     TORCH = 5,
     FLAME = 6
 };
+
+extern std::shared_ptr<Material> STONE_MATERIAL;
+extern std::shared_ptr<Material> WOOD_MATERIAL;
+extern std::shared_ptr<Material> PORTAL_MATERIAL;
 
 extern std::shared_ptr<Texture> CHAIN_TEX;
 extern std::shared_ptr<Texture> DARK_OAK_PLANKS_TEX;
