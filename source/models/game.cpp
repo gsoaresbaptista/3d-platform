@@ -106,7 +106,7 @@ void Game::gravity(float dt) {
         } else {
             if ((player->get_feet_height() + acceleration * dt >= 0) &&
                 (!obstacle_collision(
-                    vec3(0, acceleration * dt, 0), true))) {
+                    vec3(0, acceleration * dt, 0)))) {
                 //
                 this->player->move_up(acceleration * dt);
             } else {
@@ -119,14 +119,13 @@ void Game::gravity(float dt) {
                 player->set_y(0);
             }
         }
-    } else if (!obstacle_collision(
-            vec3(0, acceleration * dt, 0), true)) {
+    } else if (!obstacle_collision(vec3(0, acceleration * dt, 0))) {
         this->player->move_up(acceleration * dt);
         player->set_falling(true);
     }
 }
 
-bool Game::obstacle_collision(vec3 movement, bool set_y) {
+bool Game::obstacle_collision(vec3 movement) {
     //
     CoordinateSystem* coord = player->get_coordinate_system();
     vec3 pos = coord->position + player->get_center() + movement;
@@ -144,9 +143,6 @@ bool Game::obstacle_collision(vec3 movement, bool set_y) {
             (pos.z + block_size/2.f > center.z - d2) &&
             (pos.z - block_size/2.f < center.z + d2)) {
             //
-            if (set_y && movement.y < 0)
-                player->set_y(obstacle->get_center().y + h2 + 0.001);
-
             return true;
         }
     }
@@ -312,7 +308,10 @@ void Game::update_camera_type() {
     }
 }
 
-void Game::update_mouse(float dt) {
+void Game::update_controller(float dt) {
+    static bool active0 = false;
+    static bool active1 = true;
+
     if (current_camera == 1) {
         DefaultCamera* cam = (DefaultCamera*)this->camera;
         this->controller->to_rotate.x = cam->get_yaw();
@@ -328,6 +327,12 @@ void Game::update_mouse(float dt) {
         }
 
         if (controller->keys['x']) {
+            if (active0) {
+                orbital->reset_theta();
+            }
+
+            active0 = !active0;
+            active1 = !active1;
             controller->keys['x'] = false;
             controller->move_orbital_camera = !controller->move_orbital_camera;
         }
@@ -342,7 +347,7 @@ void Game::update(float dt) {
 
     //
     this->update_camera_type();
-    this->update_mouse(dt);
+    this->update_controller(dt);
     this->camera->update();
 
     // Update player position
@@ -385,7 +390,18 @@ void Game::display(float dt) {
         obstacle->display(dt, controller);
     }
 
-    this->player->display(dt);
+    glPushMatrix();
+        glTranslatef(
+            this->player->get_position().x + this->player->get_center().x,
+            this->player->get_position().y + this->player->get_center().y,
+            this->player->get_position().z + this->player->get_center().z);
+        glRotatef(-((OrbitalCamera*)this->camera)->get_yaw(), 0, 1, 0);
+        glTranslatef(
+            -this->player->get_position().x - this->player->get_center().x,
+            -this->player->get_position().y - this->player->get_center().y,
+            -this->player->get_position().z - this->player->get_center().z);
+        this->player->display(dt);
+    glPopMatrix();
 
     for (auto& enemy : enemies) {
         enemy->display(dt);

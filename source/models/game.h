@@ -31,13 +31,13 @@ class Game: public Shape {
         //
         void create_lights();
         void update(float dt);
-        void update_mouse(float dt);
+        void update_controller(float dt);
         void update_camera_type();
         void update_player_move(float dt);
         void update_player_jump(float dt);
         void gravity(float dt);
         void display_hud();
-        bool obstacle_collision(vec3 movement, bool set_y = false);
+        bool obstacle_collision(vec3 movement);
 
     public:
         Game(

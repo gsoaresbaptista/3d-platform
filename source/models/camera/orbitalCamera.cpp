@@ -11,7 +11,16 @@ OrbitalCamera::OrbitalCamera(
     this->theta = -90.f;
     this->phi = 60.f;
     this->center = center;
+    this->pitch = 0;
+    this->yaw = -90;
     this->update();
+}
+
+void OrbitalCamera::update_no_orbital() {
+    float yaw = this->yaw * M_PI/180.0;
+    float pitch = this->pitch * M_PI/180.0;
+    player->direction += vec3(-sin(yaw), sin(pitch), cos(yaw)*cos(pitch));
+    player->direction = player->direction.normalize();
 }
 
 OrbitalCamera::~OrbitalCamera() {
@@ -21,11 +30,11 @@ void OrbitalCamera::activate() {
     gluLookAt(
         position.x, position.y, position.z,
         look.x, look.y, look.z,
-        0.f, 1.f, 0.f);
+        player->up.x, player->up.y, player->up.z);
 }
 
 vec3 OrbitalCamera::cvt2cartesian() {
-   float tmp_xy = this->radius*sin(phi*M_PI/180);
+    float tmp_xy = this->radius*sin(phi*M_PI/180);
     float x = tmp_xy*sin(theta*M_PI/180);
     float y = this->radius*cos(phi*M_PI/180);
     float z = tmp_xy*cos(theta*M_PI/180);
@@ -35,6 +44,30 @@ vec3 OrbitalCamera::cvt2cartesian() {
 void OrbitalCamera::update() {
     this->position = cvt2cartesian() + player->position + center;
     this->look = cvt2cartesian() * (-1) + player->position + center;
+
+    //
+    update_no_orbital();
+}
+
+void OrbitalCamera::increment_yaw(float dYaw) {
+    this->yaw += dYaw;
+}
+
+void OrbitalCamera::reset_theta() {
+    this->theta = -90.f;
+}
+
+void OrbitalCamera::increment_pitch(float dPitch) {
+    if (pitch + dPitch <= 45 && pitch + dPitch >= -45)
+        this->pitch += dPitch;
+}
+
+float OrbitalCamera::get_yaw() {
+    return this->yaw;
+}
+
+float OrbitalCamera::get_pitch() {
+    return this->pitch;
 }
 
 void OrbitalCamera::zoom_in() {
