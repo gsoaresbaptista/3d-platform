@@ -37,6 +37,11 @@ vec3 OrbitalCamera::cvt2cartesian() {
 void OrbitalCamera::update() {
     this->position = cvt2cartesian() + player->position + center;
     this->look = cvt2cartesian() * (-1) + player->position + center;
+
+    //
+    this->player->direction = this->look - player->position - center;
+    this->player->direction.y = 0;
+    this->player->direction = this->player->direction.normalize();
 }
 
 void OrbitalCamera::zoom_in() {

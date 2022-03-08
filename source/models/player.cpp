@@ -28,6 +28,8 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     body = head + 1;
     arm0 = head + 2, arm1 = head + 3;
     leg0 = head + 4, leg1 = head + 5;
+
+    //
     this->show_collision_boundary = false;
 }
 
@@ -208,4 +210,8 @@ GLfloat Player::get_collision_radius() {
 
 GLfloat Player::get_head_height() {
     return coordinateSystem->position.y + center.y;
+}
+
+void Player::set_show_collision_boundary(GLboolean value) {
+    this->show_collision_boundary = value;
 }

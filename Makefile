@@ -16,13 +16,22 @@ $(PROJ_NAME): $(OBJECT)
 objects/%.o: source/%.cpp
 	$(CXX) $< -c -o $@
 
-objects/%.o: source/views/%.cpp source/views/%.hpp
+objects/models/%.o: source/models/%.cpp source/models/%.h
 	$(CXX) $< -c -o $@
 
-objects/%.o: source/utils/shapes/%.cpp source/utils/shapes/%.hpp
+objects/models/cameras/%.o: source/models/cameras/%.cpp source/models/cameras/%.h
 	$(CXX) $< -c -o $@
 
-objects/%.o: source/utils/%.cpp source/utils/%.hpp
+objects/views/%.o: source/views/%.cpp source/views/%.h
+	$(CXX) $< -c -o $@
+
+objects/utils/%.o: source/utils/shapes/%.cpp source/utils/shapes/%.h
+	$(CXX) $< -c -o $@
+
+objects/libs/%.o: source/libs/%.cpp source/libs/%.h
+	$(CXX) $< -c -o $@
+
+objects/utils/%.o: source/utils/%.cpp source/utils/%.h
 	$(CXX) $< -c -o $@
 
 objFolder:
@@ -36,6 +45,7 @@ objFolder:
 	@ mkdir -p objects/utils/style
 	@ mkdir -p objects/utils/gameShapes
 	@ mkdir -p objects/utils/libs
+	@ mkdir -p objects/utils/libs/imgui
 	@ mkdir -p objects/utils/math
 	@ mkdir -p objects/utils/shapes
 	@ mkdir -p objects/utils/shapes/2d
@@ -52,6 +62,7 @@ clean:
 	@ rm -rf ./objects/utils/style
 	@ rm -rf ./objects/utils/gameShapes
 	@ rm -rf ./objects/utils/libs
+	@ rm -rf objects/utils/libs/imgui
 	@ rm -rf ./objects/utils/shapes/2d
 	@ rm -rf ./objects/utils/shapes/3d
 	@ rm -rf ./objects/utils/shapes

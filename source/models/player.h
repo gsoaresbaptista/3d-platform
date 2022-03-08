@@ -65,6 +65,7 @@ class Player: public Shape {
         GLfloat get_width();
         GLfloat get_height();
         GLfloat get_depth();
+        void set_show_collision_boundary(GLboolean value);
 
         void display(float dt);
 };
