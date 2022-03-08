@@ -15,7 +15,7 @@ class Texture {
 
         static std::shared_ptr<Texture> load(
             std::string file_path,
-            bool mipmap = false);
+            bool mipmap = false, bool not_flip = false);
 
         void bind();
         void unbind();

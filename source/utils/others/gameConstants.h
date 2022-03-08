@@ -24,6 +24,8 @@ extern std::shared_ptr<Texture> PORTAL_TEX;
 extern std::shared_ptr<Texture> TORCH_TEX;
 extern std::shared_ptr<Texture> FLAME_TEX;
 extern std::shared_ptr<Texture> CROSSHAIR_TEX;
+extern std::shared_ptr<Texture> STEVE_TEX;
+extern std::shared_ptr<Texture> SKELETON_TEX;
 
 namespace GameConstants {
     void load_textures();

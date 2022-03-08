@@ -67,12 +67,7 @@ void Canvas::init() {
     //
     glEnable(GL_LIGHTING);
     glShadeModel(GL_SMOOTH);
-
-    // glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-    float globalAmb[] = { 0.3, 0.3, 0.3, 1.f };
-    // glColorMaterial();
     glEnable(GL_COLOR_MATERIAL);
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmb);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 

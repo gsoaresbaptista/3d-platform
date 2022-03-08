@@ -10,9 +10,13 @@ std::shared_ptr<Texture> PORTAL_TEX = nullptr;
 std::shared_ptr<Texture> TORCH_TEX = nullptr;
 std::shared_ptr<Texture> FLAME_TEX = nullptr;
 std::shared_ptr<Texture> CROSSHAIR_TEX = nullptr;
+std::shared_ptr<Texture> STEVE_TEX = nullptr;
+std::shared_ptr<Texture> SKELETON_TEX = nullptr;
 
 void GameConstants::load_textures() {
     //
+    STEVE_TEX = Texture::load("resources/steve.png", true, true);
+    SKELETON_TEX = Texture::load("resources/skeleton.png", true, true);
     PORTAL_TEX = Texture::load("resources/portal.png", true);
     CHAIN_TEX = Texture::load("resources/chain.png", true);
     SPRUCE_PLANKS_TEX = Texture::load("resources/spruce_planks.png", true);

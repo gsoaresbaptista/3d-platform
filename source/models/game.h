@@ -26,7 +26,7 @@ class Game: public Shape {
         Plane crosshair;
         GLfloat player_speed;
         GLfloat player_jump_speed;
-        // std::vector<Enemy> enemies;
+        std::vector<std::shared_ptr<Enemy>> enemies;
 
         //
         void create_lights();

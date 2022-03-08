@@ -11,11 +11,11 @@ Texture::Texture() {
     this->channels = 0;
 }
 
-std::shared_ptr<Texture> Texture::load(std::string file_path, bool mipmap) {
+std::shared_ptr<Texture> Texture::load(std::string file_path, bool mipmap, bool not_flip) {
     //
     auto texture = std::make_shared<Texture>();
 
-    stbi_set_flip_vertically_on_load(true);
+    if (!not_flip) stbi_set_flip_vertically_on_load(true);
 
     unsigned char* img_data = stbi_load(
         file_path.c_str(), &texture->width, &texture->height,

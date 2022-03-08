@@ -1,10 +1,12 @@
 #include "player.h"
+#include "../utils/shapes/2d/rectangle.h"
+#include "../utils/style/steve.h"
 
 Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->center = center;
     this->height = block_size;
     this->collision_boundary = new Cylinder(
-        this->center, 2*block_size, block_size);
+        this->center, 2*block_size, block_size/2.f);
 
     //
     this->center.y = block_size;
@@ -19,6 +21,13 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->falling = false;
     this->rising = false;
     this->on_air_time = 0;
+
+    //
+    this->dheight = height/2.25f;
+    head = glGenLists(6);
+    body = head + 1;
+    arm0 = head + 2, arm1 = head + 3;
+    leg0 = head + 4, leg1 = head + 5;
 }
 
 Player::~Player() {
@@ -53,7 +62,54 @@ GLfloat Player::get_depth() {
 void Player::draw(std::shared_ptr<Texture> texture,
     GLenum mode, Outline outline) {
     //
+    steve::draw_head(head, dheight);
+    steve::draw_body(body, dheight);
+    steve::draw_arm(arm0, arm1, dheight);
+    steve::draw_leg(leg0, leg1, dheight);
     this->collision_boundary->draw(30, 10, nullptr, GL_LINE, Outline::ENTIRE);
+}
+
+void Player::display_character() {
+    glPushMatrix();
+        glTranslatef(0, -dheight *1.25, 0);
+        glPushMatrix();
+            glTranslatef(0, 3*dheight, 0);
+            glCallList(head);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(-dheight*0.75, 2*dheight, 0);
+            glCallList(arm0);
+            glTranslatef(0, -dheight, 0);
+            glCallList(arm1);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(dheight*0.75, 2*dheight, 0);
+            glCallList(arm0);
+            glTranslatef(0, -dheight, 0);
+            glCallList(arm1);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(0, 2*dheight, 0);
+            glCallList(body);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(dheight/4.f, -dheight/2.f, 0);
+            glCallList(leg1);
+            glTranslatef(0, dheight, 0);
+            glCallList(leg0);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(-dheight/4.f, -dheight/2.f, 0);
+            glCallList(leg1);
+            glTranslatef(0, dheight, 0);
+            glCallList(leg0);
+        glPopMatrix();
+    glPopMatrix();
 }
 
 void Player::set_x(GLfloat x) {
@@ -112,16 +168,24 @@ GLfloat Player::get_on_air_time() {
 }
 
 void Player::display(float dt) {
+    float d = height/2.f;
+
     glPushMatrix();
         this->translate();
         glTranslatef(
             coordinateSystem->position.x,
             coordinateSystem->position.y,
             coordinateSystem->position.z);
+        //
+
         glPushMatrix();
             glRotatef(90, 1, 0, 0);
-            glCallList(this->collision_boundary->getID());
+            this->collision_boundary->display(dt);
         glPopMatrix();
+
+        glColor3f(1, 1, 1);
+        this->display_character();
+
     glPopMatrix();
 }
 

@@ -12,9 +12,8 @@ struct CoordinateSystem {
     vec3 up;
 };
 
-
 class Player: public Shape {
-    private:
+    protected:
         Cylinder* collision_boundary;
         GLfloat height;
         CoordinateSystem* coordinateSystem;
@@ -24,11 +23,16 @@ class Player: public Shape {
         GLboolean rising;
         GLfloat on_air_time;
 
+        GLuint head, body, arm0, arm1, leg0, leg1;
+        GLfloat dheight;
+
+        void display_character();
+
     public:
         Player(vec3 center, GLfloat height);
         ~Player();
 
-        void draw(
+        virtual void draw(
             std::shared_ptr<Texture> texture = nullptr,
             GLenum mode = GL_FILL,
             Outline outline = Outline::SPLITTED);
@@ -61,7 +65,7 @@ class Player: public Shape {
         GLfloat get_height();
         GLfloat get_depth();
 
-        void display(float dt);
+        virtual void display(float dt);
 };
 
 #endif  // SOURCE_MODELS_PLAYER_H_

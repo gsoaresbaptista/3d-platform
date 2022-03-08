@@ -9,12 +9,13 @@
 #include "../shapes/2d/circle.h"
 #include "../gameShapes/torch.h"
 #include "../libs/tinyxml2.h"
+#include "../../models/enemy.h"
 
 using namespace tinyxml2;
 using std::vector;
 
 struct SVGData {
-    // std::vector<Circle> circles;
+    std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Shape>> rects;
     std::vector<std::shared_ptr<Torch>> torchs;
     float arena_width;

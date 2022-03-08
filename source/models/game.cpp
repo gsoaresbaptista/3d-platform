@@ -24,6 +24,7 @@ Game::Game(
     this->current_camera = 4;
     this->player_speed = block_size * 3.5;
     this->player_jump_speed = block_size * 14;
+    this->enemies = data->enemies;
 
     // Create player
     this->player = new Player(data->player_pos, data->block_size);
@@ -49,12 +50,12 @@ void Game::create_lights() {
     for (int i = 0; i < 3; i++) {
         vec3 c0 = data->torchs[i]->get_center();
         c0.z += block_size;
-        c0.y += block_size/2.f;
+        c0.y += block_size;
 
         float light0[4][4] = {
-            { 0.1, 0.1, 0.1, 0.1f },  // ambient
-            { 0.8, 0.8, 0.8, 0.3f },  // diffuse
-            { 0.8, 0.8, 0.8, 0.3f },  // specular
+            { 0.08, 0.08, 0.08, 0.0f },  // ambient
+            { 0.30, 0.30, 0.30, 1.f },  // diffuse
+            { 0.05, 0.05, 0.05, 0.3f },  // specular
             { c0.x, c0.y, c0.z, 1.f },  // position
         };
 
@@ -88,6 +89,10 @@ void Game::draw(
     }
 
     this->player->draw();
+
+    for (auto& enemy : enemies) {
+        enemy->draw();
+    }
 }
 
 void Game::gravity(float dt) {
@@ -132,12 +137,12 @@ bool Game::obstacle_collision(vec3 movement, bool set_y) {
         double h2 = obstacle->get_height()/2.f;
         double d2 = obstacle->get_depth()/2.f;
 
-        if ((pos.x + block_size > center.x - w2) &&
-            (pos.x - block_size < center.x + w2) &&
+        if ((pos.x + block_size/2.f > center.x - w2) &&
+            (pos.x - block_size/2.f < center.x + w2) &&
             (pos.y + block_size > center.y - h2) &&
             (pos.y - block_size < center.y + h2) &&
-            (pos.z + block_size > center.z - d2) &&
-            (pos.z - block_size < center.z + d2)) {
+            (pos.z + block_size/2.f > center.z - d2) &&
+            (pos.z - block_size/2.f < center.z + d2)) {
             //
             if (set_y && movement.y < 0)
                 player->set_y(obstacle->get_center().y + h2 + 0.001);
@@ -298,6 +303,8 @@ void Game::update_camera_type() {
             this->player->get_coordinate_system(),
             this->data, this->block_size);
 
+        this->controller->to_rotate.x = 0;
+        this->controller->to_rotate.y = 0;
 
         //
         first = false;
@@ -366,7 +373,6 @@ void Game::display(float dt) {
     //
     glLoadIdentity();
     this->camera->activate();
-    this->player->display(dt);
 
     //
     this->create_lights();
@@ -377,6 +383,12 @@ void Game::display(float dt) {
     // Draw arena obstacles
     for (auto& obstacle : obstacles) {
         obstacle->display(dt, controller);
+    }
+
+    this->player->display(dt);
+
+    for (auto& enemy : enemies) {
+        enemy->display(dt);
     }
 
     this->display_hud();

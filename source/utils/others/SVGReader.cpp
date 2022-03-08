@@ -175,8 +175,17 @@ static void get_rects(std::shared_ptr<SVGData> data, XMLDocument* svg) {
     data->rects = rects;
 }
 
+static void create_enemies(
+        vector<CircleObject>* tmp, std::shared_ptr<SVGData> data) {
+    //
+    for (auto& enemy : *tmp) {
+        data->enemies.push_back(std::make_shared<Enemy>(
+            vec3(enemy.cx, enemy.cy, data->arena_depth/2.f), enemy.radius));
+    }
+}
+
 static void get_circles(std::shared_ptr<SVGData> data, XMLDocument* svg) {
-    vector<Object> tmp;
+    vector<CircleObject> tmp;
     XMLElement* file = svg->FirstChildElement();
     XMLElement* circ = file->FirstChildElement("circle");
 
@@ -187,7 +196,6 @@ static void get_circles(std::shared_ptr<SVGData> data, XMLDocument* svg) {
         circ->QueryFloatAttribute("cy", &cy);
         circ->QueryFloatAttribute("r", &radius);
 
-
         if (!strcmp(circ->Attribute("fill"), "green")) {
             CircleObject player = { .cx = cx, .cy = cy, .radius = radius };
             normalize_center(&player, data);
@@ -195,8 +203,13 @@ static void get_circles(std::shared_ptr<SVGData> data, XMLDocument* svg) {
             data->player_pos = vec3(
                 player.cx, player.cy, data->arena_depth/2.0);
         } else {
+            CircleObject new_enemy = { .cx = cx, .cy = cy, .radius = radius };
+            tmp.push_back(new_enemy);
         }
     }
+
+    normalize_centers(&tmp, data);
+    create_enemies(&tmp, data);
 }
 
 static void add_bounds(std::shared_ptr<SVGData> data) {

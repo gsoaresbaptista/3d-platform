@@ -27,7 +27,7 @@ void Torch::draw_block(GLfloat block_size, GLenum mode) {
     this->flame = std::make_shared<Plane>(p0, p1, p2, p3, vec3(0, 0, 1), BoxType::FLAME, nc);
 
     this->flame->draw_block(block_size, mode);
-    Box::draw_block(block_size, mode);
+    // Box::draw_block(block_size, mode);
 }
 
 void Torch::update_frame(float dt) {
@@ -52,7 +52,41 @@ void Torch::display(float dt, std::shared_ptr<ControllerData> controller) {
         glPopMatrix();
         this->translate();
         glRotatef(45, 1, 0, 0);
-        glCallList(this->id_);
+        // glCallList(this->id_);
+
+            vec3 p0(-width/2.0, height/2.0, depth/2.0);
+            vec3 p1(-width/2.0, -height/2.0, depth/2.0);
+            vec3 p2(width/2.0, -height/2.0, depth/2.0);
+            vec3 p3(width/2.0, height/2.0, depth/2.0);
+
+            // Back
+            vec3 p4(width/2.0, height/2.0, -depth/2.0);
+            vec3 p5(width/2.0, -height/2.0, -depth/2.0);
+            vec3 p6(-width/2.0, -height/2.0, -depth/2.0);
+            vec3 p7(-width/2.0, height/2.0, -depth/2.0);
+            glNormal3f(0, 0, 1);
+            Rectangle::draw_block(  // Frente
+                p0, p1, p2, p3, block_size, WHITE, Outline::ENTIRE, type);
+
+            glNormal3f(1, 0, 0);
+            Rectangle::draw_block(  // Direita
+                p3, p2, p5, p4, block_size, WHITE, Outline::ENTIRE, type);
+
+            glNormal3f(0, 0, -1);
+            Rectangle::draw_block(  // Trás
+                p4, p5, p6, p7, block_size, WHITE, Outline::ENTIRE, type);
+
+            glNormal3f(-1, 0, 0);
+            Rectangle::draw_block(  // Esquerda
+                p7, p6, p1, p0, block_size, WHITE, Outline::ENTIRE, type);
+
+            glNormal3f(0, 1, 0);
+            Rectangle::draw_block(  // Cima
+                p7, p0, p3, p4, block_size, WHITE, Outline::ENTIRE, type);
+
+            glNormal3f(0, -1, 0);
+            Rectangle::draw_block(  // Baixo
+                p1, p6, p5, p2, block_size, WHITE, Outline::ENTIRE, type);
     glPopMatrix();
     update_frame(dt);
 }
