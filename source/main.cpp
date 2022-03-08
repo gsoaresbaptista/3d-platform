@@ -17,7 +17,9 @@
 int main() {
     Canvas canvas(800, 800, "Trabalho 3D");
     canvas.init();
+    GameConstants::load_models();
     GameConstants::load_textures();
+    GameConstants::load_materials();
     auto controllerData = Controller::registerCallbacks();
 
     auto data = readSVG("inputs/original_map.svg");

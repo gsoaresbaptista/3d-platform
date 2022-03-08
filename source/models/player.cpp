@@ -28,6 +28,7 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     body = head + 1;
     arm0 = head + 2, arm1 = head + 3;
     leg0 = head + 4, leg1 = head + 5;
+    this->show_collision_boundary = false;
 }
 
 Player::~Player() {
@@ -92,6 +93,10 @@ void Player::display_character() {
             glCallList(arm0);
             glTranslatef(0, -dheight, 0);
             glCallList(arm1);
+            glRotatef(-90, 0, 0, 1);
+            glRotatef(90, 1, 0, 0);
+            glTranslatef(-dheight/2.f, 0, dheight/4.f);
+            glCallList(BOW_MODEL);
         glPopMatrix();
 
         glPushMatrix();
@@ -180,11 +185,12 @@ void Player::display(float dt) {
             coordinateSystem->position.y,
             coordinateSystem->position.z);
         //
-
-        glPushMatrix();
-            glRotatef(90, 1, 0, 0);
-            this->collision_boundary->display(dt);
-        glPopMatrix();
+        if (this->show_collision_boundary) {
+            glPushMatrix();
+                glRotatef(90, 1, 0, 0);
+                this->collision_boundary->display(dt);
+            glPopMatrix();
+        }
 
         glColor3f(1, 1, 1);
         this->display_character();

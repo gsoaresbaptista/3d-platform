@@ -4,6 +4,9 @@
 #include "player.h"
 
 class Enemy: public Player {
+    private:
+        void display_character();
+
     public:
         Enemy(vec3 center, GLfloat height);
         ~Enemy();
@@ -12,9 +15,6 @@ class Enemy: public Player {
             std::shared_ptr<Texture> texture = nullptr,
             GLenum mode = GL_FILL,
             Outline outline = Outline::SPLITTED);
-
-        void display(float dt);
-        void display_character();
 };
 
 #endif  // SOURCE_MODELS_ENEMY_H_

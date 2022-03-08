@@ -1,5 +1,7 @@
 #include "gameConstants.h"
+#include "objReader.h"
 
+// Textures
 std::shared_ptr<Texture> CHAIN_TEX = nullptr;
 std::shared_ptr<Texture> SPRUCE_PLANKS_TEX = nullptr;
 std::shared_ptr<Texture> DARK_OAK_PLANKS_TEX = nullptr;
@@ -12,12 +14,17 @@ std::shared_ptr<Texture> FLAME_TEX = nullptr;
 std::shared_ptr<Texture> CROSSHAIR_TEX = nullptr;
 std::shared_ptr<Texture> STEVE_TEX = nullptr;
 std::shared_ptr<Texture> SKELETON_TEX = nullptr;
+std::shared_ptr<Texture> BOW_TEX = nullptr;
+
+// Materials
 std::shared_ptr<Material> STONE_MATERIAL = nullptr;
 std::shared_ptr<Material> WOOD_MATERIAL = nullptr;
 std::shared_ptr<Material> PORTAL_MATERIAL = nullptr;
 
-void GameConstants::load_textures() {
-    //
+// Models
+GLuint BOW_MODEL = -1;
+
+void GameConstants::load_materials() {
     STONE_MATERIAL = std::make_shared<Material>(
         0.3f, 0.3f, 0.3f,  // Ambient
         0.8f, 0.8f, 0.8f,  // Diffuse
@@ -34,23 +41,39 @@ void GameConstants::load_textures() {
         1.0f, 1.0f, 1.0f,  // Specular
         1.0f,
         1.0f, 1.0f, 1.0f);
+}
 
-    //
-    STEVE_TEX = Texture::load("resources/steve.png", true, true);
-    SKELETON_TEX = Texture::load("resources/skeleton.png", true, true);
-    PORTAL_TEX = Texture::load("resources/portal.png", true);
-    CHAIN_TEX = Texture::load("resources/chain.png", true);
-    SPRUCE_PLANKS_TEX = Texture::load("resources/spruce_planks.png", true);
-    DARK_OAK_PLANKS_TEX = Texture::load("resources/dark_oak_planks.png", true);
-    TORCH_TEX = Texture::load("resources/torch.png", true);
-    FLAME_TEX = Texture::load("resources/flame.png", true);
+void GameConstants::load_textures() {
+    STEVE_TEX = Texture::load(
+        "resources/textures/steve.png", true, true);
+    SKELETON_TEX = Texture::load(
+        "resources/textures/skeleton.png", true, true);
+    PORTAL_TEX = Texture::load(
+        "resources/textures/portal.png", true);
+    CHAIN_TEX = Texture::load(
+        "resources/textures/chain.png", true);
+    SPRUCE_PLANKS_TEX = Texture::load(
+        "resources/textures/spruce_planks.png", true);
+    DARK_OAK_PLANKS_TEX = Texture::load(
+        "resources/textures/dark_oak_planks.png", true);
+    TORCH_TEX = Texture::load(
+        "resources/textures/torch.png", true);
+    FLAME_TEX = Texture::load(
+        "resources/textures/flame.png", true);
     DEEPSLATE_BRICKS_TEX = Texture::load(
-        "resources/deepslate_bricks.png", true);
+        "resources/textures/deepslate_bricks.png", true);
     CRACKED_DEEPSLATE_BRICKS_TEX = Texture::load(
-        "resources/cracked_deepslate_bricks.png", true);
+        "resources/textures/cracked_deepslate_bricks.png", true);
     MOSSY_DEEPSLATE_BRICKS_TEX = Texture::load(
-        "resources/mossy_deepslate_bricks.png", true);
+        "resources/textures/mossy_deepslate_bricks.png", true);
+    CROSSHAIR_TEX = Texture::load(
+        "resources/textures/crosshair013.png", true);
+}
 
-    //
-    CROSSHAIR_TEX = Texture::load("resources/crosshair013.png", true);
+void GameConstants::load_models() {
+    BOW_MODEL = glGenLists(1);
+    BOW_TEX = Texture::load(
+        "resources/textures/Bow_basecolor.png", false, true);
+    ObjReader::load_obj(
+        &BOW_MODEL, "resources/models/bow_000001.obj", BOW_TEX);
 }

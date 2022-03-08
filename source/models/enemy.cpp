@@ -38,6 +38,10 @@ void Enemy::display_character() {
             glCallList(arm0);
             glTranslatef(0, -dheight, 0);
             glCallList(arm1);
+            glRotatef(-90, 0, 0, 1);
+            glRotatef(90, 1, 0, 0);
+            glTranslatef(-dheight/2.f, 0, dheight/5.f);
+            glCallList(BOW_MODEL);
         glPopMatrix();
 
         glPushMatrix();
@@ -58,25 +62,5 @@ void Enemy::display_character() {
             glTranslatef(0, dheight, 0);
             glCallList(leg0);
         glPopMatrix();
-    glPopMatrix();
-}
-
-void Enemy::display(float dt) {
-    float d = height/2.f;
-
-    glPushMatrix();
-        glTranslatef(
-            coordinateSystem->position.x + center.x,
-            coordinateSystem->position.y + center.y,
-            coordinateSystem->position.z + center.z);
-
-        // glPushMatrix();
-        //     glRotatef(90, 1, 0, 0);
-        //     this->collision_boundary->display(dt);
-        // glPopMatrix();
-
-        glColor3f(1, 1, 1);
-        this->display_character();
-
     glPopMatrix();
 }

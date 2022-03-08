@@ -26,7 +26,8 @@ class Player: public Shape {
         GLuint head, body, arm0, arm1, leg0, leg1;
         GLfloat dheight;
 
-        void display_character();
+        virtual void display_character();
+        GLboolean show_collision_boundary;
 
     public:
         Player(vec3 center, GLfloat height);
@@ -65,7 +66,7 @@ class Player: public Shape {
         GLfloat get_height();
         GLfloat get_depth();
 
-        virtual void display(float dt);
+        void display(float dt);
 };
 
 #endif  // SOURCE_MODELS_PLAYER_H_
