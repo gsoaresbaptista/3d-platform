@@ -25,7 +25,7 @@ objects/models/cameras/%.o: source/models/cameras/%.cpp source/models/cameras/%.
 objects/views/%.o: source/views/%.cpp source/views/%.h
 	$(CXX) $< -c -o $@
 
-objects/utils/%.o: source/utils/shapes/%.cpp source/utils/shapes/%.h
+objects/utils/shapes/%.o: source/utils/shapes/%.cpp source/utils/shapes/%.h
 	$(CXX) $< -c -o $@
 
 objects/libs/%.o: source/libs/%.cpp source/libs/%.h

@@ -42,6 +42,8 @@ void OrbitalCamera::update() {
     this->player->direction = this->look - player->position - center;
     this->player->direction.y = 0;
     this->player->direction = this->player->direction.normalize();
+    this->player->left = vec3(0, 1, 0) * this->player->direction;
+    this->player->up = this->player->direction * this->player->left;
 }
 
 void OrbitalCamera::zoom_in() {
