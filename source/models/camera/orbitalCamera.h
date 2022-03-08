@@ -28,11 +28,6 @@ class OrbitalCamera: public Camera {
         ~OrbitalCamera();
         void increment_theta(float delta_theta);
         void increment_phi(float delta_phi);
-        void increment_yaw(float dYaw);
-        void increment_pitch(float dPitch);
-        void reset_theta();
-        float get_yaw();
-        float get_pitch();
         void zoom_in();
         void zoom_out();
         void activate();

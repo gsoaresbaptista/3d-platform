@@ -12,6 +12,9 @@
 #include "../controllers/controller.h"
 #include "../utils/style/texture.h"
 #include "camera/camera.h"
+#include "camera/freeCamera.h"
+#include "camera/defaultCamera.h"
+#include "camera/orbitalCamera.h"
 
 class Game: public Shape {
     private:
@@ -21,12 +24,17 @@ class Game: public Shape {
         std::shared_ptr<ControllerData> controller;
         std::shared_ptr<SVGData> data;
         Player* player;
-        GLuint current_camera;
-        Camera* camera;
         Plane crosshair;
         GLfloat player_speed;
         GLfloat player_jump_speed;
         std::vector<std::shared_ptr<Enemy>> enemies;
+
+        //
+        GLuint current_camera;
+        Camera* camera;
+        Camera* freeCamera;
+        Camera* orbitalCamera;
+        Camera* defaultCamera;
 
         //
         void create_lights();

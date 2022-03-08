@@ -43,7 +43,10 @@ void Player::clear_on_air_time() {
 }
 
 void Player::set_coordinate_system(CoordinateSystem* system) {
-    this->coordinateSystem = system;
+    this->coordinateSystem->direction = system->direction;
+    this->coordinateSystem->left = system->left;
+    this->coordinateSystem->up = system->up;
+    this->coordinateSystem->position = system->position;
 }
 
 GLfloat Player::get_width() {

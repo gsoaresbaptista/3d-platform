@@ -3,9 +3,6 @@
 #include <iostream>
 #include <GL/glut.h>
 #include <GL/freeglut.h>
-#include "camera/freeCamera.h"
-#include "camera/defaultCamera.h"
-#include "camera/orbitalCamera.h"
 #include "../utils/shapes/2d/rectangle.h"
 #include "../controllers/mouseListener.h"
 
@@ -29,9 +26,6 @@ Game::Game(
     // Create player
     this->player = new Player(data->player_pos, data->block_size);
 
-    // Create camera
-    this->update_camera_type();
-
     //
     this->crosshair  = Plane(
         vec3(-0.08, 0.08, 0),
@@ -39,6 +33,23 @@ Game::Game(
         vec3(0.08, -0.08, 0),
         vec3(0.08, 0.08, 0),
         vec3(0, 0, 0));
+
+    //
+    this->defaultCamera = new DefaultCamera(
+        this->player->get_coordinate_system(),
+        player->get_center());
+
+    this->orbitalCamera = new OrbitalCamera(
+        this->player->get_coordinate_system(),
+        player->get_center(),
+        block_size);
+
+    this->freeCamera = new FreeCamera(
+        this->player->get_coordinate_system(),
+        this->data, this->block_size);
+
+    // Create camera
+    this->update_camera_type();
 
     //
     glEnable(GL_LIGHT0);
@@ -264,9 +275,7 @@ void Game::update_camera_type() {
 
     if (controller->keys['1'] && current_camera != 1 || first) {
         this->current_camera = 1;
-        this->camera = new DefaultCamera(
-            this->player->get_coordinate_system(),
-            player->get_center());
+        this->camera = this->defaultCamera;
 
         //
         first = false;
@@ -274,10 +283,7 @@ void Game::update_camera_type() {
 
     } else if (controller->keys['3'] && current_camera != 3) {
         this->current_camera = 3;
-        this->camera = new OrbitalCamera(
-            this->player->get_coordinate_system(),
-            player->get_center(),
-            block_size);
+        this->camera = this->orbitalCamera;
 
         //
         first = false;
@@ -295,10 +301,7 @@ void Game::update_camera_type() {
 
         //
         this->current_camera = 4;
-        this->camera = new FreeCamera(
-            this->player->get_coordinate_system(),
-            this->data, this->block_size);
-
+        this->camera = this->freeCamera;
         this->controller->to_rotate.x = 0;
         this->controller->to_rotate.y = 0;
 
@@ -309,9 +312,6 @@ void Game::update_camera_type() {
 }
 
 void Game::update_controller(float dt) {
-    static bool active0 = false;
-    static bool active1 = true;
-
     if (current_camera == 1) {
         DefaultCamera* cam = (DefaultCamera*)this->camera;
         this->controller->to_rotate.x = cam->get_yaw();
@@ -327,12 +327,6 @@ void Game::update_controller(float dt) {
         }
 
         if (controller->keys['x']) {
-            if (active0) {
-                orbital->reset_theta();
-            }
-
-            active0 = !active0;
-            active1 = !active1;
             controller->keys['x'] = false;
             controller->move_orbital_camera = !controller->move_orbital_camera;
         }
@@ -390,18 +384,7 @@ void Game::display(float dt) {
         obstacle->display(dt, controller);
     }
 
-    glPushMatrix();
-        glTranslatef(
-            this->player->get_position().x + this->player->get_center().x,
-            this->player->get_position().y + this->player->get_center().y,
-            this->player->get_position().z + this->player->get_center().z);
-        glRotatef(-((OrbitalCamera*)this->camera)->get_yaw(), 0, 1, 0);
-        glTranslatef(
-            -this->player->get_position().x - this->player->get_center().x,
-            -this->player->get_position().y - this->player->get_center().y,
-            -this->player->get_position().z - this->player->get_center().z);
-        this->player->display(dt);
-    glPopMatrix();
+    this->player->display(dt);
 
     for (auto& enemy : enemies) {
         enemy->display(dt);

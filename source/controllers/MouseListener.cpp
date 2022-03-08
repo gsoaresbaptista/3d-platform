@@ -40,11 +40,6 @@ void mouse_callback(int xpos, int ypos) {
         if (*MOVE_ORBITAL_CAMERA) {
             ORBITAL_CAMERA->increment_phi(-MOUSE_DELTA->y);
             ORBITAL_CAMERA->increment_theta(-MOUSE_DELTA->x);
-        } else {
-            ORBITAL_CAMERA->increment_phi(-MOUSE_DELTA->y);
-            ORBITAL_CAMERA->increment_theta(-MOUSE_DELTA->x);
-            ORBITAL_CAMERA->increment_pitch(-MOUSE_DELTA->y);
-            ORBITAL_CAMERA->increment_yaw(-MOUSE_DELTA->x);
         }
     }
 
