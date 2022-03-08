@@ -8,11 +8,13 @@
 static DefaultCamera* DEFAULT_CAMERA;
 static OrbitalCamera* ORBITAL_CAMERA;
 static GLboolean* MOVE_ORBITAL_CAMERA;
-static float MOUSE_SENSITIVITY = 3;
+static float MOUSE_SENSITIVITY = 5;
 
 vec2* MOUSE_DELTA;
 static bool first_mouse_pos = true;
 static float last_pos_x, last_pos_y = 0.0;
+
+static int button_down = 0;
 
 void mouse_callback(int xpos, int ypos) {
     if (first_mouse_pos) {
@@ -43,10 +45,22 @@ void mouse_callback(int xpos, int ypos) {
         }
     }
 
-    if (xpos <= 100 || xpos >= 400 ||
-        ypos <= 100 || ypos >= 400) {
+    if (xpos <= 300 || xpos >= 500 ||
+        ypos <= 300 || ypos >= 500) {
+        printf("%d, %d\n", xpos, ypos);
         first_mouse_pos = true;
-        glutWarpPointer(250, 250);
+        glutWarpPointer(400, 400);
+    }
+}
+
+void mouse_callback(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        last_pos_x = x;
+        last_pos_y = y;
+        button_down = 1;
+    }
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+        button_down = 0;
     }
 }
 
@@ -55,6 +69,7 @@ void MouseListener::registerCallbacks(std::shared_ptr<ControllerData> data) {
     MOUSE_DELTA = &(data->mouse_delta);
     MOVE_ORBITAL_CAMERA = &(data->move_orbital_camera);
     glutPassiveMotionFunc(mouse_callback);
+    glutMouseFunc(mouse_callback);
 }
 
 void MouseListener::set_camera(DefaultCamera* camera) {
