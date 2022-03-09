@@ -28,6 +28,9 @@ objects/views/%.o: source/views/%.cpp source/views/%.h
 objects/utils/shapes/%.o: source/utils/shapes/%.cpp source/utils/shapes/%.h
 	$(CXX) $< -c -o $@
 
+objects/utils/style/%.o: source/utils/style/%.cpp source/utils/style/%.h
+	$(CXX) $< -c -o $@
+
 objects/libs/%.o: source/libs/%.cpp source/libs/%.h
 	$(CXX) $< -c -o $@
 

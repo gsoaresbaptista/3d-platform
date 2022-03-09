@@ -129,7 +129,7 @@ void Game::gravity(float dt) {
         } else {
             if ((player->get_feet_height() + acceleration * dt >= 0) &&
                 (!obstacle_collision(
-                    vec3(0, acceleration * dt, 0)))) {
+                    vec3(0, acceleration * dt, 0), this->player))) {
                 //
                 this->player->move_up(acceleration * dt);
             } else {
@@ -142,14 +142,13 @@ void Game::gravity(float dt) {
                 player->set_y(0);
             }
         }
-    } else if (!obstacle_collision(vec3(0, acceleration * dt, 0))) {
+    } else if (!obstacle_collision(vec3(0, acceleration * dt, 0), this->player)) {
         this->player->move_up(acceleration * dt);
         player->set_falling(true);
     }
 }
 
-// TODO(all): Colocar o player como parâmetro
-bool Game::obstacle_collision(vec3 movement) {
+bool Game::obstacle_collision(vec3 movement, Player* player) {
     //
     CoordinateSystem* coord = player->get_coordinate_system();
     vec3 pos = coord->position + player->get_center() + movement;
@@ -170,6 +169,34 @@ bool Game::obstacle_collision(vec3 movement) {
             return true;
         }
     }
+
+    float radius = this->player->get_collision_radius();
+
+    for (auto& enemy : enemies) {
+        vec3 center = enemy->get_center();
+        float radius_distance = distance_xz(pos, center);
+
+        if (player->get_center() == enemy->get_center()) continue;
+
+        if (radius_distance < 2* radius &&
+        (pos.y + block_size > center.y - block_size) &&
+        (pos.y - block_size < center.y + block_size)) {
+            //
+            return true;
+        }
+    }
+
+    float radius_distance = distance_xz(pos, this->player->get_center());
+    
+    if (player->get_center() == this->player->get_center()) return false;
+
+    if (radius_distance < 2* radius &&
+    (pos.y + block_size > center.y - block_size) &&
+    (pos.y - block_size < center.y + block_size)) {
+        //
+        return true;
+    }
+
     return false;
 }
 
@@ -185,14 +212,14 @@ void Game::update_player_move(float dt) {
         if (current_camera == 4) {
             movement = coord->direction * dt * player_speed;
 
-            if (!obstacle_collision(movement)) {
+            if (!obstacle_collision(movement, this->player)) {
                 player->move_forward_backward(movement);
             }
 
         } else {
             movement = coord->left * -1 * dt * player_speed;
 
-            if (!obstacle_collision(movement)) {
+            if (!obstacle_collision(movement, this->player)) {
                 player->move_left_right(movement);
             }
         }
@@ -200,13 +227,13 @@ void Game::update_player_move(float dt) {
         if (current_camera == 4) {
             movement = coord->direction * -1 * dt * player_speed;
 
-            if (!obstacle_collision(movement)) {
+            if (!obstacle_collision(movement, this->player)) {
                 player->move_forward_backward(movement);
             }
         } else {
             movement = coord->left * dt * player_speed;
 
-            if (!obstacle_collision(movement)) {
+            if (!obstacle_collision(movement, this->player)) {
                 player->move_left_right(movement);
             }
         }
@@ -217,7 +244,7 @@ void Game::update_player_move(float dt) {
             movement = coord->left * dt * player_speed;
             movement.y = 0;
 
-            if (!obstacle_collision(movement)) {
+            if (!obstacle_collision(movement, this->player)) {
                 player->move_left_right(movement);
             }
 
@@ -225,16 +252,16 @@ void Game::update_player_move(float dt) {
             movement = coord->direction * dt * player_speed;
             movement.y = 0;
 
-            if (!obstacle_collision(movement)) {
+            if (!obstacle_collision(movement, this->player)) {
                 player->move_forward_backward(movement);
 
             } else {
                 vec3 movement0 = vec3(movement.x, 0, 0);
                 vec3 movement1 = vec3(0, 0, movement.z);
 
-                if (!obstacle_collision(movement0)) {
+                if (!obstacle_collision(movement0, this->player)) {
                     player->move_forward_backward(movement0);
-                } else if (!obstacle_collision(movement1)) {
+                } else if (!obstacle_collision(movement1, this->player)) {
                     player->move_forward_backward(movement1);
                 }
             }
@@ -244,7 +271,7 @@ void Game::update_player_move(float dt) {
             movement = coord->left * -1 * dt * player_speed;
             movement.y = 0;
 
-            if (!obstacle_collision(movement)) {
+            if (!obstacle_collision(movement, this->player)) {
                 player->move_left_right(movement);
             }
 
@@ -252,7 +279,7 @@ void Game::update_player_move(float dt) {
             movement = coord->direction * -1 * dt * player_speed;
             movement.y = 0;
 
-            if (!obstacle_collision(movement)) {
+            if (!obstacle_collision(movement, this->player)) {
                 player->move_forward_backward(movement);
             }
         }
@@ -265,7 +292,7 @@ void Game::update_player_jump(float dt) {
     if ((this->controller->keys[' ']) && (this->player->is_rising() ||
         (!this->player->is_rising() && !this->player->is_falling()))) {
         //
-        if (!obstacle_collision(vec3(0, this->player_jump_speed*dt, 0))) {
+        if (!obstacle_collision(vec3(0, this->player_jump_speed*dt, 0), this->player)) {
             // Pressing space, in floor or rising
             this->player->set_rising(true);
             this->player->move_up(this->player_jump_speed*dt);
