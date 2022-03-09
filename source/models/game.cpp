@@ -149,7 +149,8 @@ void Game::gravity(float dt) {
 }
 
 bool Game::obstacle_collision(vec3 movement, Player* player) {
-    //
+    // Obstacle Collision
+
     CoordinateSystem* coord = player->get_coordinate_system();
     vec3 pos = coord->position + player->get_center() + movement;
 
@@ -170,6 +171,8 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
         }
     }
 
+    // Player Collision
+
     float radius = this->player->get_collision_radius();
 
     for (auto& enemy : enemies) {
@@ -187,7 +190,7 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
     }
 
     float radius_distance = distance_xz(pos, this->player->get_center());
-    
+
     if (player->get_center() == this->player->get_center()) return false;
 
     if (radius_distance < 2* radius &&
