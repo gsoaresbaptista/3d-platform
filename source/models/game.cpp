@@ -5,8 +5,52 @@
 #include <GL/freeglut.h>
 #include "../utils/shapes/2d/rectangle.h"
 #include "../controllers/mouseListener.h"
+#include "../utils/libs/imgui/imgui.h"
+#include "../utils/libs/imgui/imgui_impl_glut.h"
+#include "../utils/libs/imgui/imgui_impl_opengl2.h"
 
 #define acceleration (-player->get_on_air_time() * block_size * 18.0)
+
+static bool gravity_on = true;
+static bool collision_on = true;
+static bool player_collision_box = false;
+static bool enemies_collision_box = false;
+static float* mouse_sensitivity;
+
+static void display_imgui() {
+    {
+        ImGui::SetNextWindowSize(ImVec2(0, 0));
+        ImGui::SetNextWindowPos(ImVec2(5, 5));
+        ImGui::Begin("Geral Settings", nullptr, 0);
+
+        //
+        ImGui::Checkbox("Player Cylinder", &player_collision_box);
+        ImGui::Checkbox("Enemies Cylinder", &enemies_collision_box);
+
+        //
+        ImGui::Checkbox("Gravity", &gravity_on);
+        ImGui::Checkbox("Collision", &collision_on);
+
+        ImGui::InputFloat("Sensitivity", mouse_sensitivity, 1);
+
+        ImGui::End();
+    }
+}
+
+static void update_imgui() {
+    // Start the Dear ImGui frame
+    ImGui_ImplOpenGL2_NewFrame();
+    ImGui_ImplGLUT_NewFrame();
+
+    // Display menu
+    display_imgui();
+
+    // Rendering
+    ImGui::Render();
+    ImGuiIO& io = ImGui::GetIO();
+    glViewport(0, 0, (GLsizei)io.DisplaySize.x, (GLsizei)io.DisplaySize.y);
+    ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+}
 
 Game::Game(
         std::shared_ptr<SVGData> data,
@@ -50,6 +94,10 @@ Game::Game(
 
     // Create camera
     this->update_camera_type();
+
+    this->controller->disable_mouse_warp = false;
+    mouse_sensitivity = &(this->controller->mouse_sensitivity);
+    *mouse_sensitivity = 3;
 }
 
 void Game::create_lights() {
@@ -58,36 +106,21 @@ void Game::create_lights() {
         c0.z += block_size;
         c0.y += block_size;
 
-        float light0[4][4] = {
+        float light[4][4] = {
             { 0.35, 0.35, 0.35, 0.30f },  // ambient
             { 0.80, 0.80, 0.80, 0.80f },  // diffuse
             { 0.25, 0.25, 0.25, 0.80f },  // specular
             { c0.x, c0.y, c0.z, 1.f },  // position
         };
 
-        glLightfv(GL_LIGHT0 + i, GL_AMBIENT, &light0[0][0]);
-        glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, &light0[1][0]);
-        glLightfv(GL_LIGHT0 + i, GL_SPECULAR, &light0[2][0]);
-        glLightfv(GL_LIGHT0 + i, GL_POSITION, &light0[3][0]);
+        glLightfv(GL_LIGHT0 + i, GL_AMBIENT, &light[0][0]);
+        glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, &light[1][0]);
+        glLightfv(GL_LIGHT0 + i, GL_SPECULAR, &light[2][0]);
+        glLightfv(GL_LIGHT0 + i, GL_POSITION, &light[3][0]);
         glLightf(GL_LIGHT0 + i, GL_CONSTANT_ATTENUATION, 0.15);
         glLightf(GL_LIGHT0 + i, GL_LINEAR_ATTENUATION, 0.005);
         glLightf(GL_LIGHT0 + i, GL_QUADRATIC_ATTENUATION, 0.001);
     }
-
-    float light0[4][4] = {
-        { 0.60, 0.20, 0.60, 1.0f },  // ambient
-        { 0.60, 0.20, 0.60, 1.0f },  // diffuse
-        { 0.60, 0.20, 0.60, 1.0f },  // specular
-        { data->arena_width, block_size,  // position
-          data->arena_depth/2.f, 1.f }};
-
-    glLightfv(GL_LIGHT7, GL_AMBIENT, &light0[0][0]);
-    glLightfv(GL_LIGHT7, GL_DIFFUSE, &light0[1][0]);
-    glLightfv(GL_LIGHT7, GL_SPECULAR, &light0[2][0]);
-    glLightfv(GL_LIGHT7, GL_POSITION, &light0[3][0]);
-    glLightf(GL_LIGHT7, GL_CONSTANT_ATTENUATION, 0.15);
-    glLightf(GL_LIGHT7, GL_LINEAR_ATTENUATION, 0.005);
-    glLightf(GL_LIGHT7, GL_QUADRATIC_ATTENUATION, 0.0008);
 }
 
 GLfloat Game::get_width() {
@@ -119,36 +152,40 @@ void Game::draw(
 }
 
 void Game::gravity(float dt) {
-    if ((player->is_falling() || player->is_rising())) {
-        if ((player->is_rising()) &&
-            (this->player_jump_speed + acceleration <= 0)) {
-            //
-            player->set_rising(false);
-            player->set_falling(true);
-            this->player->clear_on_air_time();
-        } else {
-            if ((player->get_feet_height() + acceleration * dt >= 0) &&
-                (!obstacle_collision(
-                    vec3(0, acceleration * dt, 0), this->player))) {
+    if (gravity_on) {
+        if ((player->is_falling() || player->is_rising())) {
+            if ((player->is_rising()) &&
+                (this->player_jump_speed + acceleration <= 0)) {
                 //
-                this->player->move_up(acceleration * dt);
-            } else {
-                this->player->set_rising(false);
-                this->player->set_falling(false);
+                player->set_rising(false);
+                player->set_falling(true);
                 this->player->clear_on_air_time();
+            } else {
+                if ((player->get_feet_height() + acceleration * dt >= 0) &&
+                    (!obstacle_collision(
+                        vec3(0, acceleration * dt, 0), this->player))) {
+                    //
+                    this->player->move_up(acceleration * dt);
+                } else {
+                    this->player->set_rising(false);
+                    this->player->set_falling(false);
+                    this->player->clear_on_air_time();
+                }
+                //
+                if (player->get_feet_height() + acceleration*dt <= 0) {
+                    player->set_y(0);
+                }
             }
-            //
-            if (player->get_feet_height() + acceleration*dt <= 0) {
-                player->set_y(0);
-            }
+        } else if (!obstacle_collision(vec3(0, acceleration * dt, 0), this->player)) {
+            this->player->move_up(acceleration * dt);
+            player->set_falling(true);
         }
-    } else if (!obstacle_collision(vec3(0, acceleration * dt, 0), this->player)) {
-        this->player->move_up(acceleration * dt);
-        player->set_falling(true);
     }
 }
 
 bool Game::obstacle_collision(vec3 movement, Player* player) {
+    if (!collision_on) return false;
+
     // Obstacle Collision
 
     CoordinateSystem* coord = player->get_coordinate_system();
@@ -202,10 +239,6 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
 
     return false;
 }
-
-// Lembrar de verificar se não é ele próprio
-// Inimigo com inimigo, e player com player
-// bool Game::enemies_collision(vec3 movement, Player* player);
 
 void Game::update_player_move(float dt) {
     vec3 movement;
@@ -291,11 +324,13 @@ void Game::update_player_move(float dt) {
 
 void Game::update_player_jump(float dt) {
     // Jump logic
-
-    if ((this->controller->keys[' ']) && (this->player->is_rising() ||
-        (!this->player->is_rising() && !this->player->is_falling()))) {
+    if ((this->controller->keys[' '] && !gravity_on) ||
+        (this->controller->keys[' '] && (this->player->is_rising() ||
+        (!this->player->is_rising() && !this->player->is_falling())))) {
         //
-        if (!obstacle_collision(vec3(0, this->player_jump_speed*dt, 0), this->player)) {
+        if (
+            !obstacle_collision(vec3(0, this->player_jump_speed*dt, 0),
+                                this->player)) {
             // Pressing space, in floor or rising
             this->player->set_rising(true);
             this->player->move_up(this->player_jump_speed*dt);
@@ -306,7 +341,7 @@ void Game::update_player_jump(float dt) {
             this->player->set_falling(true);
             this->player->clear_on_air_time();
         }
-    } else if (this->player->is_falling()) {
+    } else if (gravity_on && this->player->is_falling()) {
         // Player falling, increment time falling
         player->increment_on_air_time(dt);
 
@@ -375,8 +410,27 @@ void Game::update_controller(float dt) {
         }
 
         if (controller->keys['x']) {
-            controller->keys['x'] = false;
+            controller->keys['x'] = false;  // Disable
             controller->move_orbital_camera = !controller->move_orbital_camera;
+        }
+    }
+
+    if (!gravity_on && controller->keys['q']) {
+        if (!obstacle_collision(vec3(0, -block_size*0.15, 0), player)) {
+            this->player->move_up(-block_size*0.15);
+        }
+    }
+
+    //
+    if (controller->keys['m']) {
+        controller->keys['m'] = false;  // Disable
+        controller->disable_mouse_warp = !controller->disable_mouse_warp;
+
+        //
+        if (controller->disable_mouse_warp) {
+            glutSetCursor(GLUT_CURSOR_INHERIT);
+        } else {
+            glutSetCursor(GLUT_CURSOR_NONE);
         }
     }
 }
@@ -396,6 +450,21 @@ void Game::update(float dt) {
     this->gravity(dt);
     this->update_player_move(dt);
     this->update_player_jump(dt);
+
+    //
+    static bool last_player_box_state = false;
+    static bool last_enemies_box_state = false;
+
+    if (last_player_box_state != player_collision_box) {
+        player->set_show_collision_boundary(player_collision_box);
+        last_player_box_state = !last_player_box_state;
+    }
+
+    if (last_enemies_box_state != enemies_collision_box) {
+        for (auto& enemy : enemies)
+            enemy->set_show_collision_boundary(enemies_collision_box);
+        last_enemies_box_state = !last_enemies_box_state;
+    }
 }
 
 void Game::display_hud() {
@@ -406,11 +475,33 @@ void Game::display_hud() {
         glMatrixMode(GL_MODELVIEW);
     // Clear the model_view matrix
     glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+    glLoadIdentity();
 
     // Draw static info
-        if (current_camera <= 2)
-            this->crosshair.draw(CROSSHAIR_TEX);
+    if (current_camera <= 2) {
+        PORTAL_MATERIAL->activate();
+        this->crosshair.draw(CROSSHAIR_TEX);
+    }
+
+    if (controller->disable_mouse_warp)
+        update_imgui();
+}
+
+void Game::create_portal() {
+    float portal[4][4] = {
+        { 0.60, 0.20, 0.60, 1.0f },  // ambient
+        { 0.60, 0.20, 0.60, 1.0f },  // diffuse
+        { 0.60, 0.20, 0.60, 1.0f },  // specular
+        { data->arena_width, block_size,  // position
+          data->arena_depth/2.f, 1.f }};
+
+    glLightfv(GL_LIGHT7, GL_AMBIENT, &portal[0][0]);
+    glLightfv(GL_LIGHT7, GL_DIFFUSE, &portal[1][0]);
+    glLightfv(GL_LIGHT7, GL_SPECULAR, &portal[2][0]);
+    glLightfv(GL_LIGHT7, GL_POSITION, &portal[3][0]);
+    glLightf(GL_LIGHT7, GL_CONSTANT_ATTENUATION, 0.15);
+    glLightf(GL_LIGHT7, GL_LINEAR_ATTENUATION, 0.005);
+    glLightf(GL_LIGHT7, GL_QUADRATIC_ATTENUATION, 0.0008);
 }
 
 void Game::display(float dt) {
@@ -423,9 +514,7 @@ void Game::display(float dt) {
 
     //
     this->create_lights();
-
-    //
-    glColor3f(1, 1, 1);
+    this->create_portal();
 
     // Draw arena obstacles
     for (auto& obstacle : obstacles) {

@@ -38,6 +38,7 @@ class Game: public Shape {
 
         //
         void create_lights();
+        void create_portal();
         void update(float dt);
         void update_controller(float dt);
         void update_camera_type();

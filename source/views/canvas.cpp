@@ -1,8 +1,10 @@
 #include "canvas.h"
 #include <GL/glut.h>
 #include <GL/freeglut.h>
-
 #include <iostream>
+#include "../utils/libs/imgui/imgui.h"
+#include "../utils/libs/imgui/imgui_impl_glut.h"
+#include "../utils/libs/imgui/imgui_impl_opengl2.h"
 
 //
 static GLuint canvas_width;
@@ -42,7 +44,9 @@ Canvas::Canvas(GLuint width, GLuint height, const GLchar* name, GLuint fps) {
 void Canvas::init() {
     int argc = 1;
     glutInit(&argc, NULL);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutSetOption(GLUT_MULTISAMPLE, 16);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
+    glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
     glutInitWindowSize(canvas_width, canvas_height);
     canvas_id = glutCreateWindow(canvas_name);
     glutSetOption(
@@ -75,11 +79,26 @@ void Canvas::init() {
     //
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_INTERPOLATE);
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.IniFilename = NULL;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGLUT_Init();
+    ImGui_ImplGLUT_InstallFuncs();
+    ImGui_ImplOpenGL2_Init();
 }
 
 void Canvas::run() {
     glutTimerFunc(1000.0/canvas_fps, this->update, 0);
     glutMainLoop();
+
+    // Cleanup
+    ImGui_ImplOpenGL2_Shutdown();
+    ImGui_ImplGLUT_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void Canvas::update(int value) {
@@ -94,7 +113,6 @@ void Canvas::update(int value) {
     //
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     window_resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-    // glLoadIdentity();
 
     //
     glColor3f(1, 1, 1);

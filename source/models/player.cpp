@@ -30,7 +30,7 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     leg0 = head + 4, leg1 = head + 5;
 
     //
-    this->show_collision_boundary = true;
+    this->show_collision_boundary = false;
 }
 
 Player::~Player() {
