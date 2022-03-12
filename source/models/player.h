@@ -29,9 +29,12 @@ class Player: public Shape {
         GLfloat dheight;
 
         //
+        GLboolean walking;
         GLfloat angles[20];
         GLfloat accumulated_time_bow_animation;
+        GLfloat accumulated_time_leg_animation;
         GLint bow_animation_angle_id;
+        GLint leg_animation_angle_id;
         GLint bow_state_id;
 
         virtual void display_character();
@@ -74,6 +77,7 @@ class Player: public Shape {
         GLfloat get_height();
         GLfloat get_depth();
         void set_show_collision_boundary(GLboolean value);
+        void clear_walking();
 
         //
         void increment_bow_animation(float dt);

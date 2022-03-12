@@ -2,6 +2,7 @@
 #include "../utils/shapes/2d/rectangle.h"
 #include "../utils/style/steve.h"
 #include "../utils/others/angles/steve/arm_bow.h"
+#include "../utils/others/angles/steve/leg.h"
 
 Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->center = center;
@@ -34,11 +35,17 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
         this->angles[i] = arm_bow[0][i];
     }
 
+    for (int i = 8; i < 21; i++) {
+        this->angles[i] = leg_angles[0][i];
+    }
+
     //
     this->show_collision_boundary = false;
 
     //
+    this->walking = false;
     this->accumulated_time_bow_animation = 0;
+    this->accumulated_time_leg_animation = 0;
     this->bow_animation_angle_id = 0;
     this->bow_state_id = 0;
 }
@@ -53,6 +60,10 @@ void Player::increment_on_air_time(GLfloat dt) {
 
 void Player::clear_on_air_time() {
     this->on_air_time = 0;
+
+    for (int i = 8; i < 21; i++) {
+        this->angles[i] = leg_angles[0][i];
+    }
 }
 
 void Player::set_coordinate_system(CoordinateSystem* system) {
@@ -164,17 +175,36 @@ void Player::display_character() {
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(dheight/4.f, -dheight/2.f, 0);
-            glCallList(leg1);
-            glTranslatef(0, dheight, 0);
+            //
+            glTranslatef(dheight/4.f, dheight/2.f, 0);
+            glTranslatef(0, dheight/2.f, 0);
+            glRotatef(angles[8], 1, 0, 0);
+            glRotatef(angles[9], 0, 0, 1);
+            glTranslatef(0, -dheight/2.f, 0);
             glCallList(leg0);
+
+            glTranslatef(0, -dheight, 0);
+            glTranslatef(0, dheight/2.f, 0);
+            glRotatef(angles[14], 1, 0, 0);
+            glRotatef(angles[15], 0, 0, 1);
+            glTranslatef(0, -dheight/2.f, 0);
+            glCallList(leg1);
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(-dheight/4.f, -dheight/2.f, 0);
-            glCallList(leg1);
-            glTranslatef(0, dheight, 0);
+            glTranslatef(-dheight/4.f, dheight/2.f, 0);
+            glTranslatef(0, dheight/2.f, 0);
+            glRotatef(angles[12], 1, 0, 0);
+            glRotatef(angles[13], 0, 0, 1);
+            glTranslatef(0, -dheight/2.f, 0);
             glCallList(leg0);
+
+            glTranslatef(0, -dheight, 0);
+            glTranslatef(0, dheight/2.f, 0);
+            glRotatef(angles[14], 1, 0, 0);
+            glRotatef(angles[15], 0, 0, 1);
+            glTranslatef(0, -dheight/2.f, 0);
+            glCallList(leg1);
         glPopMatrix();
     glPopMatrix();
 }
@@ -199,13 +229,21 @@ void Player::set_z(GLfloat z) {
 }
 
 void Player::move_left_right(vec3 direction) {
+    this->walking = true;
     vec3 velocity = direction;
     coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
 }
 
 void Player::move_forward_backward(vec3 direction) {
+    this->walking = true;
     vec3 velocity = direction;
     coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
+}
+
+void Player::clear_walking() {
+    this->walking = false;
+    this->accumulated_time_leg_animation = 0;
+    this->leg_animation_angle_id = 0;
 }
 
 void Player::move_up(GLfloat direction) {
@@ -243,6 +281,22 @@ GLfloat Player::get_on_air_time() {
 
 void Player::display(float dt) {
     float d = height/2.f;
+
+
+    if (walking) {
+        this->accumulated_time_leg_animation += dt;
+
+        if (accumulated_time_leg_animation >= 16.f/1000.f) {
+            this->accumulated_time_leg_animation = 0;
+            this->leg_animation_angle_id++;
+
+            if (leg_animation_angle_id > 35)
+                this->leg_animation_angle_id = 0;
+
+            for (int i = 8; i < 21; i++)
+                this->angles[i] = leg_angles[leg_animation_angle_id][i];
+        }
+    }
 
     glPushMatrix();
         this->translate();

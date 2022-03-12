@@ -108,6 +108,7 @@ void Game::create_lights() {
 
         float light[4][4] = {
             { 0.35, 0.35, 0.35, 0.30f },  // ambient
+            // { 1.f, 1.f, 1.f, 1.f },  // ambient
             { 0.80, 0.80, 0.80, 0.80f },  // diffuse
             { 0.25, 0.25, 0.25, 0.80f },  // specular
             { c0.x, c0.y, c0.z, 1.f },  // position
@@ -251,13 +252,14 @@ void Game::update_player_move(float dt) {
             if (!obstacle_collision(movement, this->player)) {
                 player->move_forward_backward(movement);
             }
-
+            return;
         } else {
             movement = coord->left * -1 * dt * player_speed;
 
             if (!obstacle_collision(movement, this->player)) {
                 player->move_left_right(movement);
             }
+            return;
         }
     } else if (controller->keys['a']) {
         if (current_camera == 4) {
@@ -266,6 +268,7 @@ void Game::update_player_move(float dt) {
             if (!obstacle_collision(movement, this->player)) {
                 player->move_forward_backward(movement);
             }
+
         } else {
             movement = coord->left * dt * player_speed;
 
@@ -273,6 +276,7 @@ void Game::update_player_move(float dt) {
                 player->move_left_right(movement);
             }
         }
+        return;
     }
 
     if (controller->keys['w']) {
@@ -283,7 +287,7 @@ void Game::update_player_move(float dt) {
             if (!obstacle_collision(movement, this->player)) {
                 player->move_left_right(movement);
             }
-
+            return;
         } else {
             movement = coord->direction * dt * player_speed;
             movement.y = 0;
@@ -301,6 +305,7 @@ void Game::update_player_move(float dt) {
                     player->move_forward_backward(movement1);
                 }
             }
+            return;
         }
     } else if (controller->keys['s']) {
         if (current_camera == 4) {
@@ -319,7 +324,10 @@ void Game::update_player_move(float dt) {
                 player->move_forward_backward(movement);
             }
         }
+        return;
     }
+
+    player->clear_walking();
 }
 
 void Game::update_player_jump(float dt) {
