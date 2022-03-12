@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "player.h"
+#include "shoot.h"
 #include "../utils/shapes/shape.h"
 #include "../utils/gameShapes/plane.h"
 #include "../utils/shapes/3d/box.h"
@@ -28,6 +29,7 @@ class Game: public Shape {
         GLfloat player_speed;
         GLfloat player_jump_speed;
         std::vector<std::shared_ptr<Enemy>> enemies;
+        std::vector<std::shared_ptr<Shoot>> shoots;
 
         //
         GLuint current_camera;

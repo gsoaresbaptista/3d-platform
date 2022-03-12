@@ -44,6 +44,17 @@ void OrbitalCamera::update() {
     this->player->direction = this->player->direction.normalize();
     this->player->left = vec3(0, 1, 0) * this->player->direction;
     this->player->up = this->player->direction * this->player->left;
+    this->player->pitch = this->pitch;
+    this->player->yaw = this->yaw;
+}
+
+void OrbitalCamera::increment_yaw(float dYaw) {
+    this->yaw += dYaw;
+}
+
+void OrbitalCamera::increment_pitch(float dPitch) {
+    if (pitch + dPitch <= 45 && pitch + dPitch >= -45)
+        this->pitch += dPitch;
 }
 
 void OrbitalCamera::zoom_in() {

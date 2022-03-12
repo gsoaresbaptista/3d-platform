@@ -42,8 +42,10 @@ void DefaultCamera::update() {
 }
 
 void DefaultCamera::activate() {
-    vec3 position = player->position + vec3(center.x, 2*center.y, center.z);
+    vec3 position = player->position +
+        vec3(center.x, 1.70*center.y, center.z);
     vec3 look = position + player->direction;
+
 
     gluLookAt(
         position.x, position.y, position.z,

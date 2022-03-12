@@ -63,7 +63,7 @@ Game::Game(
     this->data = data;
     this->controller = flags;
     this->current_camera = 4;
-    this->player_speed = block_size * 3.5;
+    this->player_speed = block_size * 4.5;
     this->player_jump_speed = block_size * 14;
     this->enemies = data->enemies;
 
@@ -440,7 +440,12 @@ void Game::update_controller(float dt) {
     } else {
         // Verifica se o jogador pode atirar
         if (player->ready2shoot()) {
-            printf("PREI, PREI PREI!\n");
+            this->shoots.push_back(std::make_shared<Shoot>(
+                player->get_coordinate_system()->yaw,
+                player->get_coordinate_system()->pitch,
+                block_size/2.25f,
+                player->get_center() + player->get_position(),
+                player->get_coordinate_system()->direction));
         }
 
         player->increment_bow_animation(-dt);
@@ -448,6 +453,13 @@ void Game::update_controller(float dt) {
 }
 
 void Game::update(float dt) {
+    // Move as flechas
+    for (auto& arrow : shoots) {
+        vec3 dir = arrow->get_direction();
+        vec3 velocity = dir.normalize() * player_speed * 8 * dt;
+        arrow->set_position(vec3(velocity.x, velocity.y, velocity.z));
+    }
+
     //
     if (controller->keys[27]) {
         glutLeaveMainLoop();
@@ -528,16 +540,21 @@ void Game::display(float dt) {
     this->create_lights();
     this->create_portal();
 
-    // Draw arena obstacles
-    for (auto& obstacle : obstacles) {
-        obstacle->display(dt, controller);
-    }
-
     this->player->display(dt);
 
     for (auto& enemy : enemies) {
         enemy->display(dt);
     }
+
+    for (auto& shoot : shoots) {
+        shoot->display(dt);
+    }
+
+    // Draw arena obstacles
+    for (auto& obstacle : obstacles) {
+        obstacle->display(dt, controller);
+    }
+
 
     this->display_hud();
 }

@@ -32,6 +32,8 @@ class OrbitalCamera: public Camera {
         void zoom_out();
         void activate();
         void update();
+        void increment_yaw(float dYaw);
+        void increment_pitch(float dPitch);
 };
 
 #endif  // SOURCE_MODELS_CAMERA_ORBITALCAMERA_H_

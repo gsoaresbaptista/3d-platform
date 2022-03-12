@@ -114,10 +114,9 @@ void Player::draw(std::shared_ptr<Texture> texture,
 
 void Player::display_character() {
     glPushMatrix();
-        glTranslatef(-dheight/3.f, 0, 0);
-        glRotatef(180-coordinateSystem->yaw, 0, -1, 0);
-
         glTranslatef(0, -dheight *1.25, 0);
+        glRotatef(180, 0, 1, 0);
+
         glPushMatrix();
             glTranslatef(0, 3*dheight, 0);
             glCallList(head);
@@ -129,6 +128,7 @@ void Player::display_character() {
             glRotatef(angles[0], 1, 0, 0);
             glRotatef(angles[1], 0, 0, 1);
             glTranslatef(-dheight/4.f, -dheight/2.f, 0.0);
+            glRotatef(coordinateSystem->pitch, -1, 0, 0);
             glCallList(arm0);
             glTranslatef(0, -dheight, 0);
             glTranslatef(dheight/4.f, dheight/2.f, -dheight/4.f);
@@ -136,9 +136,9 @@ void Player::display_character() {
             glRotatef(-angles[3], 0, 0, 1);
             glTranslatef(-dheight/4.f, -dheight/2.f, dheight/4.f);
             glCallList(arm1);
+            glTranslatef(-dheight/4.f, dheight/2.f, 0);
             glRotatef(-90, 0, 0, 1);
             glRotatef(90, 1, 0, 0);
-            glTranslatef(-dheight/2.f, 0, dheight/4.f);
             glCallList(BOW_MODEL[bow_state_id]);
         glPopMatrix();
 
@@ -148,6 +148,7 @@ void Player::display_character() {
             glRotatef(angles[4], 1, 0, 0);
             glRotatef(angles[5], 0, 0, 1);
             glTranslatef(-dheight/4.f, -dheight/2.f, 0.0);
+            glRotatef(coordinateSystem->pitch, -1, 0, 0);
             glCallList(arm0);
             glTranslatef(0, -dheight, 0);
             glTranslatef(dheight/15.5f, dheight/2.f, -1.5*dheight);
@@ -243,28 +244,6 @@ GLfloat Player::get_on_air_time() {
 void Player::display(float dt) {
     float d = height/2.f;
 
-        glPushMatrix();
-            vec3 pp = center + get_position();
-            // pp += vec3(-dheight, dheight, 0);
-
-            float angle = (coordinateSystem->yaw) * M_PI/180;
-            pp.x += cos(angle)*pp.x+sin(angle)*pp.z + pp.y - sin(angle)*pp.x+cos(angle)*pp.z;
-            // pp.x = cos(angle)*pp.x-sin(angle)*pp.y + sin(angle)*pp.x+cos(angle)*pp.y + pp.z;
-            // pp.x = cos(angle)*pp.x + pp.y + -sin(angle)*pp.y + sin(angle)*pp.x+cos(angle)*pp.y + pp.z;
-            // cos(angle) * x - sin(angle) * y
-
-            // printf("-> %f %f %f\n", pp.x, pp.y, pp.z);
-            // printf("%f %f %f\n", tmp0, pp.y, tmp1);
-            // pp.x = tmp1;
-            // pp.z = tmp1;
-
-            glTranslatef(pp.x, pp.y, pp.z);
-            glScalef(3.5, 3.5, 3.5);
-            // glRotatef(coordinateSystem->yaw, 0, 1, 0);
-
-        glCallList(ARROW_MODEL);
-    glPopMatrix();
-
     glPushMatrix();
         this->translate();
         glTranslatef(
@@ -279,7 +258,7 @@ void Player::display(float dt) {
             glPopMatrix();
         }
 
-        glColor3f(1, 1, 1);
+        glRotatef(coordinateSystem->yaw, 0, 1, 0);
         this->display_character();
 
     glPopMatrix();
