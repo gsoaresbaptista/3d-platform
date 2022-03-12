@@ -37,7 +37,8 @@ extern std::shared_ptr<Texture> SKELETON_TEX;
 extern std::shared_ptr<Texture> BOW_TEX;
 
 // Models
-extern GLuint BOW_MODEL;
+extern GLuint BOW_MODEL[80];
+extern GLuint ARROW_MODEL;
 
 namespace GameConstants {
     void load_textures();

@@ -30,6 +30,10 @@ void Enemy::display_character() {
             glTranslatef(-dheight*0.65, 2*dheight, 0);
             glCallList(arm0);
             glTranslatef(0, -dheight, 0);
+            glTranslatef(dheight/15.5f, dheight/2.f, -1.5*dheight);
+            glRotatef(angles[6], 1, 0, 0);
+            glRotatef(angles[7], 0, 0, 1);
+            glTranslatef(-dheight/15.5f, -dheight/2.f, 1.5*dheight);
             glCallList(arm1);
         glPopMatrix();
 
@@ -41,7 +45,7 @@ void Enemy::display_character() {
             glRotatef(-90, 0, 0, 1);
             glRotatef(90, 1, 0, 0);
             glTranslatef(-dheight/2.f, 0, dheight/5.f);
-            glCallList(BOW_MODEL);
+            glCallList(BOW_MODEL[bow_state_id]);
         glPopMatrix();
 
         glPushMatrix();

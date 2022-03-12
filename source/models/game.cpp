@@ -433,6 +433,18 @@ void Game::update_controller(float dt) {
             glutSetCursor(GLUT_CURSOR_NONE);
         }
     }
+
+    //
+    if (controller->mouse_button) {
+        player->increment_bow_animation(dt);
+    } else {
+        // Verifica se o jogador pode atirar
+        if (player->ready2shoot()) {
+            printf("PREI, PREI PREI!\n");
+        }
+
+        player->increment_bow_animation(-dt);
+    }
 }
 
 void Game::update(float dt) {

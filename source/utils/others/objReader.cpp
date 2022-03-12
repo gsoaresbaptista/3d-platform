@@ -65,7 +65,7 @@ void ObjReader::load_obj(
 
     *id = glGenLists(1);
     glNewList(*id, GL_COMPILE);
-        texture->bind();
+        if (texture != nullptr) texture->bind();
         glPolygonMode(GL_FRONT, GL_FILL);
         for (int i = 0; i < faces.size(); i++) {
             int v1 = faces[i].vertice[0] - 1;
@@ -89,6 +89,6 @@ void ObjReader::load_obj(
                 glNormal3fv(&normals[n3].x), glVertex3fv(&vertices[v3].x);
             glEnd();
         }
-    texture->unbind();
+    if (texture != nullptr) texture->unbind();
     glEndList();
 }

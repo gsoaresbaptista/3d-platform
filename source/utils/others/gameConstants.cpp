@@ -15,6 +15,7 @@ std::shared_ptr<Texture> CROSSHAIR_TEX = nullptr;
 std::shared_ptr<Texture> STEVE_TEX = nullptr;
 std::shared_ptr<Texture> SKELETON_TEX = nullptr;
 std::shared_ptr<Texture> BOW_TEX = nullptr;
+std::shared_ptr<Texture> ARROW_TEX = nullptr;
 
 // Materials
 std::shared_ptr<Material> STONE_MATERIAL = nullptr;
@@ -22,7 +23,8 @@ std::shared_ptr<Material> WOOD_MATERIAL = nullptr;
 std::shared_ptr<Material> PORTAL_MATERIAL = nullptr;
 
 // Models
-GLuint BOW_MODEL = -1;
+GLuint BOW_MODEL[80];
+GLuint ARROW_MODEL;
 
 void GameConstants::load_materials() {
     STONE_MATERIAL = std::make_shared<Material>(
@@ -68,12 +70,25 @@ void GameConstants::load_textures() {
         "resources/textures/mossy_deepslate_bricks.png", true);
     CROSSHAIR_TEX = Texture::load(
         "resources/textures/crosshair013.png", true);
+    BOW_TEX = Texture::load(
+        "resources/textures/Bow_basecolor.png", false, true);
+    ARROW_TEX = Texture::load(
+        "resources/textures/arrow_texture.tga.png", false, true);
 }
 
 void GameConstants::load_models() {
-    BOW_MODEL = glGenLists(1);
-    BOW_TEX = Texture::load(
-        "resources/textures/Bow_basecolor.png", false, true);
-    ObjReader::load_obj(
-        &BOW_MODEL, "resources/models/bow_000001.obj", BOW_TEX);
+    // Load bow models
+    BOW_MODEL[0] = glGenLists(80);
+
+    for (int i = 0; i < 80; i++) {
+        BOW_MODEL[i] = BOW_MODEL[0] + i;
+        char model_path[100];
+        snprintf(model_path, sizeof(model_path),
+            "resources/models/bow_%06d.obj", i + 1);
+        ObjReader::load_obj(&BOW_MODEL[i], model_path, BOW_TEX);
+    }
+
+    // Load arrow model
+    ARROW_MODEL = glGenLists(1);
+    ObjReader::load_obj(&ARROW_MODEL, "resources/models/arrow.obj", ARROW_TEX);
 }

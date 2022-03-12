@@ -37,6 +37,8 @@ void DefaultCamera::update() {
     player->direction = player->direction.normalize();
     player->left = vec3(0, 1, 0) * player->direction;
     player->up = player->direction * player->left;
+    player->yaw = this->yaw;
+    player->pitch = this->pitch;
 }
 
 void DefaultCamera::activate() {

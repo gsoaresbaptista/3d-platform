@@ -10,6 +10,8 @@ struct CoordinateSystem {
     vec3 direction;
     vec3 left;
     vec3 up;
+    float yaw;
+    float pitch;
 };
 
 class Player: public Shape {
@@ -25,6 +27,12 @@ class Player: public Shape {
 
         GLuint head, body, arm0, arm1, leg0, leg1;
         GLfloat dheight;
+
+        //
+        GLfloat angles[20];
+        GLfloat accumulated_time_bow_animation;
+        GLint bow_animation_angle_id;
+        GLint bow_state_id;
 
         virtual void display_character();
         GLboolean show_collision_boundary;
@@ -67,7 +75,14 @@ class Player: public Shape {
         GLfloat get_depth();
         void set_show_collision_boundary(GLboolean value);
 
+        //
+        void increment_bow_animation(float dt);
+
         void display(float dt);
+
+        //
+        bool ready2shoot();
+        vec3 get_hand_position();
 };
 
 #endif  // SOURCE_MODELS_PLAYER_H_

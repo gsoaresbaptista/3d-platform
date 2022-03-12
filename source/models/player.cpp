@@ -1,6 +1,7 @@
 #include "player.h"
 #include "../utils/shapes/2d/rectangle.h"
 #include "../utils/style/steve.h"
+#include "../utils/others/angles/steve/arm_bow.h"
 
 Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->center = center;
@@ -29,8 +30,17 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     arm0 = head + 2, arm1 = head + 3;
     leg0 = head + 4, leg1 = head + 5;
 
+    for (int i = 0; i < 8; i++) {
+        this->angles[i] = arm_bow[0][i];
+    }
+
     //
     this->show_collision_boundary = false;
+
+    //
+    this->accumulated_time_bow_animation = 0;
+    this->bow_animation_angle_id = 0;
+    this->bow_state_id = 0;
 }
 
 Player::~Player() {
@@ -64,6 +74,33 @@ GLfloat Player::get_depth() {
     return this->height;
 }
 
+void Player::increment_bow_animation(float dt) {
+    if (dt < 0) {
+        bow_animation_angle_id = 0;
+        accumulated_time_bow_animation = 0;
+
+        //
+        for (int i = 0; i < 8; i++)
+            this->angles[i] = arm_bow[bow_animation_angle_id][i];
+        bow_state_id = arm_bow[bow_animation_angle_id][21];
+
+    } else if (bow_animation_angle_id != 49) {
+        this->accumulated_time_bow_animation += dt;
+
+        //
+        if (accumulated_time_bow_animation >= 1.f/1000.f) {
+            this->accumulated_time_bow_animation = 0;
+            this->bow_animation_angle_id++;
+
+            if (bow_animation_angle_id > 49)
+            this->bow_animation_angle_id = 0;
+
+            for (int i = 0; i < 8; i++)
+                this->angles[i] = arm_bow[bow_animation_angle_id][i];
+            bow_state_id = arm_bow[bow_animation_angle_id][21];
+        }
+    }
+}
 
 void Player::draw(std::shared_ptr<Texture> texture,
     GLenum mode, Outline outline) {
@@ -77,6 +114,9 @@ void Player::draw(std::shared_ptr<Texture> texture,
 
 void Player::display_character() {
     glPushMatrix();
+        glTranslatef(-dheight/3.f, 0, 0);
+        glRotatef(180-coordinateSystem->yaw, 0, -1, 0);
+
         glTranslatef(0, -dheight *1.25, 0);
         glPushMatrix();
             glTranslatef(0, 3*dheight, 0);
@@ -84,21 +124,37 @@ void Player::display_character() {
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(-dheight*0.75, 2*dheight, 0);
-            glCallList(arm0);
-            glTranslatef(0, -dheight, 0);
-            glCallList(arm1);
-        glPopMatrix();
-
-        glPushMatrix();
             glTranslatef(dheight*0.75, 2*dheight, 0);
+            glTranslatef(dheight/4.f, dheight/2.f, 0.0);
+            glRotatef(angles[0], 1, 0, 0);
+            glRotatef(angles[1], 0, 0, 1);
+            glTranslatef(-dheight/4.f, -dheight/2.f, 0.0);
             glCallList(arm0);
             glTranslatef(0, -dheight, 0);
+            glTranslatef(dheight/4.f, dheight/2.f, -dheight/4.f);
+            glRotatef(-angles[2], 1, 0, 0);
+            glRotatef(-angles[3], 0, 0, 1);
+            glTranslatef(-dheight/4.f, -dheight/2.f, dheight/4.f);
             glCallList(arm1);
             glRotatef(-90, 0, 0, 1);
             glRotatef(90, 1, 0, 0);
             glTranslatef(-dheight/2.f, 0, dheight/4.f);
-            glCallList(BOW_MODEL);
+            glCallList(BOW_MODEL[bow_state_id]);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(-dheight*0.75, 2*dheight, 0);
+            glTranslatef(dheight/4.f, dheight/2.f, 0.0);
+            glRotatef(angles[4], 1, 0, 0);
+            glRotatef(angles[5], 0, 0, 1);
+            glTranslatef(-dheight/4.f, -dheight/2.f, 0.0);
+            glCallList(arm0);
+            glTranslatef(0, -dheight, 0);
+            glTranslatef(dheight/15.5f, dheight/2.f, -1.5*dheight);
+            glRotatef(angles[6], 1, 0, 0);
+            glRotatef(angles[7], 0, 0, 1);
+            glTranslatef(-dheight/15.5f, -dheight/2.f, 1.5*dheight);
+            glCallList(arm1);
         glPopMatrix();
 
         glPushMatrix();
@@ -122,12 +178,19 @@ void Player::display_character() {
     glPopMatrix();
 }
 
+vec3 Player::get_hand_position() {
+}
+
 void Player::set_x(GLfloat x) {
     this->coordinateSystem->position.x = x;
 }
 
 void Player::set_y(GLfloat y) {
     this->coordinateSystem->position.y = y;
+}
+
+bool Player::ready2shoot() {
+    return this->bow_state_id == 49;
 }
 
 void Player::set_z(GLfloat z) {
@@ -179,6 +242,28 @@ GLfloat Player::get_on_air_time() {
 
 void Player::display(float dt) {
     float d = height/2.f;
+
+        glPushMatrix();
+            vec3 pp = center + get_position();
+            // pp += vec3(-dheight, dheight, 0);
+
+            float angle = (coordinateSystem->yaw) * M_PI/180;
+            pp.x += cos(angle)*pp.x+sin(angle)*pp.z + pp.y - sin(angle)*pp.x+cos(angle)*pp.z;
+            // pp.x = cos(angle)*pp.x-sin(angle)*pp.y + sin(angle)*pp.x+cos(angle)*pp.y + pp.z;
+            // pp.x = cos(angle)*pp.x + pp.y + -sin(angle)*pp.y + sin(angle)*pp.x+cos(angle)*pp.y + pp.z;
+            // cos(angle) * x - sin(angle) * y
+
+            // printf("-> %f %f %f\n", pp.x, pp.y, pp.z);
+            // printf("%f %f %f\n", tmp0, pp.y, tmp1);
+            // pp.x = tmp1;
+            // pp.z = tmp1;
+
+            glTranslatef(pp.x, pp.y, pp.z);
+            glScalef(3.5, 3.5, 3.5);
+            // glRotatef(coordinateSystem->yaw, 0, 1, 0);
+
+        glCallList(ARROW_MODEL);
+    glPopMatrix();
 
     glPushMatrix();
         this->translate();

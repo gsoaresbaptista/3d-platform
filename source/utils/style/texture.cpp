@@ -24,7 +24,7 @@ std::shared_ptr<Texture> Texture::load(std::string file_path, bool mipmap, bool 
     if (img_data) {
         glGenTextures(1, &texture->id);
         glBindTexture(GL_TEXTURE_2D, texture->id);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -34,12 +34,12 @@ std::shared_ptr<Texture> Texture::load(std::string file_path, bool mipmap, bool 
                 GL_RGBA, GL_UNSIGNED_BYTE, img_data);
             glTexParameteri(
                 GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                GL_LINEAR_MIPMAP_LINEAR);
+                GL_NEAREST_MIPMAP_NEAREST);
         } else {
             glTexImage2D(
                 GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0,
                 GL_RGBA, GL_UNSIGNED_BYTE, img_data);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         }
 
         glBindTexture(GL_TEXTURE_2D, 0);
