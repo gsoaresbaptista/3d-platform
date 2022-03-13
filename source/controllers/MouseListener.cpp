@@ -14,7 +14,8 @@ static FreeCamera* FREE_CAMERA;
 static GLboolean* MOVE_ORBITAL_CAMERA;
 static GLboolean* DISABLE_MOUSE;
 static GLfloat* MOUSE_SENSITIVITY;
-static GLboolean* BUTTON_DOWN;
+static GLboolean* LEFT_BUTTON_DOWN;
+static GLboolean* RIGHT_BUTTON_DOWN;
 
 vec2* MOUSE_DELTA;
 static bool first_mouse_pos = true;
@@ -72,17 +73,24 @@ void mouse_callback(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         last_pos_x = x;
         last_pos_y = y;
-        *BUTTON_DOWN = true;
+        *LEFT_BUTTON_DOWN = true;
     }
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-        *BUTTON_DOWN = false;
+        *LEFT_BUTTON_DOWN = false;
+    }
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+        *RIGHT_BUTTON_DOWN = true;
+    }
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP) {
+        *RIGHT_BUTTON_DOWN = false;
     }
 
     glutPostRedisplay();
 }
 
 void MouseListener::registerCallbacks(std::shared_ptr<ControllerData> data) {
-    BUTTON_DOWN = &(data->mouse_button);
+    RIGHT_BUTTON_DOWN = &(data->right_mouse_button);
+    LEFT_BUTTON_DOWN = &(data->left_mouse_button);
     MOUSE_DELTA = &(data->mouse_delta);
     MOVE_ORBITAL_CAMERA = &(data->move_orbital_camera);
     DISABLE_MOUSE = &(data->disable_mouse_warp);

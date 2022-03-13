@@ -26,6 +26,7 @@ class Shoot: Shape {
             Outline outline = Outline::SPLITTED);
 
         void display(float dt);
+        vec3 get_point();
 };
 
 #endif  // SOURCE_MODELS_SHOOT_H_

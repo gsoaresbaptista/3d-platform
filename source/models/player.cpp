@@ -280,8 +280,10 @@ void Player::set_z(GLfloat z) {
 void Player::move_left_right(vec3 direction) {
     this->walking = true;
     this->idle = false;
-    vec3 velocity = direction;
-    coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
+    if (!falling && !rising) {
+        vec3 velocity = direction;
+        coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
+    }
 }
 
 void Player::move_forward_backward(vec3 direction) {

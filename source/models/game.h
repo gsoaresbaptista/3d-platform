@@ -16,6 +16,7 @@
 #include "camera/freeCamera.h"
 #include "camera/defaultCamera.h"
 #include "camera/orbitalCamera.h"
+#include "camera/handCamera.h"
 
 class Game: public Shape {
     private:
@@ -37,6 +38,7 @@ class Game: public Shape {
         Camera* freeCamera;
         Camera* orbitalCamera;
         Camera* defaultCamera;
+        Camera* handCamera;
 
         //
         void create_lights();

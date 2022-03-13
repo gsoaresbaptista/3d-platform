@@ -7,7 +7,8 @@ struct ControllerData {
     vec3 to_rotate;
     vec2 mouse_delta;
     GLuint keys[256];
-    GLboolean mouse_button;
+    GLboolean left_mouse_button;
+    GLboolean right_mouse_button;
     GLboolean move_orbital_camera;
     GLboolean disable_mouse_warp;
     GLfloat mouse_sensitivity;

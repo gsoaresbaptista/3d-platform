@@ -83,6 +83,11 @@ Game::Game(
         this->player->get_coordinate_system(),
         player->get_center());
 
+    //
+    this->handCamera = new HandCamera(
+        this->player->get_coordinate_system(),
+        player->get_center(), block_size);
+
     this->orbitalCamera = new OrbitalCamera(
         this->player->get_coordinate_system(),
         player->get_center(),
@@ -326,14 +331,33 @@ void Game::update_player_jump(float dt) {
 
 void Game::update_camera_type() {
     static bool first = true;
+    static bool pressing_right = false;
+    static bool changing_right_mouse = false;
 
-    if (controller->keys['1'] && current_camera != 1 || first) {
+    if ((controller->keys['1'] && current_camera != 1) || first ||
+        (!controller->right_mouse_button && changing_right_mouse)) {
         this->current_camera = 1;
         this->camera = this->defaultCamera;
+        changing_right_mouse = false;
+        pressing_right = false;
+        ((DefaultCamera*)this->camera)->set_player_angles();
 
         //
         first = false;
         MouseListener::set_camera((DefaultCamera*)this->camera);
+    } else if ((controller->keys['2'] || controller->right_mouse_button) &&
+                current_camera != 2) {
+        if (controller->right_mouse_button) {
+            pressing_right = true;
+            changing_right_mouse = true;
+        }
+        this->current_camera = 2;
+        this->camera = this->handCamera;
+        ((HandCamera*)this->camera)->set_player_angles();
+
+        //
+        first = false;
+        MouseListener::set_camera((DefaultCamera*)this->handCamera);
 
     } else if (controller->keys['3'] && current_camera != 3) {
         this->current_camera = 3;
@@ -407,7 +431,7 @@ void Game::update_controller(float dt) {
     }
 
     //
-    if (controller->mouse_button) {
+    if (controller->left_mouse_button) {
         player->increment_bow_animation(dt);
     } else {
         // Verifica se o jogador pode atirar

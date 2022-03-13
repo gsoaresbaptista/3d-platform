@@ -49,6 +49,14 @@ void DefaultCamera::update() {
     this->player->up = up;
 }
 
+void DefaultCamera::set_player_angles() {
+    this->direction = player->direction;
+    this->left = player->left;
+    this->up = player->up;
+    this->yaw = player->yaw;
+    this->pitch = player->pitch;
+}
+
 void DefaultCamera::activate() {
     vec3 position = player->position +
         vec3(center.x, 1.70*center.y, center.z);

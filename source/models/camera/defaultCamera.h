@@ -5,7 +5,7 @@
 #include "camera.h"
 
 class DefaultCamera: public Camera {
-    private:
+    protected:
         vec3 center;
         vec3 direction;
         vec3 up;
@@ -15,12 +15,13 @@ class DefaultCamera: public Camera {
     public:
         explicit DefaultCamera(CoordinateSystem* player, vec3 center);
         ~DefaultCamera();
-        void increment_yaw(float dYaw);
-        void increment_pitch(float dPitch);
-        float get_yaw();
-        float get_pitch();
-        void activate();
-        void update();
+        virtual void increment_yaw(float dYaw);
+        virtual void increment_pitch(float dPitch);
+        virtual float get_yaw();
+        virtual float get_pitch();
+        virtual void activate();
+        virtual void update();
+        virtual void set_player_angles();
 };
 
 #endif  // SOURCE_MODELS_CAMERA_DEFAULTCAMERA_H_

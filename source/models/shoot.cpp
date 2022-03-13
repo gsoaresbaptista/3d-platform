@@ -39,17 +39,6 @@ void Shoot::display(float dt) {
         glRotatef(this->yaw, 0, 1, 0);
         glRotatef(this->pitch, 1, 0, 0);
 
-        // glPushMatrix();
-        //     glDisable(GL_CULL_FACE);
-        //     glTranslatef(0, 0, -1.2*size);
-        //     Rectangle::draw(
-        //         vec3(-size/2.f, size/2.f, 0),
-        //         vec3(-size/2.f, -size/2.f, 0),
-        //         vec3(size/2.f, -size/2.f, 0),
-        //         vec3(size/2.f, size/2.f, 0));
-        //     glEnable(GL_CULL_FACE);
-        // glPopMatrix();
-
         glScalef(size/3.f, size/3.f, size/3.f);
         glPushAttrib(GL_ENABLE_BIT);
             glDisable(GL_CULL_FACE);
@@ -60,6 +49,23 @@ void Shoot::display(float dt) {
 
 vec3 Shoot::get_direction() {
     return this->direction;
+}
+
+vec3 Shoot::get_point() {
+    // Ta errado, mas foi o melhor que deu, coloca com uma
+    // margem de erro ai, um raio de acordo com o blocksize
+    // em game
+    float yaw = (73 - this->yaw) * M_PI/180;
+    float pitch = (direction.y*90 + pitch) * M_PI/180;
+
+    vec3 pp = center + vec3(
+        -1.75*size*cos(yaw)*cos(pitch),
+        size + 1.75*size*sin(pitch),
+        -1.75*size*sin(yaw));
+
+    pp += position;
+
+    return pp;
 }
 
 void Shoot::draw(
