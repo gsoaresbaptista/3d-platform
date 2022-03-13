@@ -196,6 +196,7 @@ void Player::display_character() {
             glTranslatef(-dheight/4.f, -dheight/2.f, dheight/4.f);
             glCallList(arm1);
             glTranslatef(-dheight/4.f, dheight/2.f, 0);
+            glScalef(dheight/2.25f, dheight/2.25f, dheight/2.25f);
             glRotatef(-90, 0, 0, 1);
             glRotatef(90, 1, 0, 0);
             glCallList(BOW_MODEL[bow_state_id]);

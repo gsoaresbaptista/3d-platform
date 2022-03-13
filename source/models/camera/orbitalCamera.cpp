@@ -52,14 +52,7 @@ void OrbitalCamera::update(bool no_orbital) {
         player->up = player->direction * player->left;
         player->yaw = this->yaw;
         player->pitch = this->pitch;
-
-    } else {
-        //
-        this->player->direction = this->look - player->position - center;
-        this->player->direction.y = 0;
-        this->player->direction = this->player->direction.normalize();
-        this->player->left = vec3(0, 1, 0) * this->player->direction;
-        }
+    }
 }
 
 void OrbitalCamera::increment_yaw(float dYaw, bool no_orbital) {
