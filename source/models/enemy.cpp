@@ -26,6 +26,7 @@ void Enemy::display_character() {
             glCallList(head);
         glPopMatrix();
 
+        glTranslatef(0, angles[20]*2.5*dheight, 0);
         glPushMatrix();
             glTranslatef(-dheight*0.65, 2*dheight, 0);
             glCallList(arm0);
@@ -52,6 +53,7 @@ void Enemy::display_character() {
             glTranslatef(0, 2*dheight, 0);
             glCallList(body);
         glPopMatrix();
+        glTranslatef(0, -angles[20]*2.5*dheight, 0);
 
         glPushMatrix();
             glTranslatef(dheight/4.f, -dheight/1.999f, 0);

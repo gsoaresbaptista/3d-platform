@@ -64,7 +64,7 @@ Game::Game(
     this->controller = flags;
     this->current_camera = 4;
     this->player_speed = block_size * 4.5;
-    this->player_jump_speed = block_size * 14;
+    this->player_jump_speed = block_size * 15;
     this->enemies = data->enemies;
 
     // Create player
@@ -177,7 +177,8 @@ void Game::gravity(float dt) {
                     player->set_y(0);
                 }
             }
-        } else if (!obstacle_collision(vec3(0, acceleration * dt, 0), this->player)) {
+        } else if (
+            !obstacle_collision(vec3(0, acceleration * dt, 0), this->player)) {
             this->player->move_up(acceleration * dt);
             player->set_falling(true);
         }
@@ -244,6 +245,7 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
 void Game::update_player_move(float dt) {
     vec3 movement;
     CoordinateSystem* coord = player->get_coordinate_system();
+    bool clear = true;
 
     if (controller->keys['d']) {
         movement = coord->left * -1 * dt * player_speed;
@@ -251,14 +253,14 @@ void Game::update_player_move(float dt) {
         if (!obstacle_collision(movement, this->player)) {
             player->move_left_right(movement);
         }
-        return;
+        clear = false;
     } else if (controller->keys['a']) {
         movement = coord->left * dt * player_speed;
 
         if (!obstacle_collision(movement, this->player)) {
             player->move_left_right(movement);
         }
-        return;
+        clear = false;
     }
 
     if (controller->keys['w']) {
@@ -278,7 +280,7 @@ void Game::update_player_move(float dt) {
                 player->move_forward_backward(movement1);
             }
         }
-        return;
+        clear = false;
     } else if (controller->keys['s']) {
         movement = coord->direction * -1 * dt * player_speed;
         movement.y = 0;
@@ -286,10 +288,10 @@ void Game::update_player_move(float dt) {
         if (!obstacle_collision(movement, this->player)) {
             player->move_forward_backward(movement);
         }
-        return;
+        clear = false;
     }
 
-    player->clear_walking();
+    if (clear) player->clear_walking();
 }
 
 void Game::update_player_jump(float dt) {
@@ -305,7 +307,6 @@ void Game::update_player_jump(float dt) {
             this->player->set_rising(true);
             this->player->move_up(this->player_jump_speed*dt);
             player->increment_on_air_time(dt);
-
         } else {
             this->player->set_rising(false);
             this->player->set_falling(true);
@@ -525,7 +526,6 @@ void Game::display(float dt) {
     for (auto& obstacle : obstacles) {
         obstacle->display(dt, controller);
     }
-
 
     this->display_hud();
 }

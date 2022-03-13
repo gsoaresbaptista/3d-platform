@@ -29,11 +29,14 @@ class Player: public Shape {
         GLfloat dheight;
 
         //
+        GLboolean idle;
         GLboolean walking;
-        GLfloat angles[20];
+        GLfloat angles[22];
         GLfloat accumulated_time_bow_animation;
         GLfloat accumulated_time_leg_animation;
+        GLfloat accumulated_time_idle_animation;
         GLint bow_animation_angle_id;
+        GLint idle_animation_angle_id;
         GLint leg_animation_angle_id;
         GLint bow_state_id;
 

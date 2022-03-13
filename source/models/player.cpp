@@ -3,6 +3,7 @@
 #include "../utils/style/steve.h"
 #include "../utils/others/angles/steve/arm_bow.h"
 #include "../utils/others/angles/steve/leg.h"
+#include "../utils/others/angles/steve/idle.h"
 
 Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->center = center;
@@ -35,18 +36,23 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
         this->angles[i] = arm_bow[0][i];
     }
 
-    for (int i = 8; i < 21; i++) {
+    for (int i = 8; i < 16; i++) {
         this->angles[i] = leg_angles[0][i];
     }
+
+    this->angles[20] = idle_angles[0][20];
 
     //
     this->show_collision_boundary = false;
 
     //
+    this->idle = true;
     this->walking = false;
     this->accumulated_time_bow_animation = 0;
     this->accumulated_time_leg_animation = 0;
+    this->accumulated_time_idle_animation = 0;
     this->bow_animation_angle_id = 0;
+    this->idle_animation_angle_id = 0;
     this->bow_state_id = 0;
 }
 
@@ -59,7 +65,7 @@ void Player::increment_on_air_time(GLfloat dt) {
 }
 
 void Player::clear_on_air_time() {
-    this->on_air_time = 0;
+    this->on_air_time = 0.1;
 
     for (int i = 8; i < 21; i++) {
         this->angles[i] = leg_angles[0][i];
@@ -136,6 +142,7 @@ void Player::display_character() {
             glCallList(head);
         glPopMatrix();
 
+        glTranslatef(0, angles[20]*2.5*dheight, 0);
         glPushMatrix();
             glTranslatef(dheight*0.75, 2*dheight, 0);
             glTranslatef(dheight/4.f, dheight/2.f, 0.0);
@@ -176,6 +183,7 @@ void Player::display_character() {
             glTranslatef(0, 2*dheight, 0);
             glCallList(body);
         glPopMatrix();
+        glTranslatef(0, -angles[20]*2.5*dheight, 0);
 
         glPushMatrix();
             //
@@ -232,20 +240,26 @@ void Player::set_z(GLfloat z) {
 
 void Player::move_left_right(vec3 direction) {
     this->walking = true;
+    this->idle = false;
     vec3 velocity = direction;
     coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
 }
 
 void Player::move_forward_backward(vec3 direction) {
     this->walking = true;
+    this->idle = false;
     vec3 velocity = direction;
     coordinateSystem->position += vec3(velocity.x, 0, velocity.z);
 }
 
 void Player::clear_walking() {
+    this->idle = true;
     this->walking = false;
     this->accumulated_time_leg_animation = 0;
     this->leg_animation_angle_id = 0;
+    //
+    for (int i = 8; i < 16; i++)
+        this->angles[i] = 0;
 }
 
 void Player::move_up(GLfloat direction) {
@@ -284,7 +298,7 @@ GLfloat Player::get_on_air_time() {
 void Player::display(float dt) {
     float d = height/2.f;
 
-
+    // update walking animation
     if (walking) {
         this->accumulated_time_leg_animation += dt;
 
@@ -297,6 +311,18 @@ void Player::display(float dt) {
 
             for (int i = 8; i < 21; i++)
                 this->angles[i] = leg_angles[leg_animation_angle_id][i];
+        }
+    } else if (idle) {
+        this->accumulated_time_idle_animation += dt;
+
+        if (accumulated_time_idle_animation >= 0.13) {
+            this->accumulated_time_idle_animation = 0;
+            this->idle_animation_angle_id++;
+
+            if (idle_animation_angle_id > 18)
+                this->idle_animation_angle_id = 0;
+
+            this->angles[20] = idle_angles[idle_animation_angle_id][20];
         }
     }
 
