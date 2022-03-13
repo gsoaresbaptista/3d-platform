@@ -93,6 +93,7 @@ Game::Game(
 
     this->freeCamera = new FreeCamera(
         this->player->get_coordinate_system(),
+        this->player->get_center(),
         this->data, this->block_size);
 
     // Create camera

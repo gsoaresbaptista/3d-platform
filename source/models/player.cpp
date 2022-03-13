@@ -19,7 +19,7 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->coordinateSystem->direction = vec3(1, 0, 0);
     this->coordinateSystem->left = vec3(0, 0, -1);
     this->coordinateSystem->up = vec3(0, 1, 0);
-
+    this->coordinateSystem->block_size = block_size;
 
     //
     this->falling = false;

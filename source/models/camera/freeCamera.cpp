@@ -4,7 +4,7 @@
 #include "freeCamera.h"
 
 FreeCamera::FreeCamera(
-        CoordinateSystem* player,
+        CoordinateSystem* player, vec3 center,
         std::shared_ptr<SVGData> data,
         GLfloat block_size) : Camera(player) {
     //
@@ -16,6 +16,7 @@ FreeCamera::FreeCamera(
     this->data = data;
     this->yaw = -90;
     this->pitch = 0;
+    this->center = center;
 }
 
 void FreeCamera::increment_yaw(float dYaw) {
@@ -39,7 +40,7 @@ void FreeCamera::activate() {
 
 void FreeCamera::update() {
     //
-    this->position = player->position * -1.0;
+    this->position = (player->position + vec3(center.x - block_size, 0, 0))* -1.0;
     this->position.x += data->arena_height/2.f - block_size;
     this->position.y = 0;
     this->position.z = 0;
@@ -53,12 +54,12 @@ void FreeCamera::update() {
                  (800 - width) * (data->arena_height/2)/(800.0);
 
     // set the cameras if they go outside the map boundaries
-    if (player->position.x - diff < data->arena_height/2.f - block_size) {
+    if (player->position.x + center.x - block_size - diff < data->arena_height/2.f - block_size) {
         // outside left boundary
         this->position.x = -diff;
     }
 
-    if (player->position.x + data->arena_height/2.0 +
+    if (player->position.x + center.x - block_size + data->arena_height/2.0 +
         block_size + diff > data->arena_width) {
         // outside right boundary
         this->position.x = -data->arena_width +

@@ -12,6 +12,7 @@ struct CoordinateSystem {
     vec3 up;
     float yaw;
     float pitch;
+    float block_size;
 };
 
 class Player: public Shape {

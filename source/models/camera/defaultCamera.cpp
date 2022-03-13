@@ -59,8 +59,8 @@ void DefaultCamera::set_player_angles() {
 
 void DefaultCamera::activate() {
     vec3 position = player->position +
-        vec3(center.x, 1.70*center.y, center.z);
-    // vec3 look = position + this->direction;
+        vec3(center.x, 1.65*center.y, center.z);
+
     vec3 look = position + this->direction;
 
     gluLookAt(

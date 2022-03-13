@@ -82,7 +82,7 @@ namespace steve {
         glMaterialf(GL_FRONT, GL_SHININESS, 128);
 
         glNewList(id, GL_COMPILE);
-            glPolygonMode(GL_FRONT, GL_FILL);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             STEVE_TEX->bind();
             glNormal3f(0.f, 0.f, 1.f);
             draw_rect(v1, v2, v3, v4, vec2(8.0/64.0, 8.0/64.0), vec2(16.0/64.0, 16.0/64.0)); // FRENTE
