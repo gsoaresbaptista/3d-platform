@@ -345,7 +345,7 @@ void Player::display(float dt) {
             this->accumulated_time_leg_animation = 0;
             this->leg_animation_angle_id++;
 
-            if (leg_animation_angle_id > 35)
+            if (leg_animation_angle_id > 60)
                 this->leg_animation_angle_id = 0;
 
             for (int i = 8; i < 21; i++)
