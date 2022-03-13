@@ -242,29 +242,31 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
 
     // Player Collision
 
-    float radius = this->player->get_collision_radius();
-
     for (auto& enemy : enemies) {
         vec3 center = enemy->get_center() + enemy->get_position();
-        float radius_distance = distance_xz(pos, center);
 
-        if (player == enemy.get()) continue;
-
-        if (radius_distance < 2* radius &&
-        (pos.y + block_size > center.y - block_size) &&
-        (pos.y - block_size < center.y + block_size)) {
+        if ((player != enemy.get()) &&
+            (pos.x + block_size/2.f > center.x - block_size/2.f) &&
+            (pos.x - block_size/2.f < center.x + block_size/2.f) &&
+            (pos.y + block_size > center.y - block_size) &&
+            (pos.y - block_size < center.y + block_size) &&
+            (pos.z + block_size/2.f > center.z - block_size/2.f) &&
+            (pos.z - block_size/2.f < center.z + block_size/2.f)) {
             //
             return true;
         }
     }
 
-    float radius_distance = distance_xz(pos, this->player->get_position() + this->player->get_center());
+    vec3 center = this->player->get_center() +
+                  this->player->get_position();
 
-    if (player == this->player) return false;
-
-    if (radius_distance < 2* radius &&
-    (pos.y + block_size > center.y - block_size) &&
-    (pos.y - block_size < center.y + block_size)) {
+    if ((player != this->player) &&
+        (pos.x + block_size/2.f > center.x - block_size/2.f) &&
+        (pos.x - block_size/2.f < center.x + block_size/2.f) &&
+        (pos.y + block_size > center.y - block_size) &&
+        (pos.y - block_size < center.y + block_size) &&
+        (pos.z + block_size/2.f > center.z - block_size/2.f) &&
+        (pos.z - block_size/2.f < center.z + block_size/2.f)) {
         //
         return true;
     }
