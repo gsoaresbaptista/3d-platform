@@ -54,6 +54,7 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->bow_animation_angle_id = 0;
     this->idle_animation_angle_id = 0;
     this->bow_state_id = 0;
+    this->returning = false;
 }
 
 Player::~Player() {
@@ -91,8 +92,35 @@ GLfloat Player::get_depth() {
     return this->height;
 }
 
+void Player::set_returning() {
+    this->returning = true;
+    this->bow_state_id = 0;
+    this->bow_animation_angle_id = 0;
+    this->accumulated_time_bow_animation = 0;
+}
+
 void Player::increment_bow_animation(float dt) {
-    if (dt < 0) {
+    if (returning) {
+        this->accumulated_time_bow_animation += abs(dt);
+
+        if (accumulated_time_bow_animation >= 1.f/1000.f) {
+            this->bow_animation_angle_id++;
+            this->accumulated_time_bow_animation = 0;
+
+            if (bow_animation_angle_id > 19) {
+                this->bow_state_id = 0;
+                this->bow_animation_angle_id = 0;
+                this->accumulated_time_bow_animation = 0;
+                this->returning = false;
+            } else {
+                for (int i = 0; i < 8; i++)
+                    this->angles[i] = returning_bow[bow_animation_angle_id][i];
+                bow_state_id = returning_bow[bow_animation_angle_id][21];
+            }
+
+        }
+
+    } else if (dt < 0) {
         bow_animation_angle_id = 0;
         accumulated_time_bow_animation = 0;
 
@@ -101,20 +129,30 @@ void Player::increment_bow_animation(float dt) {
             this->angles[i] = arm_bow[bow_animation_angle_id][i];
         bow_state_id = arm_bow[bow_animation_angle_id][21];
 
-    } else if (bow_animation_angle_id != 49) {
+    } else {
         this->accumulated_time_bow_animation += dt;
 
         //
         if (accumulated_time_bow_animation >= 1.f/1000.f) {
-            this->accumulated_time_bow_animation = 0;
             this->bow_animation_angle_id++;
 
-            if (bow_animation_angle_id > 49)
-            this->bow_animation_angle_id = 0;
+            if (bow_animation_angle_id >= 49 &&
+                accumulated_time_bow_animation >= 32.f/1000.f) {
+                this->accumulated_time_bow_animation = 0;
 
-            for (int i = 0; i < 8; i++)
-                this->angles[i] = arm_bow[bow_animation_angle_id][i];
-            bow_state_id = arm_bow[bow_animation_angle_id][21];
+                if (bow_animation_angle_id > 69)
+                    bow_animation_angle_id = 49;
+
+                for (int i = 0; i < 8; i++)
+                    this->angles[i] = holding_bow[bow_animation_angle_id-49][i];
+                bow_state_id = holding_bow[bow_animation_angle_id-49][21];
+            } else if (bow_animation_angle_id < 49) {
+                this->accumulated_time_bow_animation = 0;
+
+                for (int i = 0; i < 8; i++)
+                    this->angles[i] = arm_bow[bow_animation_angle_id][i];
+                bow_state_id = arm_bow[bow_animation_angle_id][21];
+            }
         }
     }
 }
@@ -312,7 +350,7 @@ void Player::display(float dt) {
             for (int i = 8; i < 21; i++)
                 this->angles[i] = leg_angles[leg_animation_angle_id][i];
         }
-    } else if (idle) {
+    } else if (idle && bow_animation_angle_id == 0) {
         this->accumulated_time_idle_animation += dt;
 
         if (accumulated_time_idle_animation >= 0.13) {

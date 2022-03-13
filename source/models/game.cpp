@@ -412,6 +412,7 @@ void Game::update_controller(float dt) {
     } else {
         // Verifica se o jogador pode atirar
         if (player->ready2shoot()) {
+            player->set_returning();
             this->shoots.push_back(std::make_shared<Shoot>(
                 player->get_coordinate_system()->yaw,
                 player->get_coordinate_system()->pitch,
