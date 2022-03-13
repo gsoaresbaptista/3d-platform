@@ -47,8 +47,8 @@ class Game: public Shape {
         void update_controller(float dt);
         void update_camera_type();
         void update_player_move(float dt);
-        void update_player_jump(float dt);
-        void gravity(float dt);
+        void update_player_jump(float dt, Player* player);
+        void gravity(float dt, Player* player);
         void display_hud();
         bool obstacle_collision(vec3 movement, Player* player);
 

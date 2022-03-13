@@ -9,8 +9,6 @@
 #include "../utils/libs/imgui/imgui_impl_glut.h"
 #include "../utils/libs/imgui/imgui_impl_opengl2.h"
 
-#define acceleration (-player->get_on_air_time() * block_size * 18.0)
-
 static bool gravity_on = true;
 static bool collision_on = true;
 static bool player_collision_box = false;
@@ -182,34 +180,36 @@ void Game::draw(
     }
 }
 
-void Game::gravity(float dt) {
+void Game::gravity(float dt, Player* player) {
     if (gravity_on) {
+        float acceleration = (-player->get_on_air_time() * block_size * 18.0);
+
         if ((player->is_falling() || player->is_rising())) {
             if ((player->is_rising()) &&
                 (this->player_jump_speed + acceleration <= 0)) {
                 //
                 player->set_rising(false);
                 player->set_falling(true);
-                this->player->clear_on_air_time();
+                player->clear_on_air_time();
             } else {
                 if ((player->get_feet_height() + acceleration * dt >= 0) &&
                     (!obstacle_collision(
-                        vec3(0, acceleration * dt, 0), this->player))) {
+                        vec3(0, acceleration * dt, 0), player))) {
                     //
-                    this->player->move_up(acceleration * dt);
+                    player->move_up(acceleration * dt);
                 } else {
-                    this->player->set_rising(false);
-                    this->player->set_falling(false);
-                    this->player->clear_on_air_time();
+                    player->set_rising(false);
+                    player->set_falling(false);
+                    player->clear_on_air_time();
                 }
                 //
                 if (player->get_feet_height() + acceleration*dt <= 0) {
-                    player->set_y(0);
+                    player->set_y(block_size);
                 }
             }
         } else if (
-            !obstacle_collision(vec3(0, acceleration * dt, 0), this->player)) {
-            this->player->move_up(acceleration * dt);
+            !obstacle_collision(vec3(0, acceleration * dt, 0), player)) {
+            player->move_up(acceleration * dt);
             player->set_falling(true);
         }
     }
@@ -326,33 +326,33 @@ void Game::update_player_move(float dt) {
     if (clear) player->clear_walking();
 }
 
-void Game::update_player_jump(float dt) {
+void Game::update_player_jump(float dt, Player* player) {
     // Jump logic
     if ((this->controller->keys[' '] && !gravity_on) ||
-        (this->controller->keys[' '] && (this->player->is_rising() ||
-        (!this->player->is_rising() && !this->player->is_falling())))) {
+        (this->controller->keys[' '] && (player->is_rising() ||
+        (!player->is_rising() && !player->is_falling())))) {
         //
         if (
-            !obstacle_collision(vec3(0, this->player_jump_speed*dt, 0),
-                                this->player)) {
+            !obstacle_collision(vec3(0, player_jump_speed*dt, 0),
+                                player)) {
             // Pressing space, in floor or rising
-            this->player->set_rising(true);
-            this->player->move_up(this->player_jump_speed*dt);
+            player->set_rising(true);
+            player->move_up(player_jump_speed*dt);
             player->increment_on_air_time(dt);
         } else {
-            this->player->set_rising(false);
-            this->player->set_falling(true);
-            this->player->clear_on_air_time();
+            player->set_rising(false);
+            player->set_falling(true);
+            player->clear_on_air_time();
         }
-    } else if (gravity_on && this->player->is_falling()) {
+    } else if (gravity_on && player->is_falling()) {
         // Player falling, increment time falling
         player->increment_on_air_time(dt);
 
-    } else if (!this->controller->keys[' '] && this->player->is_rising()) {
+    } else if (!controller->keys[' '] && player->is_rising()) {
         // Space key up, update player conditition
-        this->player->clear_on_air_time();
-        this->player->set_rising(false);
-        this->player->set_falling(true);
+        player->clear_on_air_time();
+        player->set_rising(false);
+        player->set_falling(true);
     }
 }
 
@@ -517,9 +517,9 @@ void Game::update(float dt) {
     this->camera->update();
 
     // Update player position
-    this->gravity(dt);
+    this->gravity(dt, this->player);
     this->update_player_move(dt);
-    this->update_player_jump(dt);
+    this->update_player_jump(dt, this->player);
 
     //
     static bool last_player_box_state = false;
@@ -541,26 +541,29 @@ void Game::update(float dt) {
         vec3 movement = enemy->get_coordinate_system()->direction;
         movement = movement * player_speed * dt;
 
-        if (!obstacle_collision(movement, (Player*)(enemy.get()))) {
-            enemy->move_forward_backward(movement);
+        this->gravity(dt, (Player*)enemy.get());
+
+        // if ((!obstacle_collision(movement, enemy.get()) &&
+        if (!obstacle_collision(movement, enemy.get())) {
+             // (!enemy->is_falling()))) {
+                enemy->move_forward_backward(movement);
         } else {
             if (enemy->get_feet_height() <= 0) {
-                enemy->set_y(block_size/10);
+                enemy->set_y(block_size);
             }
 
             enemy->get_coordinate_system()->direction =
                 enemy->get_coordinate_system()->direction * -1;
+
             enemy->get_coordinate_system()->left =
-                vec3(0, 1, 0) * enemy->get_coordinate_system()->up;
-            enemy->get_coordinate_system()->up =
-                enemy->get_coordinate_system()->direction *
-                enemy->get_coordinate_system()->left;
+                vec3(0, 1, 0) * enemy->get_coordinate_system()->direction;
 
             if (enemy->get_coordinate_system()->yaw == 0)
                 enemy->get_coordinate_system()->yaw = 180;
             else
                 enemy->get_coordinate_system()->yaw = 0;
         }
+        if (enemy->is_falling()) enemy->increment_on_air_time(dt);
     }
 }
 

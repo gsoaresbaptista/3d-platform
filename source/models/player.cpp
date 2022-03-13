@@ -20,10 +20,11 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->coordinateSystem->left = vec3(0, 0, -1);
     this->coordinateSystem->up = vec3(0, 1, 0);
 
+
     //
     this->falling = false;
     this->rising = false;
-    this->on_air_time = 0;
+    this->on_air_time = 0.1;
 
     //
     this->dheight = height/2.25f;
@@ -262,11 +263,13 @@ void Player::display_character() {
 // vec3 Player::get_hand_position() {}
 
 void Player::set_x(GLfloat x) {
-    this->coordinateSystem->position.x = x;
+    this->coordinateSystem->position.x = 0;
+    this->center.x = x;
 }
 
 void Player::set_y(GLfloat y) {
-    this->coordinateSystem->position.y = y;
+    this->coordinateSystem->position.y = 0;
+    this->center.y = y;
 }
 
 bool Player::ready2shoot() {
@@ -274,7 +277,8 @@ bool Player::ready2shoot() {
 }
 
 void Player::set_z(GLfloat z) {
-    this->coordinateSystem->position.z = z;
+    this->coordinateSystem->position.z = 0;
+    this->center.z = z;
 }
 
 void Player::move_left_right(vec3 direction) {

@@ -58,13 +58,13 @@ class Player: public Shape {
         void move_up(GLfloat direction);
 
         //
-        GLfloat get_on_air_time();
-        GLboolean is_falling();
-        GLboolean is_rising();
-        void set_falling(GLboolean flag);
-        void set_rising(GLboolean flag);
-        void clear_on_air_time();
-        void increment_on_air_time(GLfloat dt);
+        virtual GLfloat get_on_air_time();
+        virtual GLboolean is_falling();
+        virtual GLboolean is_rising();
+        virtual void set_falling(GLboolean flag);
+        virtual void set_rising(GLboolean flag);
+        virtual void clear_on_air_time();
+        virtual void increment_on_air_time(GLfloat dt);
 
         //
         GLfloat get_feet_height();
