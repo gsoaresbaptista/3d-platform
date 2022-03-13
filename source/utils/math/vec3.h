@@ -42,6 +42,10 @@ struct vec3 {
         return x == v.x && y == v.y && z == v.z;
     }
 
+    bool operator!=(const vec3& v) {
+        return !(*this == v);
+    }
+
     GLfloat distance(const vec3& v) {
         return sqrt(
             pow(x - v.x, 2) +

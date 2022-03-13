@@ -59,7 +59,7 @@ void DefaultCamera::set_player_angles() {
 
 void DefaultCamera::activate() {
     vec3 position = player->position +
-        vec3(center.x, 1.65*center.y, center.z);
+        vec3(center.x, 1.7*center.y, center.z);
 
     vec3 look = position + this->direction;
 

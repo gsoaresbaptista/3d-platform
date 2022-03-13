@@ -237,6 +237,10 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
             (pos.z + block_size/2.f > center.z - d2) &&
             (pos.z - block_size/2.f < center.z + d2)) {
             //
+            if (player != this->player) {
+                ((Enemy*)player)->set_platform(obstacle);
+            }
+
             return true;
         }
     }
@@ -542,28 +546,44 @@ void Game::update(float dt) {
         vec3 movement = enemy->get_coordinate_system()->direction;
         movement = movement * player_speed * dt;
 
+        enemy->move(dt, player_speed);
         this->gravity(dt, (Player*)enemy.get());
 
-        // if ((!obstacle_collision(movement, enemy.get()) &&
-        if (!obstacle_collision(movement, enemy.get())) {
-             // (!enemy->is_falling()))) {
+        if ((!obstacle_collision(movement, enemy.get()) &&
+            (!enemy->out_platform(movement)) &&
+            (!enemy->is_falling()))) {
+            //
+            if (enemy->get_move_dir() != vec3(0, 0, 0))
                 enemy->move_forward_backward(movement);
         } else {
             if (enemy->get_feet_height() <= 0) {
                 enemy->set_y(block_size);
             }
 
-            enemy->get_coordinate_system()->direction =
-                enemy->get_coordinate_system()->direction * -1;
+            // Vira o inimigo
+            if (!enemy->is_falling()) {
+                vec3 dir = enemy->get_coordinate_system()->direction;
+                enemy->get_coordinate_system()->direction = dir * -1;
 
-            enemy->get_coordinate_system()->left =
-                vec3(0, 1, 0) * enemy->get_coordinate_system()->direction;
+                CoordinateSystem* coord = new CoordinateSystem();
+                coord->direction = dir * -1;
+                coord->left = vec3(0, 1, 0) * (dir*-1);
+                coord->up = vec3(0, 1, 0);
+                coord->position = enemy->get_coordinate_system()->position;
+                enemy->set_coordinate_system(coord);
 
-            if (enemy->get_coordinate_system()->yaw == 0)
-                enemy->get_coordinate_system()->yaw = 180;
-            else
-                enemy->get_coordinate_system()->yaw = 0;
+                if (dir == vec3(0, 0, 1)) {
+                    enemy->get_coordinate_system()->yaw = 0;
+                } else if (dir == vec3(0, 0, -1)) {
+                    enemy->get_coordinate_system()->yaw = 180;
+                } else if (dir == vec3(1, 0, 0)) {
+                    enemy->get_coordinate_system()->yaw = 90;
+                } else if (dir == vec3(-1, 0, 0)) {
+                    enemy->get_coordinate_system()->yaw = -90;
+                }
+            }
         }
+
         if (enemy->is_falling()) enemy->increment_on_air_time(dt);
     }
 }

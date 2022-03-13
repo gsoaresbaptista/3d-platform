@@ -22,7 +22,7 @@ int main() {
     GameConstants::load_models();
     auto controllerData = Controller::registerCallbacks();
 
-    auto data = readSVG("inputs/test.svg");
+    auto data = readSVG("inputs/original_map.svg");
     auto game = std::make_shared<Game>(data, controllerData);
     game->draw();
 

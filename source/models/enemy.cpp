@@ -4,6 +4,7 @@
 Enemy::Enemy(vec3 center, GLfloat height) : Player(center, height) {
     this->center = center;
     this->coordinateSystem->direction = vec3(0, 0, 1);
+    this->platform = nullptr;
 }
 
 Enemy::~Enemy() {
@@ -17,11 +18,15 @@ void Enemy::draw(
     skeleton::draw_arm(arm0, arm1, dheight);
     skeleton::draw_leg(leg0, leg1, dheight);
     this->collision_boundary->draw(30, 10, nullptr, GL_LINE, Outline::ENTIRE);
+    this->move_dir = coordinateSystem->direction;
+    this->move_time = 0;
 }
 
 void Enemy::display_character() {
     glPushMatrix();
         glTranslatef(0, -dheight *1.25, 0);
+        glRotatef(180, 0, 1, 0);
+        // glRotatef(this->coordinateSystem->yaw, 0, 1, 0);
 
         glPushMatrix();
             glTranslatef(0, 3*dheight, 0);
@@ -106,4 +111,79 @@ void Enemy::display_character() {
             glCallList(leg1);
         glPopMatrix();
     glPopMatrix();
+}
+
+void Enemy::set_platform(std::shared_ptr<Shape> box) {
+    if (platform == nullptr) {
+        vec3 c = box->get_center();
+        this->platform = box;
+        this->set_y(c.y + box->get_height() + dheight*2);
+    }
+}
+
+bool Enemy::out_platform(vec3 movement) {
+    float width = platform->get_width()/2.f;
+    float height = platform->get_height()/2.f;
+    float depth = platform->get_depth()/2.f;
+    vec3 center = platform->get_center();
+
+    vec3 np = this->get_position() + this->get_center() + movement;
+
+    if ((np.z - dheight <= center.z - depth) ||
+        (np.z + dheight >= center.z + depth) ||
+        (np.x - dheight <= center.x - width) ||
+        (np.x + dheight >= center.x + width)) {
+        return true;
+    }
+
+    return false;
+}
+
+void Enemy::set_movement(vec3 dir, float time) {
+    this->move_dir = dir;
+    this->move_time = time;
+}
+
+void Enemy::move(float dt, float speed) {
+    this->move_time -= dt;
+
+    if (this->move_time <= 0) {
+        float random = random_float(0, 1);
+        this->move_time = random * 3;
+
+        if (random <= 0.40) {
+            this->move_dir = vec3(0, 0, 0);
+            this->clear_walking();
+            move_time = random * 6;
+        } else if (random <= 0.55) {
+            this->move_dir = vec3(1, 0, 0);
+        } else if (random <= 0.70) {
+            this->move_dir = vec3(-1, 0, 0);
+        } else if (random <= 0.85) {
+            this->move_dir = vec3(0, 0, 1);
+        } else {
+            this->move_dir = vec3(0, 0, -1);
+        }
+
+        if ((this->move_dir != this->coordinateSystem->direction)) {
+            //
+            this->coordinateSystem->direction = move_dir;
+            this->coordinateSystem->up = vec3(0, 1, 0);
+            this->coordinateSystem->left = vec3(0, 1, 0) * move_dir;
+
+            if (move_dir == vec3(0, 0, 1)) {
+                this->coordinateSystem->yaw = 180;
+            } else if (move_dir == vec3(0, 0, -1)) {
+                this->coordinateSystem->yaw = 0;
+            } else if (move_dir == vec3(1, 0, 0)) {
+                this->coordinateSystem->yaw = -90;
+            } else if (move_dir == vec3(-1, 0, 0)) {
+                this->coordinateSystem->yaw = 90;
+            }
+        }
+    }
+}
+
+vec3 Enemy::get_move_dir() {
+    return this->move_dir;
 }
