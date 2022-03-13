@@ -76,10 +76,10 @@ namespace skeleton {
         vec3 v7 = { -d, -d, -d };
         vec3 v8 = { -d,  d, -d };
 
-        float specular[] = { 1.f, 1.f, 1.f, 1.f};
-        glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
-        glMaterialfv(GL_FRONT, GL_AMBIENT, specular);
-        glMaterialf(GL_FRONT, GL_SHININESS, 128);
+        // float specular[] = { 1.f, 1.f, 1.f, 1.f};
+        // glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+        // glMaterialfv(GL_FRONT, GL_AMBIENT, specular);
+        // glMaterialf(GL_FRONT, GL_SHININESS, 128);
 
         glNewList(id, GL_COMPILE);
             glPolygonMode(GL_FRONT, GL_FILL);
@@ -108,11 +108,11 @@ namespace skeleton {
         vec3 v7 = { -d, -2*d, -d/2 };
         vec3 v8 = { -d,  d, -d/2 };
 
-        float specular[] = { 1.f, 1.f, 1.f, 1.f};
-        float ambient[] = { 0.5f, 0.5f, 0.5f, 1.f};
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128);
+        // float specular[] = { 1.f, 1.f, 1.f, 1.f};
+        // float ambient[] = { 0.2f, 0.2f, 0.2f, 0.f};
+        // glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+        // glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+        // glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128);
 
         glNewList(id, GL_COMPILE);
             glPolygonMode(GL_FRONT, GL_FILL);

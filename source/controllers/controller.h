@@ -13,6 +13,8 @@ class Controller {
             std::shared_ptr<ControllerData> data =
                 std::make_shared<ControllerData>();
 
+            data->night_mode = false;
+
             // Listeners
             KeyboardListener::registerCallbacks(data);
             MouseListener::registerCallbacks(data);

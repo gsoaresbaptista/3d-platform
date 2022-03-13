@@ -12,6 +12,7 @@ struct ControllerData {
     GLboolean move_orbital_camera;
     GLboolean disable_mouse_warp;
     GLfloat mouse_sensitivity;
+    GLboolean night_mode;
 };
 
 #endif  // SOURCE_CONTROLLERS_CONTROLLERDATA_H_

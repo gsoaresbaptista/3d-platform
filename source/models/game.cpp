@@ -106,26 +106,51 @@ Game::Game(
 }
 
 void Game::create_lights() {
-    for (int i = 0; i < 7; i++) {
-        vec3 c0 = data->torchs[i]->get_center();
-        c0.z += block_size;
-        c0.y += block_size;
+    if (!controller->night_mode) {
+        for (int i = 0; i < 7; i++) {
+            vec3 c0 = data->torchs[i]->get_center();
+            c0.z += block_size;
+            c0.y += block_size;
+
+            float light[4][4] = {
+                { 0.35, 0.35, 0.35, 0.30f },  // ambient
+                { 0.80, 0.80, 0.80, 0.80f },  // diffuse
+                { 0.25, 0.25, 0.25, 0.80f },  // specular
+                { c0.x, c0.y, c0.z, 1.f },  // position
+            };
+
+            glLightfv(GL_LIGHT0 + i, GL_AMBIENT, &light[0][0]);
+            glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, &light[1][0]);
+            glLightfv(GL_LIGHT0 + i, GL_SPECULAR, &light[2][0]);
+            glLightfv(GL_LIGHT0 + i, GL_POSITION, &light[3][0]);
+            glLightf(GL_LIGHT0 + i, GL_CONSTANT_ATTENUATION, 0.15);
+            glLightf(GL_LIGHT0 + i, GL_LINEAR_ATTENUATION, 0.005);
+            glLightf(GL_LIGHT0 + i, GL_QUADRATIC_ATTENUATION, 0.001);
+        }
+
+        float spot[] = {0, 0, -1};
+        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot);
+        glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
+    } else {
+        vec3 c0 = player->get_center() + player->get_position();
 
         float light[4][4] = {
-            { 0.35, 0.35, 0.35, 0.30f },  // ambient
-            // { 1.f, 1.f, 1.f, 1.f },  // ambient
+            { 1.f, 1.f, 1.f, 1.f },  // ambient
             { 0.80, 0.80, 0.80, 0.80f },  // diffuse
             { 0.25, 0.25, 0.25, 0.80f },  // specular
             { c0.x, c0.y, c0.z, 1.f },  // position
         };
 
-        glLightfv(GL_LIGHT0 + i, GL_AMBIENT, &light[0][0]);
-        glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, &light[1][0]);
-        glLightfv(GL_LIGHT0 + i, GL_SPECULAR, &light[2][0]);
-        glLightfv(GL_LIGHT0 + i, GL_POSITION, &light[3][0]);
-        glLightf(GL_LIGHT0 + i, GL_CONSTANT_ATTENUATION, 0.15);
-        glLightf(GL_LIGHT0 + i, GL_LINEAR_ATTENUATION, 0.005);
-        glLightf(GL_LIGHT0 + i, GL_QUADRATIC_ATTENUATION, 0.001);
+        glLightfv(GL_LIGHT0, GL_AMBIENT, &light[0][0]);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, &light[1][0]);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, &light[2][0]);
+        glLightfv(GL_LIGHT0, GL_POSITION, &light[3][0]);
+        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION,
+            &(player->get_coordinate_system()->direction).x);
+        glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 10);
+        glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.15);
+        glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.005);
+        glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.001);
     }
 }
 
@@ -428,6 +453,30 @@ void Game::update_controller(float dt) {
         } else {
             glutSetCursor(GLUT_CURSOR_NONE);
         }
+    }
+
+    if (controller->keys['n']) {
+        controller->keys['n'] = false;  // Disable
+
+        if (!controller->night_mode) {
+            glDisable(GL_LIGHT1);
+            glDisable(GL_LIGHT2);
+            glDisable(GL_LIGHT3);
+            glDisable(GL_LIGHT4);
+            glDisable(GL_LIGHT5);
+            glDisable(GL_LIGHT6);
+            glDisable(GL_LIGHT7);
+        } else {
+            glEnable(GL_LIGHT1);
+            glEnable(GL_LIGHT2);
+            glEnable(GL_LIGHT3);
+            glEnable(GL_LIGHT4);
+            glEnable(GL_LIGHT5);
+            glEnable(GL_LIGHT6);
+            glEnable(GL_LIGHT7);
+        }
+
+        controller->night_mode = !controller->night_mode;
     }
 
     //

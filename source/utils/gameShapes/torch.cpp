@@ -27,7 +27,6 @@ void Torch::draw_block(GLfloat block_size, GLenum mode) {
     this->flame = std::make_shared<Plane>(p0, p1, p2, p3, vec3(0, 0, 1), BoxType::FLAME, nc);
 
     this->flame->draw_block(block_size, mode);
-    // Box::draw_block(block_size, mode);
 }
 
 void Torch::update_frame(float dt) {
@@ -43,16 +42,17 @@ void Torch::update_frame(float dt) {
 
 void Torch::display(float dt, std::shared_ptr<ControllerData> controller) {
     glPushMatrix();
-        glPushMatrix();
-            this->flame->translate();
-            glTranslatef(0, block_size/2, -block_size/3 - flame_size/2);
-            glScalef(flame_size, flame_size, flame_size);
-            glRotatef(controller->to_rotate.x, 0, 1, 0);
-            this->flame->display(dt);
-        glPopMatrix();
+        if (!controller->night_mode) {
+            glPushMatrix();
+                this->flame->translate();
+                glTranslatef(0, block_size/2, -block_size/3 - flame_size/2);
+                glScalef(flame_size, flame_size, flame_size);
+                glRotatef(controller->to_rotate.x, 0, 1, 0);
+                this->flame->display(dt);
+            glPopMatrix();
+        }
         this->translate();
         glRotatef(45, 1, 0, 0);
-        // glCallList(this->id_);
 
             vec3 p0(-width/2.0, height/2.0, depth/2.0);
             vec3 p1(-width/2.0, -height/2.0, depth/2.0);

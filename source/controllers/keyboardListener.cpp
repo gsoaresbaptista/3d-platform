@@ -64,6 +64,10 @@ static void key_down(unsigned char key, int x, int y) {
         case 'Q':
             KEYS['q'] = true;
             break;
+        case 'n':
+        case 'N':
+            KEYS['n'] = true;
+            break;
         case 27:  // ESC
             KEYS[27] = true;
             break;
@@ -123,6 +127,10 @@ static void key_up(unsigned char key, int x, int y) {
         case 'q':
         case 'Q':
             KEYS['q'] = false;
+            break;
+        case 'n':
+        case 'N':
+            KEYS['n'] = false;
             break;
         case 27:  // ESC
             KEYS[27] = false;
