@@ -10,6 +10,7 @@ class Enemy: public Player {
         std::shared_ptr<Shape> platform;
         vec3 move_dir;
         float move_time;
+        float shoot_time;
 
     public:
         Enemy(vec3 center, GLfloat height);
@@ -25,6 +26,8 @@ class Enemy: public Player {
         void set_movement(vec3 dir, float time);
         void move(float dt, float speed);
         vec3 get_move_dir();
+        float get_shoot_time();
+        void increment_shoot(float dt);
 };
 
 #endif  // SOURCE_MODELS_ENEMY_H_

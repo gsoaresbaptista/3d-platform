@@ -13,6 +13,7 @@ static bool gravity_on = true;
 static bool collision_on = true;
 static bool player_collision_box = false;
 static bool enemies_collision_box = false;
+static bool move_enemies = false;
 static float* mouse_sensitivity;
 
 static void display_imgui() {
@@ -29,7 +30,9 @@ static void display_imgui() {
         ImGui::Checkbox("Gravity", &gravity_on);
         ImGui::Checkbox("Collision", &collision_on);
 
+        ImGui::Checkbox("Enemies Movement", &move_enemies);
         ImGui::InputFloat("Sensitivity", mouse_sensitivity, 1);
+
 
         ImGui::End();
     }
@@ -543,48 +546,65 @@ void Game::update(float dt) {
 
     // Move os inimigos
     for (auto& enemy : enemies) {
-        vec3 movement = enemy->get_coordinate_system()->direction;
-        movement = movement * player_speed * dt;
+        if (move_enemies) {
+            this->gravity(dt, (Player*)enemy.get());
+            vec3 movement = enemy->get_coordinate_system()->direction;
+            movement = movement * player_speed * dt;
+            enemy->move(dt, player_speed);
 
-        enemy->move(dt, player_speed);
-        this->gravity(dt, (Player*)enemy.get());
-
-        if ((!obstacle_collision(movement, enemy.get()) &&
-            (!enemy->out_platform(movement)) &&
-            (!enemy->is_falling()))) {
-            //
-            if (enemy->get_move_dir() != vec3(0, 0, 0))
-                enemy->move_forward_backward(movement);
-        } else {
-            if (enemy->get_feet_height() <= 0) {
-                enemy->set_y(block_size);
-            }
-
-            // Vira o inimigo
-            if (!enemy->is_falling()) {
-                vec3 dir = enemy->get_coordinate_system()->direction;
-                enemy->get_coordinate_system()->direction = dir * -1;
-
-                CoordinateSystem* coord = new CoordinateSystem();
-                coord->direction = dir * -1;
-                coord->left = vec3(0, 1, 0) * (dir*-1);
-                coord->up = vec3(0, 1, 0);
-                coord->position = enemy->get_coordinate_system()->position;
-                enemy->set_coordinate_system(coord);
-
-                if (dir == vec3(0, 0, 1)) {
-                    enemy->get_coordinate_system()->yaw = 0;
-                } else if (dir == vec3(0, 0, -1)) {
-                    enemy->get_coordinate_system()->yaw = 180;
-                } else if (dir == vec3(1, 0, 0)) {
-                    enemy->get_coordinate_system()->yaw = 90;
-                } else if (dir == vec3(-1, 0, 0)) {
-                    enemy->get_coordinate_system()->yaw = -90;
+            if ((!obstacle_collision(movement, enemy.get()) &&
+                (!enemy->out_platform(movement)) &&
+                (!enemy->is_falling()))) {
+                //
+                if (enemy->get_move_dir() != vec3(0, 0, 0))
+                    enemy->move_forward_backward(movement);
+            } else {
+                if (enemy->get_feet_height() <= 0) {
+                    enemy->set_y(block_size);
                 }
+
+                // Vira o inimigo
+                if (!enemy->is_falling()) {
+                    vec3 dir = enemy->get_coordinate_system()->direction;
+                    enemy->get_coordinate_system()->direction = dir * -1;
+
+                    CoordinateSystem* coord = new CoordinateSystem();
+                    coord->direction = dir * -1;
+                    coord->left = vec3(0, 1, 0) * (dir*-1);
+                    coord->up = vec3(0, 1, 0);
+                    coord->position = enemy->get_coordinate_system()->position;
+                    enemy->set_coordinate_system(coord);
+
+                    if (dir == vec3(0, 0, 1)) {
+                        enemy->get_coordinate_system()->yaw = 0;
+                    } else if (dir == vec3(0, 0, -1)) {
+                        enemy->get_coordinate_system()->yaw = 180;
+                    } else if (dir == vec3(1, 0, 0)) {
+                        enemy->get_coordinate_system()->yaw = 90;
+                    } else if (dir == vec3(-1, 0, 0)) {
+                        enemy->get_coordinate_system()->yaw = -90;
+                    }
+                }
+                if (enemy->is_falling()) enemy->increment_on_air_time(dt);
             }
+        } else {
+            enemy->clear_walking();
         }
 
-        if (enemy->is_falling()) enemy->increment_on_air_time(dt);
+        // Faz ele atirar
+        // if (enemy->ready2shoot() && enemy->get_shoot_time() <= 0) {
+            // enemy->set_returning();
+            // enemy->increment_shoot(-dt);
+            // this->shoots.push_back(std::make_shared<Shoot>(
+            //     player->get_coordinate_system()->yaw,
+            //     player->get_coordinate_system()->pitch,
+            //     block_size/2.25f,
+            //     player->get_center() + player->get_position(),
+            //     player->get_coordinate_system()->direction));
+        // } else {
+            // enemy->increment_bow_animation(dt);
+            // enemy->increment_shoot(dt);
+        // }
     }
 }
 
