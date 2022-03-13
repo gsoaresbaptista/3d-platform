@@ -148,9 +148,9 @@ void Game::create_lights() {
         glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION,
             &(player->get_coordinate_system()->direction).x);
         glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 10);
-        glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.15);
-        glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.005);
-        glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.001);
+        glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.2);
+        glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0002);
+        glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0002);
     }
 }
 
@@ -245,10 +245,10 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
     float radius = this->player->get_collision_radius();
 
     for (auto& enemy : enemies) {
-        vec3 center = enemy->get_center();
+        vec3 center = enemy->get_center() + enemy->get_position();
         float radius_distance = distance_xz(pos, center);
 
-        if (player->get_center() == enemy->get_center()) continue;
+        if (player == enemy.get()) continue;
 
         if (radius_distance < 2* radius &&
         (pos.y + block_size > center.y - block_size) &&
@@ -258,9 +258,9 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
         }
     }
 
-    float radius_distance = distance_xz(pos, this->player->get_center());
+    float radius_distance = distance_xz(pos, this->player->get_position() + this->player->get_center());
 
-    if (player->get_center() == this->player->get_center()) return false;
+    if (player == this->player) return false;
 
     if (radius_distance < 2* radius &&
     (pos.y + block_size > center.y - block_size) &&
@@ -465,7 +465,6 @@ void Game::update_controller(float dt) {
             glDisable(GL_LIGHT4);
             glDisable(GL_LIGHT5);
             glDisable(GL_LIGHT6);
-            glDisable(GL_LIGHT7);
         } else {
             glEnable(GL_LIGHT1);
             glEnable(GL_LIGHT2);
@@ -473,7 +472,6 @@ void Game::update_controller(float dt) {
             glEnable(GL_LIGHT4);
             glEnable(GL_LIGHT5);
             glEnable(GL_LIGHT6);
-            glEnable(GL_LIGHT7);
         }
 
         controller->night_mode = !controller->night_mode;
@@ -534,6 +532,33 @@ void Game::update(float dt) {
         for (auto& enemy : enemies)
             enemy->set_show_collision_boundary(enemies_collision_box);
         last_enemies_box_state = !last_enemies_box_state;
+    }
+
+    // Move os inimigos
+    for (auto& enemy : enemies) {
+        vec3 movement = enemy->get_coordinate_system()->direction;
+        movement = movement * player_speed * dt;
+
+        if (!obstacle_collision(movement, (Player*)(enemy.get()))) {
+            enemy->move_forward_backward(movement);
+        } else {
+            if (enemy->get_feet_height() <= 0) {
+                enemy->set_y(block_size/10);
+            }
+
+            enemy->get_coordinate_system()->direction =
+                enemy->get_coordinate_system()->direction * -1;
+            enemy->get_coordinate_system()->left =
+                vec3(0, 1, 0) * enemy->get_coordinate_system()->up;
+            enemy->get_coordinate_system()->up =
+                enemy->get_coordinate_system()->direction *
+                enemy->get_coordinate_system()->left;
+
+            if (enemy->get_coordinate_system()->yaw == 0)
+                enemy->get_coordinate_system()->yaw = 180;
+            else
+                enemy->get_coordinate_system()->yaw = 0;
+        }
     }
 }
 

@@ -210,6 +210,7 @@ void Player::display_character() {
             glTranslatef(-dheight/4.f, -dheight/2.f, 0.0);
             glRotatef(coordinateSystem->pitch, -1, 0, 0);
             glCallList(arm0);
+
             glTranslatef(0, -dheight, 0);
             glTranslatef(dheight/15.5f, dheight/2.f, -1.5*dheight);
             glRotatef(angles[6], 1, 0, 0);
@@ -225,7 +226,6 @@ void Player::display_character() {
         glTranslatef(0, -angles[20]*2.5*dheight, 0);
 
         glPushMatrix();
-            //
             glTranslatef(dheight/4.f, dheight/2.f, 0);
             glTranslatef(0, dheight/2.f, 0);
             glRotatef(angles[8], 1, 0, 0);
