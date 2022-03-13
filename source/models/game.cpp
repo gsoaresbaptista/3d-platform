@@ -246,83 +246,45 @@ void Game::update_player_move(float dt) {
     CoordinateSystem* coord = player->get_coordinate_system();
 
     if (controller->keys['d']) {
-        if (current_camera == 4) {
-            movement = coord->direction * dt * player_speed;
+        movement = coord->left * -1 * dt * player_speed;
 
-            if (!obstacle_collision(movement, this->player)) {
-                player->move_forward_backward(movement);
-            }
-            return;
-        } else {
-            movement = coord->left * -1 * dt * player_speed;
-
-            if (!obstacle_collision(movement, this->player)) {
-                player->move_left_right(movement);
-            }
-            return;
+        if (!obstacle_collision(movement, this->player)) {
+            player->move_left_right(movement);
         }
+        return;
     } else if (controller->keys['a']) {
-        if (current_camera == 4) {
-            movement = coord->direction * -1 * dt * player_speed;
+        movement = coord->left * dt * player_speed;
 
-            if (!obstacle_collision(movement, this->player)) {
-                player->move_forward_backward(movement);
-            }
-
-        } else {
-            movement = coord->left * dt * player_speed;
-
-            if (!obstacle_collision(movement, this->player)) {
-                player->move_left_right(movement);
-            }
+        if (!obstacle_collision(movement, this->player)) {
+            player->move_left_right(movement);
         }
         return;
     }
 
     if (controller->keys['w']) {
-        if (current_camera == 4) {
-            movement = coord->left * dt * player_speed;
-            movement.y = 0;
+        movement = coord->direction * dt * player_speed;
+        movement.y = 0;
 
-            if (!obstacle_collision(movement, this->player)) {
-                player->move_left_right(movement);
-            }
-            return;
+        if (!obstacle_collision(movement, this->player)) {
+            player->move_forward_backward(movement);
+
         } else {
-            movement = coord->direction * dt * player_speed;
-            movement.y = 0;
+            vec3 movement0 = vec3(movement.x, 0, 0);
+            vec3 movement1 = vec3(0, 0, movement.z);
 
-            if (!obstacle_collision(movement, this->player)) {
-                player->move_forward_backward(movement);
-
-            } else {
-                vec3 movement0 = vec3(movement.x, 0, 0);
-                vec3 movement1 = vec3(0, 0, movement.z);
-
-                if (!obstacle_collision(movement0, this->player)) {
-                    player->move_forward_backward(movement0);
-                } else if (!obstacle_collision(movement1, this->player)) {
-                    player->move_forward_backward(movement1);
-                }
+            if (!obstacle_collision(movement0, this->player)) {
+                player->move_forward_backward(movement0);
+            } else if (!obstacle_collision(movement1, this->player)) {
+                player->move_forward_backward(movement1);
             }
-            return;
         }
+        return;
     } else if (controller->keys['s']) {
-        if (current_camera == 4) {
-            movement = coord->left * -1 * dt * player_speed;
-            movement.y = 0;
+        movement = coord->direction * -1 * dt * player_speed;
+        movement.y = 0;
 
-            if (!obstacle_collision(movement, this->player)) {
-                player->move_left_right(movement);
-            }
-
-        } else {
-            movement = coord->direction * -1 * dt * player_speed;
-            movement.y = 0;
-
-            if (!obstacle_collision(movement, this->player)) {
-                player->move_forward_backward(movement);
-            }
+        if (!obstacle_collision(movement, this->player)) {
+            player->move_forward_backward(movement);
         }
         return;
     }
@@ -395,6 +357,7 @@ void Game::update_camera_type() {
         this->camera = this->freeCamera;
         this->controller->to_rotate.x = 0;
         this->controller->to_rotate.y = 0;
+        MouseListener::set_camera((FreeCamera*)this->camera);
 
         //
         first = false;

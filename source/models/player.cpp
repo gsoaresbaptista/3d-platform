@@ -212,8 +212,7 @@ void Player::display_character() {
     glPopMatrix();
 }
 
-vec3 Player::get_hand_position() {
-}
+// vec3 Player::get_hand_position() {}
 
 void Player::set_x(GLfloat x) {
     this->coordinateSystem->position.x = x;

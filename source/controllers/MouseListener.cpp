@@ -10,6 +10,7 @@
 //
 static DefaultCamera* DEFAULT_CAMERA;
 static OrbitalCamera* ORBITAL_CAMERA;
+static FreeCamera* FREE_CAMERA;
 static GLboolean* MOVE_ORBITAL_CAMERA;
 static GLboolean* DISABLE_MOUSE;
 static GLfloat* MOUSE_SENSITIVITY;
@@ -44,12 +45,15 @@ void mouse_callback(int xpos, int ypos) {
 
         } else  if (ORBITAL_CAMERA != nullptr) {
             if (*MOVE_ORBITAL_CAMERA) {
-                ORBITAL_CAMERA->increment_phi(-MOUSE_DELTA->y);
-                ORBITAL_CAMERA->increment_theta(-MOUSE_DELTA->x);
+                ORBITAL_CAMERA->increment_phi(-MOUSE_DELTA->y, false);
+                ORBITAL_CAMERA->increment_theta(-MOUSE_DELTA->x, false);
             } else {
-                ORBITAL_CAMERA->increment_pitch(-MOUSE_DELTA->y);
-                ORBITAL_CAMERA->increment_yaw(-MOUSE_DELTA->x);
+                ORBITAL_CAMERA->increment_pitch(-MOUSE_DELTA->y, true);
+                ORBITAL_CAMERA->increment_yaw(-MOUSE_DELTA->x, true);
             }
+        } else  if (FREE_CAMERA != nullptr) {
+            FREE_CAMERA->increment_pitch(-MOUSE_DELTA->y);
+            FREE_CAMERA->increment_yaw(-MOUSE_DELTA->x);
         }
 
         //
@@ -91,11 +95,19 @@ void MouseListener::registerCallbacks(std::shared_ptr<ControllerData> data) {
 void MouseListener::set_camera(DefaultCamera* camera) {
     DEFAULT_CAMERA = camera;
     ORBITAL_CAMERA = nullptr;
+    FREE_CAMERA = nullptr;
 }
 
 void MouseListener::set_camera(OrbitalCamera* camera) {
     ORBITAL_CAMERA = camera;
     DEFAULT_CAMERA = nullptr;
+    FREE_CAMERA = nullptr;
+}
+
+void MouseListener::set_camera(FreeCamera* camera) {
+    ORBITAL_CAMERA = nullptr;
+    DEFAULT_CAMERA = nullptr;
+    FREE_CAMERA = camera;
 }
 
 void MouseListener::clear_camera() {

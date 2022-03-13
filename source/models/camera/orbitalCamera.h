@@ -16,6 +16,7 @@ class OrbitalCamera: public Camera {
         float block_size;
         float yaw;
         float pitch;
+        bool no_orbital;
 
         //
         vec3 cvt2cartesian();
@@ -26,14 +27,15 @@ class OrbitalCamera: public Camera {
             CoordinateSystem* player,
             vec3 center, float block_size);
         ~OrbitalCamera();
-        void increment_theta(float delta_theta);
-        void increment_phi(float delta_phi);
+        void increment_theta(float delta_theta, bool no_orbital);
+        void increment_phi(float delta_phi, bool no_orbital);
         void zoom_in();
         void zoom_out();
         void activate();
+        void update(bool no_orbital);
         void update();
-        void increment_yaw(float dYaw);
-        void increment_pitch(float dPitch);
+        void increment_yaw(float dYaw, bool no_orbital);
+        void increment_pitch(float dPitch, bool no_orbital);
 };
 
 #endif  // SOURCE_MODELS_CAMERA_ORBITALCAMERA_H_

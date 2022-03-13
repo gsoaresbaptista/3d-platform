@@ -14,6 +14,17 @@ FreeCamera::FreeCamera(
     this->up = player->up;
     this->block_size = block_size;
     this->data = data;
+    this->yaw = -90;
+    this->pitch = 0;
+}
+
+void FreeCamera::increment_yaw(float dYaw) {
+    this->yaw += dYaw;
+}
+
+void FreeCamera::increment_pitch(float dPitch) {
+    if (pitch + dPitch <= 45 && pitch + dPitch >= -45)
+        this->pitch += dPitch;
 }
 
 FreeCamera::~FreeCamera() {
@@ -58,4 +69,14 @@ void FreeCamera::update() {
     this->position.x -= data->arena_height/2.f;
     this->position.y -= data->arena_height/2.f;
     this->position.z -= 2*data->arena_depth + data->arena_height/1.5;
+
+    //
+    float yaw = this->yaw * M_PI/180.0;
+    float pitch = this->pitch * M_PI/180.0;
+    player->direction += vec3(-sin(yaw), sin(pitch), -cos(yaw)*cos(pitch));
+    player->direction = player->direction.normalize();
+    player->left = vec3(0, 1, 0) * player->direction;
+    player->up = player->direction * player->left;
+    player->yaw = this->yaw;
+    player->pitch = this->pitch;
 }

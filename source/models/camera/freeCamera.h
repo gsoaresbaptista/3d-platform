@@ -13,6 +13,8 @@ class FreeCamera : public Camera {
         vec3 up;
         GLfloat block_size;
         std::shared_ptr<SVGData> data;
+        float yaw;
+        float pitch;
     public:
         FreeCamera(
             CoordinateSystem* player,
@@ -20,6 +22,8 @@ class FreeCamera : public Camera {
         ~FreeCamera();
         void activate();
         void update();
+        void increment_yaw(float dYaw);
+        void increment_pitch(float dPitch);
 };
 
 #endif  // SOURCE_MODELS_CAMERA_FREECAMERA_H_

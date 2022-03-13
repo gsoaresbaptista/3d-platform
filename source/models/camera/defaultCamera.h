@@ -7,6 +7,9 @@
 class DefaultCamera: public Camera {
     private:
         vec3 center;
+        vec3 direction;
+        vec3 up;
+        vec3 left;
         float yaw;
         float pitch;
     public:

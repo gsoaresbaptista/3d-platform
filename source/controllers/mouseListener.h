@@ -6,12 +6,14 @@
 #include <memory>
 #include "../models/camera/defaultCamera.h"
 #include "../models/camera/orbitalCamera.h"
+#include "../models/camera/freeCamera.h"
 
 class MouseListener {
     public:
         static void registerCallbacks(std::shared_ptr<ControllerData> data);
         static void set_camera(DefaultCamera* camera);
         static void set_camera(OrbitalCamera* camera);
+        static void set_camera(FreeCamera* camera);
         static void clear_camera();
 };
 

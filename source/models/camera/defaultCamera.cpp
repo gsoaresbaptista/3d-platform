@@ -7,6 +7,9 @@ DefaultCamera::DefaultCamera(
     this->center = center;
     this->pitch = 0;
     this->yaw = -90 * player->direction.x;
+    this->direction = player->direction;
+    this->up = player->up;
+    this->left = player->left;
 }
 
 DefaultCamera::~DefaultCamera() {
@@ -33,19 +36,24 @@ float DefaultCamera::get_pitch() {
 void DefaultCamera::update() {
     float yaw = this->yaw * M_PI/180.0;
     float pitch = this->pitch * M_PI/180.0;
-    player->direction += vec3(-sin(yaw), sin(pitch), -cos(yaw)*cos(pitch));
-    player->direction = player->direction.normalize();
-    player->left = vec3(0, 1, 0) * player->direction;
-    player->up = player->direction * player->left;
+    this->direction += vec3(-sin(yaw), sin(pitch), -cos(yaw)*cos(pitch));
+    this->direction = this->direction.normalize();
+    this->left = vec3(0, 1, 0) * this->direction;
+    this->up = this->direction * this->left;
     player->yaw = this->yaw;
     player->pitch = this->pitch;
+
+    //
+    this->player->direction = direction;
+    this->player->left = left;
+    this->player->up = up;
 }
 
 void DefaultCamera::activate() {
     vec3 position = player->position +
         vec3(center.x, 1.70*center.y, center.z);
-    vec3 look = position + player->direction;
-
+    // vec3 look = position + this->direction;
+    vec3 look = position + this->direction;
 
     gluLookAt(
         position.x, position.y, position.z,
