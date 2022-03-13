@@ -130,6 +130,9 @@ void Player::display_character() {
 
         glPushMatrix();
             glTranslatef(0, 3*dheight, 0);
+            glTranslatef(0, -dheight/2.f, 0);
+            glRotatef(this->coordinateSystem->pitch, -1, 0, 0);
+            glTranslatef(0, dheight/2.f, 0);
             glCallList(head);
         glPopMatrix();
 
@@ -286,7 +289,7 @@ void Player::display(float dt) {
     if (walking) {
         this->accumulated_time_leg_animation += dt;
 
-        if (accumulated_time_leg_animation >= 16.f/1000.f) {
+        if (accumulated_time_leg_animation >= 0.5/1000.f) {
             this->accumulated_time_leg_animation = 0;
             this->leg_animation_angle_id++;
 
