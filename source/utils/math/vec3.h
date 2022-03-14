@@ -46,6 +46,14 @@ struct vec3 {
         return !(*this == v);
     }
 
+    vec3 dist(const vec3& v) {
+        vec3 tmp = *this - v;
+        tmp.x = sqrt(tmp.x*tmp.x);
+        tmp.y = sqrt(tmp.y*tmp.y);
+        tmp.z = sqrt(tmp.z*tmp.z);
+        return tmp;
+    }
+
     GLfloat distance(const vec3& v) {
         return sqrt(
             pow(x - v.x, 2) +

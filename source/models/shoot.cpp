@@ -29,6 +29,8 @@ void Shoot::set_position(vec3 position) {
 void Shoot::display(float dt) {
     glPushMatrix();
         float yaw = (73 - this->yaw) * M_PI/180;
+        yaw = (yaw < 0) ? fmod(yaw, 73):yaw;
+
         float pitch = (direction.y*90 + pitch) * M_PI/180;
         vec3 pp = center + vec3(
             -size*cos(yaw)*cos(pitch), size + size*sin(pitch), -size*sin(yaw));

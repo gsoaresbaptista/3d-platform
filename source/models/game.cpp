@@ -13,7 +13,7 @@ static bool gravity_on = true;
 static bool collision_on = true;
 static bool player_collision_box = false;
 static bool enemies_collision_box = false;
-static bool move_enemies = false;
+static bool move_enemies = true;
 static float* mouse_sensitivity;
 
 static void display_imgui() {
@@ -510,7 +510,7 @@ void Game::update(float dt) {
     // Move as flechas
     for (auto& arrow : shoots) {
         vec3 dir = arrow->get_direction();
-        vec3 velocity = dir.normalize() * player_speed * 8 * dt;
+        vec3 velocity = dir.normalize() * player_speed * 4 * dt;
         arrow->set_position(vec3(velocity.x, velocity.y, velocity.z));
     }
 
@@ -546,65 +546,81 @@ void Game::update(float dt) {
 
     // Move os inimigos
     for (auto& enemy : enemies) {
-        if (move_enemies) {
-            this->gravity(dt, (Player*)enemy.get());
-            vec3 movement = enemy->get_coordinate_system()->direction;
-            movement = movement * player_speed * dt;
-            enemy->move(dt, player_speed);
+        // Faz ele atirar
+        if (enemy->ready2shoot() && enemy->get_shoot_time() <= 0) {
+            enemy->clear_walking();
+            enemy->set_returning();
+            enemy->increment_shoot(-dt);
 
-            if ((!obstacle_collision(movement, enemy.get()) &&
-                (!enemy->out_platform(movement)) &&
-                (!enemy->is_falling()))) {
-                //
-                if (enemy->get_move_dir() != vec3(0, 0, 0))
-                    enemy->move_forward_backward(movement);
+            // Define a direção do inimigo no sentido do jogador
+            CoordinateSystem* coord = enemy->get_coordinate_system();
+            CoordinateSystem* nc = new CoordinateSystem();
+
+            vec3 player_pos = (player->get_coordinate_system()->position +
+                player->get_center());
+            vec3 dist = player_pos -
+                 (enemy->get_position() + enemy->get_center());
+
+            nc->direction = dist.normalize();
+            nc->yaw = atan2(dist.x, dist.z) * 180/M_PI + 180;
+            nc->position = coord->position;
+
+            if (player_pos.x > enemy->get_center().x + enemy->get_position().x) {
+                nc->pitch = 0 + atan2(dist.y, dist.x) * 180/M_PI;
+                if (nc->pitch > 45) nc->pitch = 45;
+                if (nc->pitch < -45) nc->pitch = -45;
             } else {
-                if (enemy->get_feet_height() <= 0) {
-                    enemy->set_y(block_size);
-                }
+                nc->pitch = 90+ atan2(dist.x, dist.y) * 180/M_PI;
+                if (nc->pitch < -45) nc->pitch = -45;
+                if (nc->pitch > 45) nc->pitch = 45;
+            }
+            // Fix max angles
+            float yaw = nc->yaw * M_PI/180.0;
+            float pitch = nc->pitch * M_PI/180.0;
+            nc->direction = vec3(-sin(yaw), sin(pitch), -cos(yaw)*cos(pitch)).normalize();
+            nc->left = vec3(0, 1, 0) * nc->direction;
+            nc->up = nc->direction * nc->left;
+            enemy->set_coordinate_system(nc);
 
-                // Vira o inimigo
-                if (!enemy->is_falling()) {
-                    vec3 dir = enemy->get_coordinate_system()->direction;
-                    enemy->get_coordinate_system()->direction = dir * -1;
+            // cria o tiro
+            this->shoots.push_back(std::make_shared<Shoot>(
+                nc->yaw,
+                nc->pitch,
+                block_size/2.25f,
+                enemy->get_center() + enemy->get_position(),
+                enemy->get_coordinate_system()->direction));
+        } else  {
+            enemy->increment_bow_animation(dt);
+            enemy->increment_shoot(dt);
 
-                    CoordinateSystem* coord = new CoordinateSystem();
-                    coord->direction = dir * -1;
-                    coord->left = vec3(0, 1, 0) * (dir*-1);
-                    coord->up = vec3(0, 1, 0);
-                    coord->position = enemy->get_coordinate_system()->position;
-                    enemy->set_coordinate_system(coord);
+            if (move_enemies) {
+                this->gravity(dt, (Player*)enemy.get());
+                vec3 movement = enemy->get_coordinate_system()->direction;
+                movement = movement * player_speed * dt;
+                enemy->move(dt, player_speed);
 
-                    if (dir == vec3(0, 0, 1)) {
-                        enemy->get_coordinate_system()->yaw = 0;
-                    } else if (dir == vec3(0, 0, -1)) {
-                        enemy->get_coordinate_system()->yaw = 180;
-                    } else if (dir == vec3(1, 0, 0)) {
-                        enemy->get_coordinate_system()->yaw = 90;
-                    } else if (dir == vec3(-1, 0, 0)) {
-                        enemy->get_coordinate_system()->yaw = -90;
+                if ((!obstacle_collision(movement, enemy.get()) &&
+                    (!enemy->out_platform(movement)) &&
+                    (!enemy->is_falling()))) {
+                    //
+                    enemy->move_forward_backward(movement);
+                } else {
+                    if (enemy->get_feet_height() <= 0) {
+                        enemy->set_y(block_size);
+                    }
+
+                    // Vira o inimigo
+                    if (!enemy->is_falling()) {
+                        enemy->move(1000, player_speed);
+                    } else {
+                        enemy->increment_on_air_time(dt);
                     }
                 }
-                if (enemy->is_falling()) enemy->increment_on_air_time(dt);
+            } else {
+                enemy->clear_walking();
             }
-        } else {
-            enemy->clear_walking();
         }
 
-        // Faz ele atirar
-        // if (enemy->ready2shoot() && enemy->get_shoot_time() <= 0) {
-            // enemy->set_returning();
-            // enemy->increment_shoot(-dt);
-            // this->shoots.push_back(std::make_shared<Shoot>(
-            //     player->get_coordinate_system()->yaw,
-            //     player->get_coordinate_system()->pitch,
-            //     block_size/2.25f,
-            //     player->get_center() + player->get_position(),
-            //     player->get_coordinate_system()->direction));
-        // } else {
-            // enemy->increment_bow_animation(dt);
-            // enemy->increment_shoot(dt);
-        // }
     }
 }
 

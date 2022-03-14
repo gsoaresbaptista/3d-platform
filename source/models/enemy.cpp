@@ -31,6 +31,11 @@ void Enemy::increment_shoot(float dt) {
     }
 }
 
+void Enemy::set_angles(float yaw0, float yaw1, float pitch0, float pitch1) {
+    this->coordinateSystem->yaw = -90 - atan2(yaw0, yaw1) * 180/M_PI;
+    this->coordinateSystem->pitch = 180 - atan2(pitch0, pitch1) * 180/M_PI;
+}
+
 void Enemy::display_character() {
     glPushMatrix();
         glTranslatef(0, -dheight *1.25, 0);
@@ -161,7 +166,7 @@ void Enemy::move(float dt, float speed) {
 
     if (this->move_time <= 0) {
         float random = random_float(0, 1);
-        this->move_time = random * 3;
+        this->move_time = random * 3 + 1;
 
         if (random <= 0.10) {
             this->move_dir = vec3(0, 0, 0);

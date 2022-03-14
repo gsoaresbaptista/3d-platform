@@ -79,6 +79,8 @@ void Player::set_coordinate_system(CoordinateSystem* system) {
     this->coordinateSystem->left = system->left;
     this->coordinateSystem->up = system->up;
     this->coordinateSystem->position = system->position;
+    this->coordinateSystem->yaw = system->yaw;
+    this->coordinateSystem->pitch = system->pitch;
 }
 
 GLfloat Player::get_width() {

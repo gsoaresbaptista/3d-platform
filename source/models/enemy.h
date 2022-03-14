@@ -28,6 +28,7 @@ class Enemy: public Player {
         vec3 get_move_dir();
         float get_shoot_time();
         void increment_shoot(float dt);
+        void set_angles(float yaw0, float yaw1, float pitch0, float pitch1);
 };
 
 #endif  // SOURCE_MODELS_ENEMY_H_
