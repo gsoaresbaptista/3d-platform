@@ -7,7 +7,7 @@ Enemy::Enemy(vec3 center, GLfloat height) : Player(center, height) {
     this->platform = nullptr;
     this->move_dir = coordinateSystem->direction;
     this->move_time = 0;
-    this->shoot_time = random_float(0, 1) * 5;
+    this->shoot_time = random_float(0, 1) * 7 + 1;
 }
 
 Enemy::~Enemy() {
@@ -25,7 +25,7 @@ void Enemy::draw(
 
 void Enemy::increment_shoot(float dt) {
     if (dt < 0) {
-        this->shoot_time = random_float(0, 1) * 5;
+        this->shoot_time = random_float(0, 1) * 7 + 1;
     } else {
         this->shoot_time -= dt;
     }

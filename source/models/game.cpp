@@ -282,6 +282,74 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
     return false;
 }
 
+bool Game::shoot_collision(vec3 movement, std::shared_ptr<Shoot> shoot, int shoot_id) {
+    vec3 future_point = shoot->get_point() + movement;
+
+    if ((future_point.x > data->arena_width) || 
+        (future_point.x < 0) || 
+        (future_point.y > data->arena_height) ||
+        (future_point.y < 0) || 
+        (future_point.z > data->arena_depth) || 
+        (future_point.z < 0)) {
+            return true;
+        }
+
+    // Obstacle Colision
+    for (auto& obstacle : obstacles) {
+        vec3 center = obstacle->get_center();
+        double w2 = obstacle->get_width()/2.f;
+        double h2 = obstacle->get_height()/2.f;
+        double d2 = obstacle->get_depth()/2.f;
+
+        if ((future_point.x > center.x - w2) &&
+            (future_point.x < center.x + w2) &&
+            (future_point.y > center.y - h2) &&
+            (future_point.y < center.y + h2) &&
+            (future_point.z > center.z - d2) &&
+            (future_point.z < center.z + d2)) {
+
+            return true;
+        }
+    }
+
+    int enemy_counter = 0;
+    // Enemy Collision
+    for (auto& enemy : enemies) {
+        vec3 center = enemy->get_center() + enemy->get_position();
+
+        if ((player != enemy.get()) &&
+            (future_point.x < center.x + block_size/2.f) &&
+            (future_point.x > center.x - block_size/2.f) &&
+            (future_point.y > center.y - block_size) &&
+            (future_point.y < center.y + block_size) &&
+            (future_point.z > center.z - block_size/2.f) &&
+            (future_point.z < center.z + block_size/2.f)) {
+            //
+
+            enemies.erase(enemies.begin() + enemy_counter);
+            shoots.erase(shoots.begin() + shoot_id);
+            return true;
+        }
+        enemy_counter++;
+    }
+
+    // Player Collision
+    vec3 center = this->player->get_center() +
+                  this->player->get_position();
+
+    if ((future_point.x > center.x - block_size/2.f) &&
+        (future_point.x < center.x + block_size/2.f) &&
+        (future_point.y > center.y - block_size) &&
+        (future_point.y < center.y + block_size) &&
+        (future_point.z > center.z - block_size/2.f) &&
+        (future_point.z < center.z + block_size/2.f)) {
+        //
+        return true;
+    }
+
+    return false;
+}
+
 void Game::update_player_move(float dt) {
     vec3 movement;
     CoordinateSystem* coord = player->get_coordinate_system();
@@ -508,10 +576,14 @@ void Game::update_controller(float dt) {
 
 void Game::update(float dt) {
     // Move as flechas
+    int arrow_count = 0;
     for (auto& arrow : shoots) {
         vec3 dir = arrow->get_direction();
         vec3 velocity = dir.normalize() * player_speed * 4 * dt;
-        arrow->set_position(vec3(velocity.x, velocity.y, velocity.z));
+        if (!shoot_collision(velocity, arrow, arrow_count)) {
+            arrow->set_position(vec3(velocity.x, velocity.y, velocity.z));
+        }
+        arrow_count++;
     }
 
     //

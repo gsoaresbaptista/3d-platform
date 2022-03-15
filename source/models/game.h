@@ -51,6 +51,7 @@ class Game: public Shape {
         void gravity(float dt, Player* player);
         void display_hud();
         bool obstacle_collision(vec3 movement, Player* player);
+        bool shoot_collision(vec3 movement, std::shared_ptr<Shoot> shoot, int shoot_id);
 
     public:
         Game(

@@ -31,6 +31,12 @@ objects/utils/shapes/%.o: source/utils/shapes/%.cpp source/utils/shapes/%.h
 objects/utils/style/%.o: source/utils/style/%.cpp source/utils/style/%.h
 	$(CXX) $< -c -o $@
 
+# objects/utils/style/material.o: source/utils/style/material.cpp source/utils/style/material.h
+# 	$(CXX) $< -c -o $@
+
+objects/utils/style/color.o: source/utils/style/color.cpp source/utils/style/color.h
+	$(CXX) $< -c -o $@
+
 objects/libs/%.o: source/libs/%.cpp source/libs/%.h
 	$(CXX) $< -c -o $@
 
