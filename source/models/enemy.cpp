@@ -208,3 +208,9 @@ vec3 Enemy::get_move_dir() {
 float Enemy::get_shoot_time() {
     return this->shoot_time;
 }
+
+std::shared_ptr<Enemy> Enemy::clone() {
+    auto cloned_enemy = std::make_shared<Enemy>(center, height);
+
+    return cloned_enemy;
+}

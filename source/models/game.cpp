@@ -16,6 +16,11 @@ static bool enemies_collision_box = false;
 static bool move_enemies = true;
 static float* mouse_sensitivity;
 
+static char str[1000];
+// void * font = GLUT_BITMAP_9_BY_15;
+void * font =  GLUT_BITMAP_TIMES_ROMAN_24;
+
+
 static void display_imgui() {
     {
         ImGui::SetNextWindowSize(ImVec2(0, 0));
@@ -53,6 +58,15 @@ static void update_imgui() {
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 }
 
+static std::vector<std::shared_ptr<Enemy>> copy(std::vector<std::shared_ptr<Enemy>> const &input) {
+    std::vector<std::shared_ptr<Enemy>> ret;
+
+    for(auto const &p: input) {
+        ret.push_back(p->clone());
+    }
+    return ret;
+}
+
 Game::Game(
         std::shared_ptr<SVGData> data,
         std::shared_ptr<ControllerData> flags)
@@ -66,7 +80,9 @@ Game::Game(
     this->current_camera = 4;
     this->player_speed = block_size * 4.5;
     this->player_jump_speed = block_size * 15;
-    this->enemies = data->enemies;
+
+    // this->enemies = data->enemies;
+    this->enemies = copy(data->enemies);
 
     // Create player
     this->player = new Player(data->player_pos, data->block_size);
@@ -105,6 +121,8 @@ Game::Game(
     this->controller->disable_mouse_warp = false;
     mouse_sensitivity = &(this->controller->mouse_sensitivity);
     *mouse_sensitivity = 3;
+
+    this->game_state = 0;
 }
 
 void Game::create_lights() {
@@ -223,9 +241,14 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
     if (!collision_on) return false;
 
     // Obstacle Collision
-
     CoordinateSystem* coord = player->get_coordinate_system();
     vec3 pos = coord->position + player->get_center() + movement;
+
+    if (player == this->player &&
+        pos.x >= data->arena_width) {
+        game_state = 1;
+        return true;
+    }
 
     for (auto& obstacle : obstacles) {
         vec3 center = obstacle->get_center();
@@ -282,7 +305,7 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
     return false;
 }
 
-bool Game::shoot_collision(vec3 movement, std::shared_ptr<Shoot> shoot, int shoot_id) {
+bool Game::shoot_collision(vec3 movement, std::shared_ptr<Shoot> shoot) {
     vec3 future_point = shoot->get_point() + movement;
 
     if ((future_point.x > data->arena_width) || 
@@ -327,7 +350,6 @@ bool Game::shoot_collision(vec3 movement, std::shared_ptr<Shoot> shoot, int shoo
             //
 
             enemies.erase(enemies.begin() + enemy_counter);
-            shoots.erase(shoots.begin() + shoot_id);
             return true;
         }
         enemy_counter++;
@@ -343,7 +365,8 @@ bool Game::shoot_collision(vec3 movement, std::shared_ptr<Shoot> shoot, int shoo
         (future_point.y < center.y + block_size) &&
         (future_point.z > center.z - block_size/2.f) &&
         (future_point.z < center.z + block_size/2.f)) {
-        //
+
+        game_state = -1;
         return true;
     }
 
@@ -437,8 +460,9 @@ void Game::update_camera_type() {
     static bool pressing_right = false;
     static bool changing_right_mouse = false;
 
+    // TODO
     if ((controller->keys['1'] && current_camera != 1) || first ||
-        (!controller->right_mouse_button && changing_right_mouse)) {
+        (!controller->right_mouse_button && changing_right_mouse) || game_state == -1) {
         this->current_camera = 1;
         this->camera = this->defaultCamera;
         changing_right_mouse = false;
@@ -555,6 +579,41 @@ void Game::update_controller(float dt) {
         controller->night_mode = !controller->night_mode;
     }
 
+    if (controller->keys['r'] && game_state != 0) {
+        this->enemies = copy(data->enemies);
+        this->player = new Player(data->player_pos, data->block_size);
+        this->shoots.clear();
+        this->player->draw();
+
+        for (auto& enemy : enemies) {
+            enemy->draw();
+        }
+
+        //
+        this->defaultCamera = new DefaultCamera(
+            this->player->get_coordinate_system(),
+            player->get_center());
+
+        //
+        this->handCamera = new HandCamera(
+            this->player->get_coordinate_system(),
+            player->get_center(), block_size);
+
+        this->orbitalCamera = new OrbitalCamera(
+            this->player->get_coordinate_system(),
+            player->get_center(),
+            block_size);
+
+        this->freeCamera = new FreeCamera(
+            this->player->get_coordinate_system(),
+            this->player->get_center(),
+            this->data, this->block_size);
+
+        // Create camera
+        this->update_camera_type();
+        this->game_state = 0;
+    }
+
     //
     if (controller->left_mouse_button) {
         player->increment_bow_animation(dt);
@@ -575,22 +634,25 @@ void Game::update_controller(float dt) {
 }
 
 void Game::update(float dt) {
-    // Move as flechas
-    int arrow_count = 0;
-    for (auto& arrow : shoots) {
-        vec3 dir = arrow->get_direction();
+    std::vector<std::shared_ptr<Shoot>>::iterator it;
+
+    for (it = shoots.begin(); it != shoots.end();) {
+        vec3 dir = (*it)->get_direction();
         vec3 velocity = dir.normalize() * player_speed * 4 * dt;
-        if (!shoot_collision(velocity, arrow, arrow_count)) {
-            arrow->set_position(vec3(velocity.x, velocity.y, velocity.z));
+
+        if (!shoot_collision(velocity, (*it))) {
+            (*it)->set_position(vec3(velocity.x, velocity.y, velocity.z));
+            ++it;
+        } else {
+            it = this->shoots.erase(it);
         }
-        arrow_count++;
     }
 
     //
     if (controller->keys[27]) {
         glutLeaveMainLoop();
     }
-
+    
     //
     this->update_camera_type();
     this->update_controller(dt);
@@ -696,24 +758,54 @@ void Game::update(float dt) {
     }
 }
 
+static void RasterChars(GLfloat x, GLfloat y, GLfloat z, const char * text, double r, double g, double b) {
+    //Push to recover original attributes
+    glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_TEXTURE_2D);
+        //Draw text in the x, y, z position
+        glColor3f(r,g,b);
+        // glTranslatef(0.5, 0.5, 0);
+        // glScalef(100, 100, 1);
+        // glutStrokeString(GLUT_STROKE_ROMAN, (unsigned char*)"The game over!");
+
+        glRasterPos3f(x, y, z);
+        const char* tmpStr;
+        tmpStr = text;
+        while( *tmpStr ){
+            glutBitmapCharacter(font, *tmpStr);
+            tmpStr++;
+        }
+    glPopAttrib();
+}
+
+static void PrintText(GLfloat x, GLfloat y, const char * text, double r, double g, double b, int scale) {
+    //Draw text considering a 2D space (disable all 3d features)
+    glMatrixMode (GL_PROJECTION);
+    //Push to recover original PROJECTION MATRIX
+    glPushMatrix();
+        glLoadIdentity ();
+        glOrtho (0, 1, 0, 1, 0, 1);
+        RasterChars(x, y, 0, text, r, g, b);    
+    glPopMatrix();
+    glMatrixMode (GL_MODELVIEW);
+}
+
 void Game::display_hud() {
     // Draw static info, first set ortogonal projection
     glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(-1, 1, -1, 1, -1, 1);
-        glMatrixMode(GL_MODELVIEW);
+        if (controller->disable_mouse_warp)
+        update_imgui();
     // Clear the model_view matrix
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Draw static info
-    if (current_camera <= 2) {
+    if (!game_state) {
         PORTAL_MATERIAL->activate();
         this->crosshair.draw(CROSSHAIR_TEX);
     }
-
-    if (controller->disable_mouse_warp)
-        update_imgui();
 }
 
 void Game::create_portal() {
@@ -734,31 +826,43 @@ void Game::create_portal() {
 }
 
 void Game::display(float dt) {
-    //
+
     this->update(dt);
+    if (game_state == 0) {
 
-    //
-    glLoadIdentity();
-    this->camera->activate();
+        //
+        glLoadIdentity();
+        this->camera->activate();
 
-    //
-    this->create_lights();
-    this->create_portal();
+        //
+        this->create_lights();
+        this->create_portal();
 
-    this->player->display(dt);
+        this->player->display(dt);
 
-    for (auto& enemy : enemies) {
-        enemy->display(dt);
+        for (auto& enemy : enemies) {
+            enemy->display(dt);
+        }
+
+        for (auto& shoot : shoots) {
+            shoot->display(dt);
+        }
+
+        // Draw arena obstacles
+        for (auto& obstacle : obstacles) {
+            obstacle->display(dt, controller);
+        }
+
+        this->display_hud();
+    } else if (game_state == -1) {
+        PrintText(0.43, 0.5, "You Lose!", 1, 0, 0, 3);
+        PrintText(0.39, 0.45, "Press R to restart", 1, 0, 0, 3);
+        // PERDEU
+        // you_lose()
+    } else if (game_state == 1) {
+        PrintText(0.43, 0.5, "You Won!", 0, 0, 1, 3);
+        PrintText(0.39, 0.45, "Press R to restart", 1, 0, 0, 3);
+        // GANHOU
+        // you_win()
     }
-
-    for (auto& shoot : shoots) {
-        shoot->display(dt);
-    }
-
-    // Draw arena obstacles
-    for (auto& obstacle : obstacles) {
-        obstacle->display(dt, controller);
-    }
-
-    this->display_hud();
 }

@@ -39,6 +39,10 @@ static void key_down(unsigned char key, int x, int y) {
         case 'W':
             KEYS['w'] = true;
             break;
+        case 'r':
+        case 'R':
+            KEYS['r'] = true;
+            break;
         case 's':
         case 'S':
             KEYS['s'] = true;
@@ -102,6 +106,10 @@ static void key_up(unsigned char key, int x, int y) {
         case 'w':
         case 'W':
             KEYS['w'] = false;
+            break;
+        case 'r':
+        case 'R':
+            KEYS['r'] = false;
             break;
         case 's':
         case 'S':

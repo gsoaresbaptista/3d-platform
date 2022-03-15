@@ -31,6 +31,7 @@ class Game: public Shape {
         GLfloat player_jump_speed;
         std::vector<std::shared_ptr<Enemy>> enemies;
         std::vector<std::shared_ptr<Shoot>> shoots;
+        int game_state;
 
         //
         GLuint current_camera;
@@ -51,7 +52,7 @@ class Game: public Shape {
         void gravity(float dt, Player* player);
         void display_hud();
         bool obstacle_collision(vec3 movement, Player* player);
-        bool shoot_collision(vec3 movement, std::shared_ptr<Shoot> shoot, int shoot_id);
+        bool shoot_collision(vec3 movement, std::shared_ptr<Shoot> shoot);
 
     public:
         Game(
