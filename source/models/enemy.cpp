@@ -168,15 +168,11 @@ void Enemy::move(float dt, float speed) {
         float random = random_float(0, 1);
         this->move_time = random * 3 + 1;
 
-        if (random <= 0.10) {
-            this->move_dir = vec3(0, 0, 0);
-            this->clear_walking();
-            move_time = random * 20;
-        } else if (random <= 0.325) {
+        if (random <= 0.25) {
             this->move_dir = vec3(1, 0, 0);
-        } else if (random <= 0.550) {
+        } else if (random <= 0.50) {
             this->move_dir = vec3(-1, 0, 0);
-        } else if (random <= 0.775) {
+        } else if (random <= 0.75) {
             this->move_dir = vec3(0, 0, 1);
         } else {
             this->move_dir = vec3(0, 0, -1);
@@ -199,6 +195,10 @@ void Enemy::move(float dt, float speed) {
             }
         }
     }
+}
+
+void Enemy::set_pitch(float pitch) {
+    this->coordinateSystem->pitch = pitch;
 }
 
 vec3 Enemy::get_move_dir() {

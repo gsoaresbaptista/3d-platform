@@ -30,6 +30,7 @@ class Enemy: public Player {
         void increment_shoot(float dt);
         void set_angles(float yaw0, float yaw1, float pitch0, float pitch1);
         std::shared_ptr<Enemy> clone();
+        void set_pitch(float pitch);
 };
 
 #endif  // SOURCE_MODELS_ENEMY_H_

@@ -14,6 +14,7 @@ static bool collision_on = true;
 static bool player_collision_box = false;
 static bool enemies_collision_box = false;
 static bool move_enemies = true;
+static bool enemis_shoot = true;
 static float* mouse_sensitivity;
 
 static char str[1000];
@@ -36,8 +37,8 @@ static void display_imgui() {
         ImGui::Checkbox("Collision", &collision_on);
 
         ImGui::Checkbox("Enemies Movement", &move_enemies);
+        ImGui::Checkbox("Enemies shoot", &enemis_shoot);
         ImGui::InputFloat("Sensitivity", mouse_sensitivity, 1);
-
 
         ImGui::End();
     }
@@ -245,7 +246,7 @@ bool Game::obstacle_collision(vec3 movement, Player* player) {
     vec3 pos = coord->position + player->get_center() + movement;
 
     if (player == this->player &&
-        pos.x >= data->arena_width) {
+        pos.x + block_size/2.f>= data->arena_width) {
         game_state = 1;
         return true;
     }
@@ -462,7 +463,7 @@ void Game::update_camera_type() {
 
     // TODO
     if ((controller->keys['1'] && current_camera != 1) || first ||
-        (!controller->right_mouse_button && changing_right_mouse) || game_state == -1) {
+        (!controller->right_mouse_button && changing_right_mouse) || game_state != 0) {
         this->current_camera = 1;
         this->camera = this->defaultCamera;
         changing_right_mouse = false;
@@ -652,7 +653,7 @@ void Game::update(float dt) {
     if (controller->keys[27]) {
         glutLeaveMainLoop();
     }
-    
+
     //
     this->update_camera_type();
     this->update_controller(dt);
@@ -681,19 +682,18 @@ void Game::update(float dt) {
     // Move os inimigos
     for (auto& enemy : enemies) {
         // Faz ele atirar
-        if (enemy->ready2shoot() && enemy->get_shoot_time() <= 0) {
+        if (enemis_shoot && enemy->ready2shoot() && enemy->get_shoot_time() <= 0) {
             enemy->clear_walking();
             enemy->set_returning();
             enemy->increment_shoot(-dt);
 
-            // Define a direção do inimigo no sentido do jogador
             CoordinateSystem* coord = enemy->get_coordinate_system();
             CoordinateSystem* nc = new CoordinateSystem();
 
             vec3 player_pos = (player->get_coordinate_system()->position +
                 player->get_center());
             vec3 dist = player_pos -
-                 (enemy->get_position() + enemy->get_center());
+                    (enemy->get_position() + enemy->get_center());
 
             nc->direction = dist.normalize();
             nc->yaw = atan2(dist.x, dist.z) * 180/M_PI + 180;
@@ -724,8 +724,31 @@ void Game::update(float dt) {
                 enemy->get_center() + enemy->get_position(),
                 enemy->get_coordinate_system()->direction));
         } else  {
-            enemy->increment_bow_animation(dt);
-            enemy->increment_shoot(dt);
+            if (enemis_shoot) {
+                enemy->increment_bow_animation(dt);
+                enemy->increment_shoot(dt);
+            }
+
+            CoordinateSystem* coord = enemy->get_coordinate_system();
+            float pitch = 0;
+
+            vec3 player_pos = (player->get_coordinate_system()->position +
+                player->get_center());
+            vec3 dist = player_pos -
+                    (enemy->get_position() + enemy->get_center());
+
+            // Fix max angles
+            if (player_pos.x > enemy->get_center().x + enemy->get_position().x) {
+                pitch = 0 + atan2(dist.y, dist.x) * 180/M_PI;
+                if (pitch > 45) pitch = 45;
+                if (pitch < -45) pitch = -45;
+            } else {
+                pitch = 90+ atan2(dist.x, dist.y) * 180/M_PI;
+                if (pitch < -45) pitch = -45;
+                if (pitch > 45) pitch = 45;
+            }
+
+            enemy->set_pitch(pitch);
 
             if (move_enemies) {
                 this->gravity(dt, (Player*)enemy.get());
@@ -754,7 +777,6 @@ void Game::update(float dt) {
                 enemy->clear_walking();
             }
         }
-
     }
 }
 
@@ -765,10 +787,6 @@ static void RasterChars(GLfloat x, GLfloat y, GLfloat z, const char * text, doub
         glDisable(GL_TEXTURE_2D);
         //Draw text in the x, y, z position
         glColor3f(r,g,b);
-        // glTranslatef(0.5, 0.5, 0);
-        // glScalef(100, 100, 1);
-        // glutStrokeString(GLUT_STROKE_ROMAN, (unsigned char*)"The game over!");
-
         glRasterPos3f(x, y, z);
         const char* tmpStr;
         tmpStr = text;
@@ -826,8 +844,8 @@ void Game::create_portal() {
 }
 
 void Game::display(float dt) {
-
     this->update(dt);
+
     if (game_state == 0) {
 
         //
@@ -857,12 +875,8 @@ void Game::display(float dt) {
     } else if (game_state == -1) {
         PrintText(0.43, 0.5, "You Lose!", 1, 0, 0, 3);
         PrintText(0.39, 0.45, "Press R to restart", 1, 0, 0, 3);
-        // PERDEU
-        // you_lose()
     } else if (game_state == 1) {
         PrintText(0.43, 0.5, "You Won!", 0, 0, 1, 3);
-        PrintText(0.39, 0.45, "Press R to restart", 1, 0, 0, 3);
-        // GANHOU
-        // you_win()
+        PrintText(0.39, 0.45, "Press R to restart", 0, 0, 1, 3);
     }
 }
