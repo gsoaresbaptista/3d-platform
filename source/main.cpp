@@ -7,6 +7,7 @@
 #include "utils/style/texture.h"
 #include "utils/others/gameConstants.h"
 #include <memory>
+#include <iostream>
 #include <GL/gl.h>
 #include "utils/others/SVGReader.h"
 #include "models/game.h"
@@ -14,7 +15,12 @@
 #include "controllers/controller.h"
 #include "controllers/keyboardListener.h"
 
-int main() {
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        std::cout << "FORNEÇA UM ARQUIVO DE ENTRADA\n";
+        exit(EXIT_SUCCESS);
+    }
+
     Canvas canvas(800, 800, "Trabalho 3D");
     canvas.init();
     GameConstants::load_textures();
@@ -22,7 +28,7 @@ int main() {
     GameConstants::load_models();
     auto controllerData = Controller::registerCallbacks();
 
-    auto data = readSVG("inputs/original_map.svg");
+    auto data = readSVG(argv[1]);
     auto game = std::make_shared<Game>(data, controllerData);
     game->draw();
 

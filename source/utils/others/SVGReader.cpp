@@ -252,7 +252,10 @@ std::shared_ptr<SVGData> readSVG(const char* file_path) {
     XMLDocument svg;
 
     XMLError err = svg.LoadFile(file_path);
-    if (err != XML_SUCCESS) std::cout << "Insira um arquivo existente";
+    if (err != XML_SUCCESS) {
+        std::cout << "Insira um arquivo existente\n";
+        exit(EXIT_SUCCESS);
+    } 
 
     get_rects(data, &svg);
     get_circles(data, &svg);
