@@ -1,7 +1,4 @@
 #include "mouseListener.h"
-#include "../utils/libs/imgui/imgui.h"
-#include "../utils/libs/imgui/imgui_impl_glut.h"
-#include "../utils/libs/imgui/imgui_impl_opengl2.h"
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <memory>
@@ -67,9 +64,6 @@ void mouse_callback(int xpos, int ypos) {
 }
 
 void mouse_callback(int button, int state, int x, int y) {
-    ImGui_ImplGLUT_MouseFunc(button, state, x, y);
-    ImGui_ImplGLUT_MotionFunc(x, y);
-
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         last_pos_x = x;
         last_pos_y = y;

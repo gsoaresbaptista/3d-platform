@@ -56,6 +56,7 @@ Player::Player(vec3 center, GLfloat block_size) : Shape(center) {
     this->idle_animation_angle_id = 0;
     this->bow_state_id = 0;
     this->returning = false;
+    this->leg_animation_angle_id = 0;
 }
 
 Player::~Player() {
@@ -366,7 +367,7 @@ void Player::display(float dt) {
             this->accumulated_time_idle_animation = 0;
             this->idle_animation_angle_id++;
 
-            if (idle_animation_angle_id > 18)
+            if (idle_animation_angle_id >= 18)
                 this->idle_animation_angle_id = 0;
 
             this->angles[20] = idle_angles[idle_animation_angle_id][20];

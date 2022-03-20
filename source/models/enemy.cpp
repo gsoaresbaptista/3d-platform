@@ -40,7 +40,6 @@ void Enemy::display_character() {
     glPushMatrix();
         glTranslatef(0, -dheight *1.25, 0);
         glRotatef(180, 0, 1, 0);
-        // glRotatef(this->coordinateSystem->yaw, 0, 1, 0);
 
         glPushMatrix();
             glTranslatef(0, 3*dheight, 0);

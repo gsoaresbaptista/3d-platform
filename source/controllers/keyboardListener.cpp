@@ -72,6 +72,22 @@ static void key_down(unsigned char key, int x, int y) {
         case 'N':
             KEYS['n'] = true;
             break;
+        case 'p':
+        case 'P':
+            KEYS['p'] = true;
+            break;
+        case 'o':
+        case 'O':
+            KEYS['o'] = true;
+            break;
+        case 'l':
+        case 'L':
+            KEYS['l'] = true;
+            break;
+        case 'k':
+        case 'K':
+            KEYS['k'] = true;
+            break;
         case 27:  // ESC
             KEYS[27] = true;
             break;
@@ -140,49 +156,24 @@ static void key_up(unsigned char key, int x, int y) {
         case 'N':
             KEYS['n'] = false;
             break;
+        case 'p':
+        case 'P':
+            KEYS['p'] = false;
+            break;
+        case 'o':
+        case 'O':
+            KEYS['o'] = false;
+            break;
+        case 'l':
+        case 'L':
+            KEYS['l'] = false;
+            break;
+        case 'k':
+        case 'K':
+            KEYS['k'] = false;
+            break;
         case 27:  // ESC
             KEYS[27] = false;
-            break;
-    }
-}
-
-static void keyboard_special_function(int key, int x, int y) {
-    switch (key) {
-        case GLUT_KEY_UP:
-            if (ANGLE_ID == -1) {
-                TRANSLATE_VECTOR->y -= 1.0;
-            } else {
-                if (ANGLE_ID == 0) ANGLE_VECTOR->x -= 1.0;
-                if (ANGLE_ID == 1) ANGLE_VECTOR->y -= 1.0;
-                if (ANGLE_ID == 2) ANGLE_VECTOR->z -= 1.0;
-            }
-            break;
-        case GLUT_KEY_DOWN:
-            if (ANGLE_ID == -1) {
-                TRANSLATE_VECTOR->y += 1.0;
-            } else {
-                if (ANGLE_ID == 0) ANGLE_VECTOR->x += 1.0;
-                if (ANGLE_ID == 1) ANGLE_VECTOR->y += 1.0;
-                if (ANGLE_ID == 2) ANGLE_VECTOR->z += 1.0;
-            }
-            break;
-        case GLUT_KEY_LEFT:
-            if (ANGLE_ID == -1) TRANSLATE_VECTOR->x += 1.0;
-            break;
-        case GLUT_KEY_RIGHT:
-            if (ANGLE_ID == -1) TRANSLATE_VECTOR->x -= 1.0;
-            break;
-        case GLUT_KEY_F1:
-            ANGLE_ID = -1;
-            break;
-        case GLUT_KEY_F2:
-            ANGLE_ID = 0;
-            break;
-        case GLUT_KEY_F3:
-            ANGLE_ID = 1;
-            break;
-        case GLUT_KEY_F4:
-            ANGLE_ID = 2;
             break;
     }
 }
@@ -192,5 +183,4 @@ void KeyboardListener::registerCallbacks(std::shared_ptr<ControllerData> data) {
     KEYS = data->keys;
     glutKeyboardFunc(key_down);
     glutKeyboardUpFunc(key_up);
-    glutSpecialFunc(keyboard_special_function);
 }

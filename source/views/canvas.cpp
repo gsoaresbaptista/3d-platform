@@ -2,9 +2,6 @@
 #include <GL/glut.h>
 #include <GL/freeglut.h>
 #include <iostream>
-#include "../utils/libs/imgui/imgui.h"
-#include "../utils/libs/imgui/imgui_impl_glut.h"
-#include "../utils/libs/imgui/imgui_impl_opengl2.h"
 
 //
 static GLuint canvas_width;
@@ -49,18 +46,15 @@ void Canvas::init() {
     glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
     glutInitWindowSize(canvas_width, canvas_height);
     canvas_id = glutCreateWindow(canvas_name);
-    glutSetOption(
-        GLUT_ACTION_ON_WINDOW_CLOSE,
-        GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
     //
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glAlphaFunc(GL_GREATER, 0.5);
     glEnable(GL_ALPHA_TEST);
+    glDepthFunc(GL_LEQUAL);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
@@ -72,6 +66,7 @@ void Canvas::init() {
     glShadeModel(GL_SMOOTH);
 
     //
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     float global_amb[] = { 0.1f, 0.1f, 0.1f, 1.f };
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_amb);
@@ -79,26 +74,11 @@ void Canvas::init() {
     //
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_INTERPOLATE);
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.IniFilename = NULL;
-    ImGui::StyleColorsDark();
-    ImGui_ImplGLUT_Init();
-    ImGui_ImplGLUT_InstallFuncs();
-    ImGui_ImplOpenGL2_Init();
 }
 
 void Canvas::run() {
     glutTimerFunc(1000.0/canvas_fps, this->update, 0);
     glutMainLoop();
-
-    // Cleanup
-    ImGui_ImplOpenGL2_Shutdown();
-    ImGui_ImplGLUT_Shutdown();
-    ImGui::DestroyContext();
 }
 
 void Canvas::update(int value) {

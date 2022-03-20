@@ -11,31 +11,31 @@ MAKEFLAGS += "-j -l $(shell grep -c ^processor /proc/cpuinfo) "
 all: objFolder $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJECT)
-	$(CXX) $^ $(STD_FLAGS) $(GLUT_FLAGS) -o $@
+	$(CXX) -O3 $^ $(STD_FLAGS) $(GLUT_FLAGS) -o $@
 
 objects/%.o: source/%.cpp
-	$(CXX) $< -c -o $@
+	$(CXX) -O3 $< -c -o $@
 
 objects/models/%.o: source/models/%.cpp source/models/%.h
-	$(CXX) $< -c -o $@
+	$(CXX) -O3 $< -c -o $@
 
 objects/models/cameras/%.o: source/models/cameras/%.cpp source/models/cameras/%.h
-	$(CXX) $< -c -o $@
+	$(CXX) -O3 $< -c -o $@
 
 objects/views/%.o: source/views/%.cpp source/views/%.h
-	$(CXX) $< -c -o $@
+	$(CXX) -O3 $< -c -o $@
 
 objects/utils/shapes/%.o: source/utils/shapes/%.cpp source/utils/shapes/%.h
-	$(CXX) $< -c -o $@
+	$(CXX) -O3 $< -c -o $@
 
 objects/utils/style/%.o: source/utils/style/%.cpp source/utils/style/%.h
-	$(CXX) $< -c -o $@
+	$(CXX) -O3 $< -c -o $@
 
 objects/libs/%.o: source/libs/%.cpp source/libs/%.h
-	$(CXX) $< -c -o $@
+	$(CXX) -O3 $< -c -o $@
 
 objects/utils/%.o: source/utils/%.cpp source/utils/%.h
-	$(CXX) $< -c -o $@
+	$(CXX) -O3 $< -c -o $@
 
 objFolder:
 	@ mkdir -p objects
